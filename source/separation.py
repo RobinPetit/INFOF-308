@@ -26,7 +26,7 @@
 # Check print_usage for further information
 # -----------------------------------------------------------------------
 
-INTERACTOME_DEFAULT_PATH = 'interactome.tsv'
+INTERACTOME_DEFAULT_PATH = '../data/DataS1_interactome.tsv'
 
 import networkx as nx
 import numpy as np
@@ -453,7 +453,7 @@ if __name__ == '__main__':
     if gene_file_1 == 'none' or gene_file_2 == 'none':
         error_message = \
         "\tERROR: you must specify two files with gene sets, for example:\n\t" + \
-        "\t./separation.py --g1 \"../data/diseases/multiple sclerosis.txt\" --g2" + \
+        "\t./separation.py --g1 \"../data/diseases/multiple sclerosis.txt\" --g2 " + \
         "\"../data/diseases/peroxisomal disorders.txt\"\n\n" + \
         "\tFor more information, type:\n" + \
         "\t./separation.py --usage\n"
