@@ -37,6 +37,7 @@ import sys
 import separation as tools
 
 INTERACTOME_DEFAULT_PATH = tools.INTERACTOME_DEFAULT_PATH
+DEBUG = tools.DEBUG
 
 
 # =============================================================================
@@ -87,8 +88,6 @@ directory as this python script:
     print(usage_message)
     exit()
 
-
-
 # =================================================================================
 def get_lcc_size(G,seed_nodes):
     """
@@ -105,7 +104,6 @@ def get_lcc_size(G,seed_nodes):
         return max(list(map(len, components)))
     else:
         return 0
-
 
 # =============================================================================
 def get_random_comparison(G,gene_set,sims):
@@ -169,24 +167,11 @@ def get_random_comparison(G,gene_set,sims):
 
     return results_message
 
-
 # =============================================================================
-#
-#           E N D    O F    D E F I N I T I O N S
-#
-# =============================================================================
-
-
-if __name__ == '__main__':
-
-    # "Hey Ho, Let's go!" -- The Ramones (1976)
-
-    # --------------------------------------------------------
-    #
-    # PARSING THE COMMAND LINE
-    #
-    # --------------------------------------------------------
-
+def get_program_arguments():
+    """
+    parses the arguments given in command line and return them all
+    """
     parser = optparse.OptionParser()
 
     parser.add_option('-u', '--usage',
@@ -221,13 +206,12 @@ if __name__ == '__main__':
 
 
     (opts, args) = parser.parse_args()
+    return opts
 
-    network_file = opts.network_file
-    gene_file    = opts.gene_file
-    results_file = opts.results_file
-    sims         = opts.sims
-
-    # checking for input:
+def check_arguments():
+    """
+    checks if the given arguments are correct, and exit if they are not
+    """
     if gene_file == 'none':
         error_message = \
         "\tERROR: you must specify an input file with a gene set, for example:\n" + \
@@ -238,10 +222,36 @@ if __name__ == '__main__':
         print(error_message)
         exit(0)
 
-    if network_file == INTERACTOME_DEFAULT_PATH:
+
+# =============================================================================
+#
+#           E N D    O F    D E F I N I T I O N S
+#
+# =============================================================================
+
+
+if __name__ == '__main__':
+
+    # "Hey Ho, Let's go!" -- The Ramones (1976)
+
+    # --------------------------------------------------------
+    #
+    # PARSING THE COMMAND LINE
+    #
+    # --------------------------------------------------------
+
+    opts = get_program_arguments()
+
+    network_file = opts.network_file
+    gene_file    = opts.gene_file
+    results_file = opts.results_file
+    sims         = opts.sims
+
+    check_arguments()
+
+    if network_file == INTERACTOME_DEFAULT_PATH and DEBUG:
         print('> default network from "{}" will be used' \
               .format(INTERACTOME_DEFAULT_PATH))
-
 
     # --------------------------------------------------------
     #
@@ -255,14 +265,7 @@ if __name__ == '__main__':
     all_genes_in_network = set(G.nodes())
     tools.remove_self_links(G)
 
-    # read gene set
-    gene_set_full = tools.read_gene_list(gene_file)
-    # removing genes that are not in the network:
-    gene_set = gene_set_full & all_genes_in_network
-    if len(gene_set_full) != len(gene_set):
-        print(("> ignoring {} genes that are not in the network\n" + \
-              "> remaining number of genes: {}") \
-              .format(len(gene_set_full - all_genes_in_network), len(gene_set)))
+    gene_set = tools.get_disease_genes(gene_file, all_genes_in_network)
 
     # --------------------------------------------------------
     #
@@ -272,11 +275,13 @@ if __name__ == '__main__':
 
     # get lcc size S
     lcc = get_lcc_size(G,gene_set)
-    print("\n> lcc size = {}".format(lcc))
+    if DEBUG:
+        print("\n> lcc size = {}".format(lcc))
 
     # get mean shortest distance
     d_s = tools.calc_single_set_distance(G,gene_set)
-    print("> mean shortest distance = {}".format(d_s))
+    if DEBUG:
+        print("> mean shortest distance = {}".format(d_s))
 
     results_message = ("> gene set from \"{}\": {} genes\n" + \
                        "> lcc size   S = {}\n" + \
