@@ -464,7 +464,7 @@ if __name__ == '__main__':
     if gene_file_1 == 'none' or gene_file_2 == 'none':
         error_message = """
         ERROR: you must specify two files with gene sets, for example:
-        ./separation.py --g1 "../data/diseases/multiple sclerosis.txt" --g2 "../data/diseases/peroximal disorders.txt"
+        ./separation.py --g1 "../data/diseases/multiple sclerosis.txt" --g2 "../data/diseases/peroxisomal disorders.txt"
 
         For more information, type
         ./separation.py --usage
