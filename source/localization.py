@@ -111,9 +111,8 @@ def get_lcc_size(G,seed_nodes):
     if g.number_of_nodes() != 0:
         # get all components 
         components = nx.connected_components(g)
-        
-        return len(components[0])
-
+        # return length of biggest connected component
+        return max(list(map(len, components)))
     else:
         return 0
 
@@ -276,9 +275,9 @@ if __name__ == '__main__':
     # removing genes that are not in the network:
     gene_set = gene_set_full & all_genes_in_network
     if len(gene_set_full) != len(gene_set):
-        print("> ignoring {} genes that are not in the network\n" + \
-              "> remaining number of genes: {}" \
-              .format(len(gene_set_full - all_genes_in_network)))
+        print(("> ignoring {} genes that are not in the network\n" + \
+              "> remaining number of genes: {}") \
+              .format(len(gene_set_full - all_genes_in_network), len(gene_set)))
 
     # --------------------------------------------------------
     #

@@ -113,8 +113,8 @@ def read_network(network_file):
         node2 = line_data[1]
         G.add_edge(node1,node2)
 
-    print("\n> done loading network:\n" + \
-          "> network contains {} nodes and {} links" \
+    print(("\n> done loading network:\n" + \
+          "> network contains {} nodes and {} links") \
           .format(G.number_of_nodes(), G.number_of_edges()))
 
     return G
@@ -143,8 +143,8 @@ def read_gene_list(gene_file):
         gene      = line_data[0]
         genes_set.add(gene)
 
-    print("\n> done reading genes:\n" + \
-          "> {} genes found in {}" \
+    print(("\n> done reading genes:\n" + \
+          "> {} genes found in {}") \
           .format(len(genes_set), gene_file))
 
     return genes_set
@@ -188,7 +188,7 @@ def get_pathlengths_for_single_set(G,given_gene_set):
     
     # calculate the distance of all possible pairs
     for gene1 in gene_set:
-        if not all_path_lenghts.has_key(gene1):
+        if gene1 not in all_path_lenghts:
             all_path_lenghts[gene1] = {}
         for gene2 in gene_set:
             if gene1 < gene2:
@@ -232,7 +232,7 @@ def get_pathlengths_for_two_sets(G,given_gene_set1,given_gene_set2):
     
     # calculate the distance of all possible pairs
     for gene1 in gene_set1:
-        if not all_path_lenghts.has_key(gene1):
+        if gene1 not in all_path_lenghts:
             all_path_lenghts[gene1] = {}
         for gene2 in gene_set2:
             if gene1 != gene2:
@@ -241,7 +241,7 @@ def get_pathlengths_for_two_sets(G,given_gene_set1,given_gene_set2):
                     if gene1 < gene2:
                         all_path_lenghts[gene1][gene2] = l
                     else:
-                        if not all_path_lenghts.has_key(gene2):
+                        if gene2 not in all_path_lenghts:
                             all_path_lenghts[gene2] = {}
                         all_path_lenghts[gene2][gene1] = l
                 except:
@@ -289,10 +289,10 @@ def calc_single_set_distance(G,given_gene_set):
             # where to look up the distance of that pair in the
             # all_path_lengths dict
             if geneA < geneB:
-                if all_path_lenghts[geneA].has_key(geneB):
+                if geneB in all_path_lenghts[geneA]:
                     all_distances_A.append(all_path_lenghts[geneA][geneB])
             else:
-                if all_path_lenghts[geneB].has_key(geneA):
+                if geneA in all_path_lenghts[geneB]:
                     all_distances_A.append(all_path_lenghts[geneB][geneA])
 
         if len(all_distances_A) > 0:
@@ -464,7 +464,7 @@ if __name__ == '__main__':
     if gene_file_1 == 'none' or gene_file_2 == 'none':
         error_message = """
         ERROR: you must specify two files with gene sets, for example:
-        ./separation.py --g1 MS.txt --g2 PD.txt
+        ./separation.py --g1 "../data/diseases/multiple sclerosis.txt" --g2 "../data/diseases/peroximal disorders.txt"
 
         For more information, type
         ./separation.py --usage
@@ -495,8 +495,8 @@ if __name__ == '__main__':
     # removing genes that are not in the network:
     genes_A = genes_A_full & all_genes_in_network
     if len(genes_A_full) != len(genes_A):
-        print("> ignoring {} genes that are not in the network\n" + \
-              "> remaining number of genes: {}" \
+        print(("> ignoring {} genes that are not in the network\n" + \
+              "> remaining number of genes: {}") \
               .format(len(genes_A_full - all_genes_in_network), len(genes_A)))
 
     # read gene set 1
@@ -504,8 +504,8 @@ if __name__ == '__main__':
     # removing genes that are not in the network:
     genes_B = genes_B_full & all_genes_in_network
     if len(genes_B_full) != len(genes_B):
-        print("> ignoring {} genes that are not in the network\n" + \
-              "> remaining number of genes: {}" \
+        print(("> ignoring {} genes that are not in the network\n" + \
+              "> remaining number of genes: {}") \
               .format(len(genes_B_full - all_genes_in_network), len(genes_B)))
 
     # --------------------------------------------------------
