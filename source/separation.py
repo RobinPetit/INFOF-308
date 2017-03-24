@@ -27,7 +27,7 @@
 # -----------------------------------------------------------------------
 
 INTERACTOME_DEFAULT_PATH = '../data/DataS1_interactome.tsv'
-DEBUG = True
+DEBUG = False
 
 import networkx as nx
 import numpy as np
@@ -105,9 +105,10 @@ def read_network(network_file):
         node2 = line_data[1]
         G.add_edge(node1,node2)
 
-    print(("\n> done loading network:\n" + \
-          "> network contains {} nodes and {} links") \
-          .format(G.number_of_nodes(), G.number_of_edges()))
+    if DEBUG:
+        print(("\n> done loading network:\n" + \
+               "> network contains {} nodes and {} links") \
+               .format(G.number_of_nodes(), G.number_of_edges()))
 
     return G
 
@@ -135,9 +136,10 @@ def read_gene_list(gene_file):
         gene      = line_data[0]
         genes_set.add(gene)
 
-    print(("\n> done reading genes:\n" + \
-          "> {} genes found in {}") \
-          .format(len(genes_set), gene_file))
+    if DEBUG:
+        print(("\n> done reading genes:\n" + \
+              "> {} genes found in {}") \
+              .format(len(genes_set), gene_file))
 
     return genes_set
 
@@ -473,6 +475,28 @@ def get_disease_genes(path, all_genes_in_network):
     return genes
 
 # =============================================================================
+def load_network(network_file):
+    """
+    loads the network from a given file
+    
+    PARAMETERS:
+    -----------
+        - network_file: path to the file containing the interactome
+
+    RETURNS:
+    --------
+         - the graph itself
+         - a set of all genes
+    """
+    # read network
+    G  = read_network(network_file)
+    # get all genes ad remove self links
+    all_genes_in_network = set(G.nodes())
+    remove_self_links(G)
+    
+    return G, all_genes_in_network
+
+# =============================================================================
 #
 #           E N D    O F    D E F I N I T I O N S
 #
@@ -502,12 +526,7 @@ if __name__ == '__main__':
     #
     # --------------------------------------------------------
 
-    # read network
-    G  = read_network(network_file)
-    # get all genes ad remove self links
-    all_genes_in_network = set(G.nodes())
-    remove_self_links(G)
-
+    G, all_genes_in_network = load_network(network_file)
     genes_A = get_disease_genes(gene_file_1, all_genes_in_network)
     genes_B = get_disease_genes(gene_file_2, all_genes_in_network)
 
@@ -525,7 +544,7 @@ if __name__ == '__main__':
     d_AB = calc_set_pair_distances(G,genes_A,genes_B)
 
     # calculate separation
-    s_AB = d_AB - (d_A + d_B)/2.
+    s_AB = d_AB - (d_A + d_B)/2
 
     # print and save results:
 

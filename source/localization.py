@@ -132,13 +132,13 @@ def get_random_comparison(G,gene_set,sims):
     l_list  = []
 
     # simulations with randomly distributed seed nodes
-    print("")
     for i in range(1,sims+1):
         # print out status
         if i % 100 == 0:
-            sys.stdout.write("> random simulation [{} of {}]\r" \
-                             .format(i, sims))
-            sys.stdout.flush()
+            if DEBUG:
+                sys.stdout.write("> random simulation [{} of {}]\r" \
+                                 .format(i, sims))
+                sys.stdout.flush()
 
         # get random seeds
         rand_seeds = set(random.sample(all_genes,number_of_seed_genes))
@@ -160,12 +160,7 @@ def get_random_comparison(G,gene_set,sims):
     else:
         z_score = (1.*lcc_observed - l_mean)/l_std
 
-    results_message = ("> Random expecation:\n" + \
-                      "> lcc [rand] = {}\n" + \
-                      "> => z-score of observed lcc = {}") \
-                      .format(l_mean, z_score)
-
-    return results_message
+    return l_mean, l_std, z_score
 
 # =============================================================================
 def get_program_arguments():
@@ -259,12 +254,7 @@ if __name__ == '__main__':
     #
     # --------------------------------------------------------
 
-    # read network
-    G  = tools.read_network(network_file)
-    # get all genes ad remove self links
-    all_genes_in_network = set(G.nodes())
-    tools.remove_self_links(G)
-
+    G, all_genes_in_network = tools.load_network(network_file)
     gene_set = tools.get_disease_genes(gene_file, all_genes_in_network)
 
     # --------------------------------------------------------
@@ -294,13 +284,19 @@ if __name__ == '__main__':
     #
     # --------------------------------------------------------
 
-    results_message += get_random_comparison(G,gene_set,sims)
+    mean, std, z_score = get_random_comparison(G,gene_set,sims)
+    results_message += ("> Random expecation:\n" + \
+                      "> lcc [rand] = {}\n" + \
+                      "> => z-score of observed lcc = {}") \
+                      .format(mean, z_score)
 
-    print(results_message)
+    if DEBUG:
+        print(results_message)
 
     fp = open(results_file,'w')
     fp.write(results_message)
     fp.close()
 
-    print("> results have been saved to {}".format(results_file))
+    if DEBUG:
+        print("> results have been saved to {}".format(results_file))
 
