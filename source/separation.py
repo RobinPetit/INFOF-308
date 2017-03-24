@@ -1,8 +1,5 @@
 #! /usr/bin/env python3
 
-INTERACTOME_DEFAULT_PATH = 'interactome.tsv'
-
-"""
 # -----------------------------------------------------------------------
 #
 # seperation.py
@@ -11,25 +8,25 @@ INTERACTOME_DEFAULT_PATH = 'interactome.tsv'
 # Last Modified: 2014-12-06
 #
 # This code determines the network-based distance and sepration for
-# two given sets of nodes on given network as described in 
-# 
+# two given sets of nodes on given network as described in
+#
 # Uncovering Disease-Disease Relationships Through The Human
 # Interactome
 #
 # by Joerg Menche, Amitabh Sharma, Maksim Kitsak, Susan Dina
 #    Ghiassian, Marc Vidal, Joseph Loscalzo & Albert-Laszlo Barabasi
-# 
-# 
+#
+#
 # -----------------------------------------------------------------------
-# 
-# 
+#
+#
 # This program will calculate the network-based distance d_AB and
 # separation s_AB between two gene sets A and B.
-# 
+#
 # Check print_usage for further information
 # -----------------------------------------------------------------------
-"""
 
+INTERACTOME_DEFAULT_PATH = 'interactome.tsv'
 
 import networkx as nx
 import numpy as np
@@ -37,20 +34,14 @@ import optparse
 import sys
 
 
-"""
+# =============================================================================
+#
+#           S T A R T   D E F I N I T I O N S
+#
 # =============================================================================
 
-           S T A R T   D E F I N I T I O N S 
-
-# =============================================================================
-"""
-
-# =============================================================================
 def print_usage(option, opt, value, parser):
-
-
     usage_message = """
-
 # ----------------------------------------------------------------------
 
 This program will calculate the network-based distance d_AB and
@@ -65,7 +56,7 @@ separation s_AB between two gene sets A and B.
   contain genes for multiple sclerosis and peroxisomal disorders,
   respectively).
 
-* Optional input:  
+* Optional input:
 
   - file containing an interaction network. If now file is given, the
     default network \"{0}\" will be used instead. The file
@@ -75,7 +66,7 @@ separation s_AB between two gene sets A and B.
 
  - filename for the output. If none is given,
    \"separation_results.txt\" will be used
- 
+
 
 Here's an example that should work, provided the files are in the same
 directory as this python script:
@@ -87,7 +78,7 @@ directory as this python script:
 
     print(usage_message)
     exit()
-    
+
 
 # =============================================================================
 def read_network(network_file):
@@ -160,7 +151,7 @@ def remove_self_links(G):
 
 # =============================================================================
 def get_pathlengths_for_single_set(G,given_gene_set):
-    
+
     """
     calculate the shortest paths of a given set of genes in a
     given network. The results are stored in a dictionary of
@@ -178,14 +169,14 @@ def get_pathlengths_for_single_set(G,given_gene_set):
         - all_path_lenghts[gene1][gene2] = l for all pairs of genes
           with gene1 < gene2
 
-    """ 
+    """
 
     # remove all nodes that are not in the network
     all_genes_in_network = set(G.nodes())
     gene_set = given_gene_set & all_genes_in_network
 
     all_path_lenghts = {}
-    
+
     # calculate the distance of all possible pairs
     for gene1 in gene_set:
         if gene1 not in all_path_lenghts:
@@ -204,7 +195,7 @@ def get_pathlengths_for_single_set(G,given_gene_set):
 
 # =============================================================================
 def get_pathlengths_for_two_sets(G,given_gene_set1,given_gene_set2):
-    
+
     """
     calculate the shortest paths between two given set of genes in a
     given network. The results are stored in a dictionary of
@@ -221,7 +212,7 @@ def get_pathlengths_for_two_sets(G,given_gene_set1,given_gene_set2):
         - all_path_lenghts[gene1][gene2] = l for all pairs of genes
           with gene1 < gene2
 
-    """ 
+    """
 
     # remove all nodes that are not in the network
     all_genes_in_network = set(G.nodes())
@@ -229,7 +220,7 @@ def get_pathlengths_for_two_sets(G,given_gene_set1,given_gene_set2):
     gene_set2 = given_gene_set2 & all_genes_in_network
 
     all_path_lenghts = {}
-    
+
     # calculate the distance of all possible pairs
     for gene1 in gene_set1:
         if gene1 not in all_path_lenghts:
@@ -255,17 +246,17 @@ def calc_single_set_distance(G,given_gene_set):
 
     """
     Calculates the mean shortest distance for a set of genes on a
-    given network    
-    
+    given network
+
 
     PARAMETERS:
     -----------
         - G: network
-        - gene_set: gene set for which distance will be computed 
+        - gene_set: gene set for which distance will be computed
 
     RETURNS:
     --------
-         - mean shortest distance 
+         - mean shortest distance
 
     """
 
@@ -311,15 +302,15 @@ def calc_set_pair_distances(G,given_gene_set1,given_gene_set2):
     """
     Calculates the mean shortest distance between two sets of genes on
     a given network
-    
+
     PARAMETERS:
     -----------
         - G: network
-        - gene_set1/2: gene sets for which distance will be computed 
+        - gene_set1/2: gene sets for which distance will be computed
 
     RETURNS:
     --------
-         - mean shortest distance 
+         - mean shortest distance
 
     """
 
@@ -333,7 +324,7 @@ def calc_set_pair_distances(G,given_gene_set1,given_gene_set2):
 
     all_distances = []
 
-    # going through all pairs starting from set 1 
+    # going through all pairs starting from set 1
     for geneA in gene_set1:
 
         all_distances_A = []
@@ -342,7 +333,7 @@ def calc_set_pair_distances(G,given_gene_set1,given_gene_set2):
             # the genes are the same, so their distance is 0
             if geneA == geneB:
                 all_distances_A.append(0)
-                
+
             # I have to check which gene is 'smaller' in order to know
             # where to look up the distance of that pair in the
             # all_path_lengths dict
@@ -383,7 +374,7 @@ def calc_set_pair_distances(G,given_gene_set1,given_gene_set2):
                         all_distances_A.append(all_path_lenghts[geneA][geneB])
                     except:
                         pass
-                        
+
                 else:
                     try:
                         all_distances_A.append(all_path_lenghts[geneB][geneA])
@@ -402,13 +393,11 @@ def calc_set_pair_distances(G,given_gene_set1,given_gene_set2):
 
 
 
-"""
 # =============================================================================
-
-           E N D    O F    D E F I N I T I O N S 
-
+#
+#           E N D    O F    D E F I N I T I O N S
+#
 # =============================================================================
-"""
 
 
 if __name__ == '__main__':
@@ -416,9 +405,9 @@ if __name__ == '__main__':
     # "Hey Ho, Let's go!" -- The Ramones (1976)
 
     # --------------------------------------------------------
-    # 
+    #
     # PARSING THE COMMAND LINE
-    # 
+    #
     # --------------------------------------------------------
 
     parser = optparse.OptionParser()
@@ -462,14 +451,12 @@ if __name__ == '__main__':
 
     # checking for input:
     if gene_file_1 == 'none' or gene_file_2 == 'none':
-        error_message = """
-        ERROR: you must specify two files with gene sets, for example:
-        ./separation.py --g1 "../data/diseases/multiple sclerosis.txt" --g2 "../data/diseases/peroxisomal disorders.txt"
-
-        For more information, type
-        ./separation.py --usage
-        
-        """
+        error_message = \
+        "\tERROR: you must specify two files with gene sets, for example:\n\t" + \
+        "\t./separation.py --g1 \"../data/diseases/multiple sclerosis.txt\" --g2" + \
+        "\"../data/diseases/peroxisomal disorders.txt\"\n\n" + \
+        "\tFor more information, type:\n" + \
+        "\t./separation.py --usage\n"
         print(error_message)
         exit(0)
 
@@ -526,14 +513,12 @@ if __name__ == '__main__':
 
     # print and save results:
 
-    results_message = """
-> gene set A from \"{}\": {} genes, network-diameter d_A = {}
-> gene set B from \"{}\": {} genes, network-diameter d_B = {}
-> mean shortest distance between A & B: d_AB = {} 
-> network separation of A & B:          s_AB = {}
-"""%(gene_file_1,len(genes_A),d_A,
-     gene_file_2,len(genes_B),d_B,
-     d_AB,s_AB)
+    results_message = ("> gene set A from \"{}\": {} genes, network-diameter d_A = {:.3f}\n" + \
+                      "> gene set B from \"{}\": {} genes, network-diameter d_B = {:.3f}\n" + \
+                      "> mean shortest distance between A & B: d_AB = {:.3f}\n" + \
+                      "> network separation of A & B:          s_AB = {:.3f}") \
+                      .format(gene_file_1, len(genes_A), d_A, gene_file_2,
+                              len(genes_B), d_B, d_AB, s_AB)
 
     print(results_message)
 

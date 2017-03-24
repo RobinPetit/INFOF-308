@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 
-"""
 # -----------------------------------------------------------------------
 #
 # localization.py
@@ -9,18 +8,18 @@
 # Last Modified: 2014-12-06
 #
 # This code determines the network-based distance and sepration for
-# two given sets of nodes on given network as described in 
-# 
+# two given sets of nodes on given network as described in
+#
 # Uncovering Disease-Disease Relationships Through The Human
 # Interactome
 #
 # by Joerg Menche, Amitabh Sharma, Maksim Kitsak, Susan Dina
 #    Ghiassian, Marc Vidal, Joseph Loscalzo & Albert-Laszlo Barabasi
-# 
-# 
+#
+#
 # -----------------------------------------------------------------------
-# 
-# 
+#
+#
 # This program will calculate the size of the largest connected
 # component S and mean shortest distance <d_s> for a given gene
 # set. It will also compute the expected lcc size for the same number
@@ -28,11 +27,9 @@
 #
 # Check print_usage for further information
 # -----------------------------------------------------------------------
-"""
-
 
 import networkx as nx
-import random 
+import random
 import numpy as np
 import optparse
 import sys
@@ -42,20 +39,14 @@ import separation as tools
 INTERACTOME_DEFAULT_PATH = tools.INTERACTOME_DEFAULT_PATH
 
 
-"""
+# =============================================================================
+#
+#           S T A R T   D E F I N I T I O N S
+#
 # =============================================================================
 
-           S T A R T   D E F I N I T I O N S 
-
-# =============================================================================
-"""
-
-# =============================================================================
 def print_usage(option, opt, value, parser):
-
-
     usage_message = """
-
 # ----------------------------------------------------------------------
 
 This program will calculate the network-based localization for a given
@@ -69,7 +60,7 @@ gene set
   the two files MS.txt and PD.txt for valid examples (the contain
   genes for multiple sclerosis and peroxisomal disorders).
 
-* Optional input:  
+* Optional input:
 
   - file containing an interaction network. If now file is given, the
     default network \"{0}\" will be used instead. The file
@@ -91,7 +82,6 @@ directory as this python script:
 ./localization.py -n {0} -g PD.txt -o output.txt
 
 # ----------------------------------------------------------------------
-
     """.format(INTERACTOME_DEFAULT_PATH)
 
     print(usage_message)
@@ -109,7 +99,7 @@ def get_lcc_size(G,seed_nodes):
     g = nx.subgraph(G,seed_nodes)
 
     if g.number_of_nodes() != 0:
-        # get all components 
+        # get all components
         components = nx.connected_components(g)
         # return length of biggest connected component
         return max(list(map(len, components)))
@@ -128,7 +118,7 @@ def get_random_comparison(G,gene_set,sims):
     -----------
         - G       : network
         - gene_set: dito
-        - sims    : number of random simulations 
+        - sims    : number of random simulations
 
     RETURNS:
     --------
@@ -136,11 +126,11 @@ def get_random_comparison(G,gene_set,sims):
 
     """
 
-    # getting all genes in the network  
+    # getting all genes in the network
     all_genes = G.nodes()
 
     number_of_seed_genes = len(gene_set & set(all_genes))
-    
+
     l_list  = []
 
     # simulations with randomly distributed seed nodes
@@ -157,8 +147,8 @@ def get_random_comparison(G,gene_set,sims):
 
         # get rand lcc
         lcc = get_lcc_size(G,rand_seeds)
-        l_list.append(lcc) 
-        
+        l_list.append(lcc)
+
 
     # get the actual value
     lcc_observed = get_lcc_size(G,gene_set)
@@ -172,22 +162,19 @@ def get_random_comparison(G,gene_set,sims):
     else:
         z_score = (1.*lcc_observed - l_mean)/l_std
 
-    results_message = """
-> Random expectation:
-> lcc [rand] = {}
-> => z-score of observed lcc = {}
-""".format(l_mean, z_score)
+    results_message = ("> Random expecation:\n" + \
+                      "> lcc [rand] = {}\n" + \
+                      "> => z-score of observed lcc = {}") \
+                      .format(l_mean, z_score)
 
     return results_message
 
 
-"""
 # =============================================================================
-
-           E N D    O F    D E F I N I T I O N S 
-
+#
+#           E N D    O F    D E F I N I T I O N S
+#
 # =============================================================================
-"""
 
 
 if __name__ == '__main__':
@@ -195,9 +182,9 @@ if __name__ == '__main__':
     # "Hey Ho, Let's go!" -- The Ramones (1976)
 
     # --------------------------------------------------------
-    # 
+    #
     # PARSING THE COMMAND LINE
-    # 
+    #
     # --------------------------------------------------------
 
     parser = optparse.OptionParser()
@@ -242,14 +229,12 @@ if __name__ == '__main__':
 
     # checking for input:
     if gene_file == 'none':
-        error_message = """
-        ERROR: you must specify an input file with a gene set, for example:
-        ./localization.py -g MS.txt
+        error_message = \
+        "\tERROR: you must specify an input file with a gene set, for example:\n" + \
+        "\t./localization.py -g MS.txt\n\n"  + \
+        "\tFor more information, type\n" + \
+        "\t./localization.py --usage"
 
-        For more information, type
-        ./localization.py --usage
-        
-        """
         print(error_message)
         exit(0)
 
@@ -293,11 +278,10 @@ if __name__ == '__main__':
     d_s = tools.calc_single_set_distance(G,gene_set)
     print("> mean shortest distance = {}".format(d_s))
 
-    results_message = """
-> gene set from \"{}\": {} genes
-> lcc size   S = {}
-> diameter d_s = {}
-""".format(gene_file,len(gene_set),lcc,d_s)
+    results_message = ("> gene set from \"{}\": {} genes\n" + \
+                       "> lcc size   S = {}\n" + \
+                       "> diameter d_s = {}") \
+                       .format(gene_file, len(gene_set), lcc, d_s)
 
     # --------------------------------------------------------
     #
