@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 """
 # -----------------------------------------------------------------------
@@ -110,9 +110,8 @@ directory as this python script:
 
     """
 
-    print usage_message
-
-    sys.exit()
+    print(usage_message)
+    exit()
     
 
 # =============================================================================
@@ -139,10 +138,10 @@ def read_network(network_file):
         node2 = line_data[1]
         G.add_edge(node1,node2)
 
-    print "\n> done loading network:"
-    print "> network contains %s nodes and %s links" %(G.number_of_nodes(),
-                                                       G.number_of_edges())
-    
+    print("\n> done loading network:\n" + \
+          "> network contains {} nodes and {} links" \
+          .format(G.number_of_nodes(), G.number_of_edges()))
+
     return G
 
 
@@ -169,8 +168,9 @@ def read_gene_list(gene_file):
         gene      = line_data[0]
         genes_set.add(gene)
 
-    print "\n> done reading genes:"
-    print "> %s genes found in %s" %(len(genes_set),gene_file)
+    print("\n> done reading genes:\n" + \
+          "> {} genes found in {}" \
+          .format(len(genes_set), gene_file))
 
     return genes_set
 
@@ -494,11 +494,11 @@ if __name__ == '__main__':
         ./separation.py --usage
         
         """
-        print error_message
-        sys.exit(0)
+        print(error_message)
+        exit(0)
 
     if network_file == 'interactome.tsv':
-        print '> default network from "interactome.tsv" will be used'
+        print('> default network from "interactome.tsv" will be used')
 
 
     # --------------------------------------------------------
@@ -518,20 +518,18 @@ if __name__ == '__main__':
     # removing genes that are not in the network:
     genes_A = genes_A_full & all_genes_in_network
     if len(genes_A_full) != len(genes_A):
-        print "> ignoring %s genes that are not in the network" %(
-            len(genes_A_full - all_genes_in_network))
-        print "> remaining number of genes: %s" %(len(genes_A))
-
+        print("> ignoring {} genes that are not in the network\n" + \
+              "> remaining number of genes: {}" \
+              .format(len(genes_A_full - all_genes_in_network), len(genes_A)))
 
     # read gene set 1
     genes_B_full = read_gene_list(gene_file_2)
     # removing genes that are not in the network:
     genes_B = genes_B_full & all_genes_in_network
     if len(genes_B_full) != len(genes_B):
-        print "> ignoring %s genes that are not in the network" %(
-            len(genes_B_full - all_genes_in_network))
-        print "> remaining number of genes: %s" %(len(genes_B))
-
+        print("> ignoring {} genes that are not in the network\n" + \
+              "> remaining number of genes: {}" \
+              .format(len(genes_B_full - all_genes_in_network), len(genes_B)))
 
     # --------------------------------------------------------
     #
@@ -552,20 +550,20 @@ if __name__ == '__main__':
     # print and save results:
 
     results_message = """
-> gene set A from \"%s\": %s genes, network-diameter d_A = %s
-> gene set B from \"%s\": %s genes, network-diameter d_B = %s
-> mean shortest distance between A & B: d_AB = %s 
-> network separation of A & B:          s_AB = %s
+> gene set A from \"{}\": {} genes, network-diameter d_A = {}
+> gene set B from \"{}\": {} genes, network-diameter d_B = {}
+> mean shortest distance between A & B: d_AB = {} 
+> network separation of A & B:          s_AB = {}
 """%(gene_file_1,len(genes_A),d_A,
      gene_file_2,len(genes_B),d_B,
      d_AB,s_AB)
 
-    print results_message
+    print(results_message)
 
     fp = open(results_file,'w')
     fp.write(results_message)
     fp.close()
 
-    print "> results have been saved to %s" % (results_file)
+    print("> results have been saved to {}".format(results_file))
 
 

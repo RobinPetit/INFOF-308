@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 """
 # -----------------------------------------------------------------------
@@ -120,9 +120,8 @@ directory as this python script:
 
     """
 
-    print usage_message
-
-    sys.exit()
+    print(usage_message)
+    exit()
 
 
 
@@ -172,11 +171,12 @@ def get_random_comparison(G,gene_set,sims):
     l_list  = []
 
     # simulations with randomly distributed seed nodes
-    print ""
+    print("")
     for i in range(1,sims+1):
         # print out status
         if i % 100 == 0:
-            sys.stdout.write("> random simulation [%s of %s]\r" % (i,sims))
+            sys.stdout.write("> random simulation [{} of {}]\r" \
+                             .format(i, sims))
             sys.stdout.flush()
 
         # get random seeds
@@ -201,9 +201,9 @@ def get_random_comparison(G,gene_set,sims):
 
     results_message = """
 > Random expectation:
-> lcc [rand] = %s
-> => z-score of observed lcc = %s
-"""%(l_mean,z_score)
+> lcc [rand] = {}
+> => z-score of observed lcc = {}
+""".format(l_mean, z_score)
 
     return results_message
 
@@ -275,11 +275,11 @@ if __name__ == '__main__':
         ./localization.py --usage
         
         """
-        print error_message
-        sys.exit(0)
+        print(error_message)
+        exit(0)
 
     if network_file == 'interactome.tsv':
-        print '> default network from "interactome.tsv" will be used'
+        print('> default network from "interactome.tsv" will be used')
 
 
     # --------------------------------------------------------
@@ -299,10 +299,9 @@ if __name__ == '__main__':
     # removing genes that are not in the network:
     gene_set = gene_set_full & all_genes_in_network
     if len(gene_set_full) != len(gene_set):
-        print "> ignoring %s genes that are not in the network" %(
-            len(gene_set_full - all_genes_in_network))
-        print "> remaining number of genes: %s" %(len(gene_set))
-
+        print("> ignoring {} genes that are not in the network\n" + \
+              "> remaining number of genes: {}" \
+              .format(len(gene_set_full - all_genes_in_network)))
 
     # --------------------------------------------------------
     #
@@ -312,17 +311,17 @@ if __name__ == '__main__':
 
     # get lcc size S
     lcc = get_lcc_size(G,gene_set)
-    print "\n> lcc size = %s" %(lcc)
+    print("\n> lcc size = {}".format(lcc))
 
     # get mean shortest distance
     d_s = tools.calc_single_set_distance(G,gene_set)
-    print "> mean shortest distance = %s" %(d_s)
+    print("> mean shortest distance = {}".format(d_s))
 
     results_message = """
-> gene set from \"%s\": %s genes
-> lcc size   S = %s
-> diameter d_s = %s
-"""%(gene_file,len(gene_set),lcc,d_s)
+> gene set from \"{}\": {} genes
+> lcc size   S = {}
+> diameter d_s = {}
+""".format(gene_file,len(gene_set),lcc,d_s)
 
     # --------------------------------------------------------
     #
@@ -332,20 +331,11 @@ if __name__ == '__main__':
 
     results_message += get_random_comparison(G,gene_set,sims)
 
-    print results_message
-    
+    print(results_message)
+
     fp = open(results_file,'w')
     fp.write(results_message)
     fp.close()
 
-    print "> results have been saved to %s" % (results_file)
-
-
-
-
-
-
-    
-    
-
+    print("> results have been saved to {}".format(results_file))
 
