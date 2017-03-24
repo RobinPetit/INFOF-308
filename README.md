@@ -19,7 +19,8 @@ The repository is for now organized as follows:
 
 ## TODO
 
-+ Have the provided source code to evolve from Python2 to Python3.
++ Have the provided source code to evolve from Python2 to Python3.  [**DONE**]
++ Factorize scripts in order to avoid duplication.
 + Get last version of required datasets.
 + Run analysis source code on both *old* data (provided by the authors) and newer versions.
 + Write report.
