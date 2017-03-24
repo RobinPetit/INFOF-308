@@ -1,5 +1,7 @@
 #! /usr/bin/env python3
 
+INTERACTOME_DEFAULT_PATH = 'interactome.tsv'
+
 """
 # -----------------------------------------------------------------------
 #
@@ -24,33 +26,7 @@
 # This program will calculate the network-based distance d_AB and
 # separation s_AB between two gene sets A and B.
 # 
-# * Required input:
-# 
-#   two files containing the gene sets A and B. The file must be in
-#   form of a table, one gene per line. If the table contains several
-#   columns, they must be tab-separated, only the first column will be
-#   used. See the two files MS.txt and PD.txt for valid examples (they
-#   contain genes for multiple sclerosis and peroxisomal disorders,
-#   respectively).
-# 
-# * Optional input:  
-# 
-#   - file containing an interaction network. If now file is given, the
-#     default network \"interactome.tsv\" will be used instead. The file
-#     must contain an edgelist provided as a tab-separated table. The
-#     first two columns of the table will be interpreted as an
-#     interaction gene1 <==> gene2
-# 
-#  - filename for the output. If none is given,
-#    \"separation_results.txt\" will be used
-#  
-# 
-# Here's an example that should work, provided the files are in the same
-# directory as this python script:
-# 
-# ./separation.py -n interactome.tsv --g1 MS.txt --g2 PD.txt -o output.txt
-# 
-#
+# Check print_usage for further information
 # -----------------------------------------------------------------------
 """
 
@@ -92,7 +68,7 @@ separation s_AB between two gene sets A and B.
 * Optional input:  
 
   - file containing an interaction network. If now file is given, the
-    default network \"interactome.tsv\" will be used instead. The file
+    default network \"{0}\" will be used instead. The file
     must contain an edgelist provided as a tab-separated table. The
     first two columns of the table will be interpreted as an
     interaction gene1 <==> gene2
@@ -104,11 +80,10 @@ separation s_AB between two gene sets A and B.
 Here's an example that should work, provided the files are in the same
 directory as this python script:
 
-./separation.py -n interactome.tsv --g1 MS.txt --g2 PD.txt -o output.txt
+./separation.py -n {0} --g1 MS.txt --g2 PD.txt -o output.txt
 
 # ----------------------------------------------------------------------
-
-    """
+    """.format(INTERACTOME_DEFAULT_PATH)
 
     print(usage_message)
     exit()
@@ -453,9 +428,10 @@ if __name__ == '__main__':
                       action="callback", callback=print_usage)
 
     parser.add_option('-n',
-                      help    ='file containing the network edgelist [interactome.tsv]',
+                      help    ='file containing the network edgelist [{}]' \
+                               .format(INTERACTOME_DEFAULT_PATH),
                       dest    ='network_file',
-                      default ='interactome.tsv',
+                      default =INTERACTOME_DEFAULT_PATH,
                       type    = "string")
 
     parser.add_option('--g1',
@@ -497,8 +473,9 @@ if __name__ == '__main__':
         print(error_message)
         exit(0)
 
-    if network_file == 'interactome.tsv':
-        print('> default network from "interactome.tsv" will be used')
+    if network_file == INTERACTOME_DEFAULT_PATH:
+        print('> default network from "{}" will be used' \
+              .format(INTERACTOME_DEFAULT_PATH))
 
 
     # --------------------------------------------------------

@@ -25,36 +25,8 @@
 # component S and mean shortest distance <d_s> for a given gene
 # set. It will also compute the expected lcc size for the same number
 # of randomly distributed genes.
-# 
-# * Required input:
-# 
-#   a file containing a gene set. The file must be in form of a table,
-#   one gene per line. If the table contains several columns, they
-#   must be tab-separated, only the first column will be used. See the
-#   two files MS.txt and PD.txt for valid examples (they contain genes
-#   for multiple sclerosis and peroxisomal disorders, respectively).
-# 
-# * Optional input:  
-# 
-#   - file containing an interaction network. If now file is given, the
-#     default network \"interactome.tsv\" will be used instead. The file
-#     must contain an edgelist provided as a tab-separated table. The
-#     first two columns of the table will be interpreted as an
-#     interaction gene1 <==> gene2
-# 
-#  - filename for the output. If none is given,
-#    \"localiztion_results.txt\" will be used
 #
-#  - the number or random simulations can be chosen. Default is 1000,
-#    which should run fast even for large gene sets and typically
-#    gives good result. 
-# 
-# Here's an example that should work, provided the files are in the same
-# directory as this python script:
-# 
-# ./localization.py -n interactome.tsv -g PD.txt -o output.txt
-# 
-#
+# Check print_usage for further information
 # -----------------------------------------------------------------------
 """
 
@@ -66,6 +38,8 @@ import optparse
 import sys
 
 import separation as tools
+
+INTERACTOME_DEFAULT_PATH = tools.INTERACTOME_DEFAULT_PATH
 
 
 """
@@ -98,7 +72,7 @@ gene set
 * Optional input:  
 
   - file containing an interaction network. If now file is given, the
-    default network \"interactome.tsv\" will be used instead. The file
+    default network \"{0}\" will be used instead. The file
     must contain an edgelist provided as a tab-separated table. The
     first two columns of the table will be interpreted as an
     interaction gene1 <==> gene2
@@ -114,11 +88,11 @@ gene set
 Here's an example that should work, provided the files are in the same
 directory as this python script:
 
-./localization.py -n interactome.tsv -g PD.txt -o output.txt
+./localization.py -n {0} -g PD.txt -o output.txt
 
 # ----------------------------------------------------------------------
 
-    """
+    """.format(INTERACTOME_DEFAULT_PATH)
 
     print(usage_message)
     exit()
@@ -231,12 +205,14 @@ if __name__ == '__main__':
 
     parser.add_option('-u', '--usage',
                       help    ='print more info on how to use this script',
-                      action="callback", callback=print_usage)
+                      action  ="callback",
+                      callback=print_usage)
 
     parser.add_option('-n',
-                      help    ='file containing the network edgelist [interactome.tsv]',
+                      help    ='file containing the network edgelist [{}]' \
+                               .format(INTERACTOME_DEFAULT_PATH),
                       dest    ='network_file',
-                      default ='interactome.tsv',
+                      default =INTERACTOME_DEFAULT_PATH,
                       type    = "string")
 
     parser.add_option('-g',
@@ -278,8 +254,9 @@ if __name__ == '__main__':
         print(error_message)
         exit(0)
 
-    if network_file == 'interactome.tsv':
-        print('> default network from "interactome.tsv" will be used')
+    if network_file == INTERACTOME_DEFAULT_PATH:
+        print('> default network from "{}" will be used' \
+              .format(INTERACTOME_DEFAULT_PATH))
 
 
     # --------------------------------------------------------
