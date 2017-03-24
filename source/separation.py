@@ -27,6 +27,7 @@
 # -----------------------------------------------------------------------
 
 INTERACTOME_DEFAULT_PATH = '../data/DataS1_interactome.tsv'
+DEBUG = True
 
 import networkx as nx
 import numpy as np
@@ -298,7 +299,6 @@ def calc_single_set_distance(G,given_gene_set):
 
 # =============================================================================
 def calc_set_pair_distances(G,given_gene_set1,given_gene_set2):
-
     """
     Calculates the mean shortest distance between two sets of genes on
     a given network
@@ -391,25 +391,11 @@ def calc_set_pair_distances(G,given_gene_set1,given_gene_set2):
 
     return mean_shortest_distance
 
-
-
 # =============================================================================
-#
-#           E N D    O F    D E F I N I T I O N S
-#
-# =============================================================================
-
-
-if __name__ == '__main__':
-
-    # "Hey Ho, Let's go!" -- The Ramones (1976)
-
-    # --------------------------------------------------------
-    #
-    # PARSING THE COMMAND LINE
-    #
-    # --------------------------------------------------------
-
+def get_program_arguments():
+    """
+    parses the arguments given in command line and return them all
+    """
     parser = optparse.OptionParser()
 
     parser.add_option('-u', '--usage',
@@ -443,13 +429,13 @@ if __name__ == '__main__':
 
 
     (opts, args) = parser.parse_args()
+    return opts
 
-    network_file = opts.network_file
-    gene_file_1  = opts.gene_file_1
-    gene_file_2  = opts.gene_file_2
-    results_file = opts.results_file
-
-    # checking for input:
+# =============================================================================
+def check_arguments():
+    """
+    checks if arguments are correct, and exit if they are not
+    """
     if gene_file_1 == 'none' or gene_file_2 == 'none':
         error_message = \
         "\tERROR: you must specify two files with gene sets, for example:\n\t" + \
@@ -460,7 +446,52 @@ if __name__ == '__main__':
         print(error_message)
         exit(0)
 
-    if network_file == INTERACTOME_DEFAULT_PATH:
+# =============================================================================
+def get_disease_genes(path, all_genes_in_network):
+    """
+    gets all the diseases associated with a given disease being also in the
+    interactome
+
+    PARAMETERS:
+    -----------
+        - path: path to a disease genes file
+        - all_genes_in_network: set of all genes in the interactome
+
+    RETURNS:
+    --------
+         - a set of genes being in the interactome and being associated to
+           the given disease
+    """
+    # read gene set
+    all_genes = read_gene_list(path)
+    # removing genes that are not in the network:
+    genes = all_genes & all_genes_in_network
+    if (len(all_genes) != len(genes)) and DEBUG:
+        print(("> ignoring {} genes that are not in the network\n" + \
+              "> remaining number of genes: {}") \
+              .format(len(all_genes - all_genes_in_network), len(genes)))
+    return genes
+
+# =============================================================================
+#
+#           E N D    O F    D E F I N I T I O N S
+#
+# =============================================================================
+
+
+if __name__ == '__main__':
+    # "Hey Ho, Let's go!" -- The Ramones (1976)
+
+    opts = get_program_arguments()
+
+    network_file = opts.network_file
+    gene_file_1  = opts.gene_file_1
+    gene_file_2  = opts.gene_file_2
+    results_file = opts.results_file
+
+    check_arguments()
+
+    if network_file == INTERACTOME_DEFAULT_PATH and DEBUG:
         print('> default network from "{}" will be used' \
               .format(INTERACTOME_DEFAULT_PATH))
 
@@ -477,23 +508,8 @@ if __name__ == '__main__':
     all_genes_in_network = set(G.nodes())
     remove_self_links(G)
 
-    # read gene set 1
-    genes_A_full = read_gene_list(gene_file_1)
-    # removing genes that are not in the network:
-    genes_A = genes_A_full & all_genes_in_network
-    if len(genes_A_full) != len(genes_A):
-        print(("> ignoring {} genes that are not in the network\n" + \
-              "> remaining number of genes: {}") \
-              .format(len(genes_A_full - all_genes_in_network), len(genes_A)))
-
-    # read gene set 1
-    genes_B_full = read_gene_list(gene_file_2)
-    # removing genes that are not in the network:
-    genes_B = genes_B_full & all_genes_in_network
-    if len(genes_B_full) != len(genes_B):
-        print(("> ignoring {} genes that are not in the network\n" + \
-              "> remaining number of genes: {}") \
-              .format(len(genes_B_full - all_genes_in_network), len(genes_B)))
+    genes_A = get_disease_genes(gene_file_1, all_genes_in_network)
+    genes_B = get_disease_genes(gene_file_2, all_genes_in_network)
 
     # --------------------------------------------------------
     #
@@ -502,8 +518,8 @@ if __name__ == '__main__':
     # --------------------------------------------------------
 
     # distances WITHIN the two gene sets:
-    d_A = calc_single_set_distance(G,genes_A)
-    d_B = calc_single_set_distance(G,genes_B)
+    d_A = calc_single_set_distance(G, genes_A)
+    d_B = calc_single_set_distance(G, genes_B)
 
     # distances BETWEEN the two gene sets:
     d_AB = calc_set_pair_distances(G,genes_A,genes_B)
