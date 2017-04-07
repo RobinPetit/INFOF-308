@@ -1,0 +1,130 @@
+\documentclass{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fullpage}
+\usepackage[parfill]{parskip}
+
+% math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{commath}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{corollary}[lemma]{Corollary}
+\newtheorem{theorem}[lemma]{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}[lemma]{Definition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+ % operators
+\DeclareMathOperator{\LCC}{LCC}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+ % commands
+\renewcommand{\P}{\mathbb P}
+
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\intint}[2]{\left\llbracket#1, #2\right\rrbracket}
+\newcommand{\st}{\text{ s.t.}}
+
+\author{Robin Petit}
+\date{March-April 2017}
+\title{On the distribution of the largest connected component size in random graphs with fixed edges set size}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+	\subsection{Definitions and preliminary results}
+		Let's consider $V = \{v_1, \ldots, v_{\abs V}\}$ a set of vertices. We denote by $\abs V$ the cardinality of the set $V$. Let's define
+		the function:
+		\[X : \N \to \N : n \mapsto \frac {n(n-1)}2.\]
+
+		\begin{definition} An undirected graph $\Gamma$ is denoted $\Gamma(V, E)$ for $V$ its vertices set, and $E$ its edges set, with $E = \{e_1, \ldots, e_{\abs E}\}$
+		and $\forall i \in \intint 1{\abs E} : e_i = \{v_{i1}, v_{i2}\}$ for $1 \leq i_1, i_2 \leq \abs V$.
+		\end{definition}
+
+		\begin{remark} $\abs E$ is usually denoted as $m$, and $\abs V$ is sometimes denoted as $n$. Both these numbers are (non-strictly) positive integers.
+		\end{remark}
+
+		\begin{definition} The set of all the existing graphs having given vertices set $V$ is denoted by $\Gamma(V, \cdot)$. We denote $\Gamma_m(V, \cdot)$
+		the subset of $\Gamma(V, \cdot)$ such that $\abs E = m$.
+		\end{definition}
+
+		\begin{remark} We observe that:
+		\[\Gamma(V, \cdot) = \bigsqcup_{m \in \N}\Gamma_m(V, \cdot).\]
+		\end{remark}
+
+		\begin{definition} For every $n \in \N$, we define $\mathcal K_n$ as the \textit{complete graph} of size $n$.
+		\end{definition}
+
+		\begin{lemma} For a graph $\Gamma(V, E)$, we have $\abs E \leq X(\abs V)$.
+		\end{lemma}
+
+		\begin{proof} We know that $\Gamma(V, E) \leq \mathcal K_{\abs V}$, and $\mathcal K_{\abs V}$ has exactly $X(\abs V)$ edges (vertex $v_i$ is connected
+		to vertices $v_{i+1}$ to $v_{\abs V}$, so the number of edges is equal to $\sum_{i=1}^{\abs V}(\abs V - i) = \sum_{i=0}^{\abs V - 1}i = X(\abs V)$).
+		\end{proof}
+
+		\begin{lemma} For given vertices set $V$ and fixed number of edges $m \in \N$, we have:
+		\[\abs {\Gamma_m(V, \cdot)} = \begin{cases}\binom {X(\abs V)}m &\text{ if } m \leq X(\abs V) \\0 &\text{ else}\end{cases}.\]
+		\end{lemma}
+
+		\begin{corollary} For given vertices set $V$, we have $\abs {\Gamma(V, \cdot)} = 2^{X(\abs V)}$.
+		\end{corollary}
+
+		\begin{proof} Since $\Gamma(V, \cdot)$ is given by a disjoint union over $m$, its cardinality is equal to the sum of the individual cardinalities:
+		\[\abs {\Gamma(V, \cdot)} = \sum_{m \in \N}\abs {\Gamma_m(V, \cdot)} = \sum_{k=0}^{X(\abs V)}\abs {\Gamma_m(V, \cdot)} = \sum_{k=0}^{X(\abs V)}\binom {X(\abs V)}m = 2^{X(\abs V)}.\]
+		\end{proof}
+
+		\begin{definition} A graph $\Gamma(V, E)$ is said to be connected if for each $v, w \in V$, there exists a path between $v$ and $w$. We denote by $\chi(V, \cdot)$ the
+		set of all connected graphs having vertices set $V$. Again, for $m \in \N$, we denote by $\chi_m(V, \cdot) \subset \chi(V, \cdot)$ the set of connected graphs having $m$ edges.
+		\end{definition}
+
+		\begin{remark} $\chi(V, \cdot) \subset \Gamma(V, \cdot)$, and:
+		\[\chi(V, \cdot) = \bigsqcup_{m \in \N}\chi_m(V, \cdot).\]
+		\end{remark}
+
+		\begin{lemma} For $m < \abs V$ or $m > X(\abs V)$, we have $\abs {\chi_m(V, \cdot)} = 0$.
+		\end{lemma}
+
+		\begin{definition} For every $W \in \mathcal P(V)$, we define $\Delta_W : \Gamma(V, \cdot) \to \Gamma(W, \cdot) : \Gamma(V, E) \mapsto \Gamma'(W, E')$
+		such that:
+		\[E' = \left\{\{v_i, v_j\} \in E \st v_i, v_j \in W\right\}.\]
+		\end{definition}
+
+		\begin{definition} We define the \textit{connected component of vertex $v_i \in V$ in graph $\Gamma(V, E)$} by the biggest subset (in the sense of inclusion) $W$
+		of $V$ such that $\Delta_W(\Gamma(V, E)) \in \chi(W, \cdot)$.
+
+		We then define the \textit{largest connected component of the graph $\Gamma(V, E)$} as:
+		\[\LCC(\Gamma(V, E)) \coloneqq \argmax_{\stackrel {W \in \mathcal P(W)}{\Delta_W(\Gamma(V, E) \in \chi(W, \cdot)}}\abs W
+			= \argmax_{W \in \mathcal P(V)}\abs W\mathbb I_{\left[\Delta_W(\Gamma(V, E) \in \chi(W, \cdot)\right]}.\]
+
+		The set $\Lambda_k^m(V, \cdot)$ is then the set of all graphs $\Gamma(V, E) \in \Gamma(V, \cdot)$, such that $\abs E = m$ and $\abs {\LCC(\Gamma(V, E))} = k$.
+		\end{definition}
+
+		\begin{remark} Since $\Lambda_k(V, \cdot) = \bigsqcup_{m=0}^{X(\abs V)}\Lambda_k^m(V, \cdot)$ and:
+		\[\Gamma(V, \cdot) = \bigsqcup_{k=1}^{\abs V}\bigsqcup_{m=0}^{X(\abs V)}\Lambda_k^m(V, \cdot),\]
+		we want to know what is $\abs {\Lambda_k^m(V, \cdot)}$ equal to.
+		\end{remark}
+
+		\begin{definition} Let's declare a new random variable $\mathscr G(V)$, a graph uniformly distributed in $\Gamma(V, \cdot)$, thus such that:
+		\[\forall \Gamma(V, E) \in \Gamma(V, \cdot) : \P[\mathscr G(V) = \Gamma(V, E)] = \frac 1{\abs {\Gamma(V, \cdot)}} = 2^{-X(\abs V)}.\]
+		\end{definition}
+
+	\subsection{Objectives}
+		The objective now is to find an expression for $\abs {\Lambda_k(V, \cdot)}$ since we are looking for:
+		\[\P[\LCC(\mathscr G(V)) = k] = \frac {\abs {\Lambda_k(V, \cdot)}}{\abs {\Gamma(V, \cdot)}} = \frac 1{\abs {\Gamma(V, E)}}\sum_{m=0}^{X(\abs V)}\abs {\Lambda_k^m(V, \cdot)}.\]
+
+		Let's denote this value $p_k \coloneqq \P\left[\abs {\LCC(\mathscr G(V)} = k\right].$
+
+\section{Results}
+\end{document}
