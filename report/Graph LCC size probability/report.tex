@@ -18,6 +18,7 @@
 
 \newtheorem{lemma}{Lemma}[section]
 \newtheorem{corollary}[lemma]{Corollary}
+\newtheorem{proposition}[lemma]{Proposition}
 \newtheorem{theorem}[lemma]{Theorem}
 \theoremstyle{definition}
 \newtheorem{definition}[lemma]{Definition}
@@ -127,4 +128,47 @@
 		Let's denote this value $p_k \coloneqq \P\left[\abs {\LCC(\mathscr G(V)} = k\right].$
 
 \section{Results}
+	The general idea in order to determine $\abs {\Lambda_k^m(V, \cdot)}$ is to insert a connected component of size $k$ on vertices set $V$, and then to tally the configurations
+	placing $m-k$ vertices without making a bigger connected component than the first one.
+
+	\subsection{Examples}
+		It is trivial to tell $\abs {\Lambda_1^m(V, \cdot)} = \delta_0^m$, i.e. equals one if $m=0$ and equals zero if $m>0$: a graph having at least one edge, cannot have
+		a largest connected component of size 1.
+
+		\begin{lemma}[Upper boundary of edges amount for $k=2$] For $m > \frac {\abs V}2$, we have $\Lambda_2^m(V, \cdot) = \emptyset$.
+		\end{lemma}
+
+		\begin{proof} To have a largest connected component of size $2$, each vertex must have degree $0$ or $1$. Take $m \in \N$ such that $m > \frac V2$. Take
+		$\Gamma(V, E)$ such that $\abs E = m$, and take $\mathcal V_1 \coloneqq \{v \in V \st \deg(v) \leq 1\} \subset V$. The restriction
+		$\Gamma'(\mathcal V_1, E') = \Delta_{\mathcal V_1}(\Gamma(V, E))$.
+
+		Since in a graph, the sum of the degree of each vertex is equal to twice the amount of edges, when applied on $\Gamma'$, it follows that:
+		\[2\abs {E'} = \sum_{v \in \mathcal V_1}\deg(v) \leq \sum_{v \in \mathcal V_1}1 = \abs {\mathcal V_1}.\]
+
+		We then deduce that $\abs {E'} \leq \frac {\abs {\mathcal V_1}}2 \leq \frac {\abs V}2$. Thus $\mathcal V_1$ must be \textit{strictly} included in $V$,
+		and then there must exist $v \in V$ such that $\deg(v) \geq 2$. Thus:
+		\[\forall m > \frac {\abs V}2 : \forall \Gamma(V, E) \in \Gamma_m(V, \cdot) : \Gamma(V, E) \not \in \Lambda_2^m(V, \cdot).\]
+		\end{proof}
+
+		\begin{lemma} For $\Gamma(V, E) \in \Gamma(V, \cdot)$ a graph and $k \in \intint 1{\abs V}$, if there exists a vertex $v \in V$ such that $\deg(v) = k$,
+		then $\abs {\LCC(\Gamma(V, E))} \geq k+1$.
+		\end{lemma}
+
+		\begin{proof} Take $v \in V$ such that $\deg(v) = k$. There exist $\{v_{i_1}, \ldots, v_{i_k}\} \subset V$ such that:
+		\[\forall j \in \intint 1k : \{v, v_{i_j}\} \in E.\]
+
+		Thus $\{v, v_{i_1}, v_{i_k}\}$ is a connected component of size $k+1$. Thus the largest connected component must have size at least that big.
+		\end{proof}
+
+		\begin{proposition}[Upper boundary of edges amount generalized] For $k \in \intint 1{\abs V}$, and $m > \frac {\abs V(k-1)}2$, we have $\Lambda_k^m(V, \cdot) = \emptyset$.
+		\end{proposition}
+
+		\begin{proof} Take $m > \frac {(k-1)\abs V}2$, and $\Gamma(V, E) \in \Gamma_m(V, \cdot)$. Take $\mathcal V_k \coloneqq \{v \in V \st \deg(v) \leq k-1\}$.
+		Let $\Gamma'(\mathcal V_k, E')$ be defined by $\Delta_{\mathcal V_k}(\Gamma(V, E))$. We know that:
+		\[2\abs {E'} = \sum_{v \in \mathcal V_k}\deg(v) \leq (k-1)\abs {\mathcal V_k} \leq (k-1)\abs V.\]
+
+		We deduce that $\abs {E'} \leq \frac {(k-1)\abs V}2 < m = \abs E$. Thus $\abs E \gneqq \abs {E'}$, and this implies that there exists $v \in V$ such that $\deg(v) \geq k$.
+		By previous lemma, largest connected component size must be at least $k+1$.
+		\end{proof}
+
 \end{document}
