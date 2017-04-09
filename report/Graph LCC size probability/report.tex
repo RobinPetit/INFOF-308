@@ -6,6 +6,8 @@
 \usepackage{fullpage}
 \usepackage[parfill]{parskip}
 
+\usepackage{palatino, eulervm}
+
 % math
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -15,11 +17,13 @@
 \usepackage{stmaryrd}
 \usepackage{mathtools}
 \usepackage{mathrsfs}
+\usepackage[framemethod=tikz]{mdframed}
 
 \newtheorem{lemma}{Lemma}[section]
 \newtheorem{corollary}[lemma]{Corollary}
 \newtheorem{proposition}[lemma]{Proposition}
 \newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{conjecture}[lemma]{Conjecture}
 \theoremstyle{definition}
 \newtheorem{definition}[lemma]{Definition}
 \theoremstyle{remark}
@@ -34,7 +38,29 @@
 \newcommand{\R}{\mathbb R}
 \newcommand{\N}{\mathbb N}
 \newcommand{\intint}[2]{\left\llbracket#1, #2\right\rrbracket}
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
 \newcommand{\st}{\text{ s.t.}}
+
+% link amsthm and mdframed
+\iftrue
+%\iffalse
+	% pre-amsthm
+	\mdfdefinestyle{resultstyle}{%
+		hidealllines=true,%
+		leftline=true,%
+		rightline=true,%
+		innerleftmargin=10pt,%
+		innerrightmargin=10pt,%
+		innertopmargin=10pt,%
+		innerbottommargin=8pt,%
+	}
+
+	\surroundwithmdframed[style=resultstyle]{theorem}
+	\surroundwithmdframed[style=resultstyle]{proposition}
+	\surroundwithmdframed[style=resultstyle]{corollary}
+	\surroundwithmdframed[style=resultstyle]{lemma}
+\fi
 
 \author{Robin Petit}
 \date{March-April 2017}
@@ -51,7 +77,7 @@
 		\[X : \N \to \N : n \mapsto \frac {n(n-1)}2.\]
 
 		\begin{definition} An undirected graph $\Gamma$ is denoted $\Gamma(V, E)$ for $V$ its vertices set, and $E$ its edges set, with $E = \{e_1, \ldots, e_{\abs E}\}$
-		and $\forall i \in \intint 1{\abs E} : e_i = \{v_{i1}, v_{i2}\}$ for $1 \leq i_1, i_2 \leq \abs V$.
+		and $\forall i \in \intint 1{\abs E} : e_i = \{v_{i1}, v_{i2}\}$ for $1 \leq i_1, i_2 \leq \abs V$ with $i_1 \neq i_2$ (i.e. loops are not tolerated).
 		\end{definition}
 
 		\begin{remark} $\abs E$ is usually denoted as $m$, and $\abs V$ is sometimes denoted as $n$. Both these numbers are (non-strictly) positive integers.
@@ -123,52 +149,113 @@
 
 	\subsection{Objectives}
 		The objective now is to find an expression for $\abs {\Lambda_k(V, \cdot)}$ since we are looking for:
-		\[\P[\LCC(\mathscr G(V)) = k] = \frac {\abs {\Lambda_k(V, \cdot)}}{\abs {\Gamma(V, \cdot)}} = \frac 1{\abs {\Gamma(V, E)}}\sum_{m=0}^{X(\abs V)}\abs {\Lambda_k^m(V, \cdot)}.\]
+		\[\P\left[\LCC(\mathscr G(V)) = k\right] = \frac {\abs {\Lambda_k(V, \cdot)}}{\abs {\Gamma(V, \cdot)}}
+			= \frac 1{\abs {\Gamma(V, E)}}\sum_{m=0}^{X(\abs V)}\abs {\Lambda_k^m(V, \cdot)}.\]
 
-		Let's denote this value $p_k \coloneqq \P\left[\abs {\LCC(\mathscr G(V)} = k\right].$
+		Let's denote this value $p_k \coloneqq \P\left[\abs {\LCC(\mathscr G(V))} = k\right].$
 
-\section{Results}
+\section{Results}\label{sec:results}
 	The general idea in order to determine $\abs {\Lambda_k^m(V, \cdot)}$ is to insert a connected component of size $k$ on vertices set $V$, and then to tally the configurations
 	placing $m-k$ vertices without making a bigger connected component than the first one.
 
 	\subsection{Examples}
-		It is trivial to tell $\abs {\Lambda_1^m(V, \cdot)} = \delta_0^m$, i.e. equals one if $m=0$ and equals zero if $m>0$: a graph having at least one edge, cannot have
-		a largest connected component of size 1.
+		\subsubsection{$\abs {\Lambda_{k=1}(V, \cdot)}$}
+			It is trivial to tell $\abs {\Lambda_1^m(V, \cdot)} = \delta_0^m$, i.e. equals one if $m=0$ and equals zero if $m>0$: a graph having at least one edge, cannot have
+			a largest connected component of size 1.
 
-		\begin{lemma}[Upper boundary of edges amount for $k=2$] For $m > \frac {\abs V}2$, we have $\Lambda_2^m(V, \cdot) = \emptyset$.
-		\end{lemma}
+		\subsubsection{Upper boundary of $m$ for $\abs {\Lambda_k^m(V, \cdot)}$}
+			\begin{lemma}[Upper boundary of edges amount for $k=2$]\label{lemma:upper boundary k=2} For $m > \frac {\abs V}2$, we have $\Lambda_2^m(V, \cdot) = \emptyset$.
+			\end{lemma}
 
-		\begin{proof} To have a largest connected component of size $2$, each vertex must have degree $0$ or $1$. Take $m \in \N$ such that $m > \frac V2$. Take
-		$\Gamma(V, E)$ such that $\abs E = m$, and take $\mathcal V_1 \coloneqq \{v \in V \st \deg(v) \leq 1\} \subset V$. The restriction
-		$\Gamma'(\mathcal V_1, E') = \Delta_{\mathcal V_1}(\Gamma(V, E))$.
+			\begin{proof} To have a largest connected component of size $2$, each vertex must have degree $0$ or $1$. Take $m \in \N$ such that $m > \frac V2$. Take
+			$\Gamma(V, E)$ such that $\abs E = m$, and take $\mathcal V_1 \coloneqq \{v \in V \st \deg(v) \leq 1\} \subset V$. Take the restriction
+			$\Gamma'(\mathcal V_1, E') = \Delta_{\mathcal V_1}(\Gamma(V, E))$.
 
-		Since in a graph, the sum of the degree of each vertex is equal to twice the amount of edges, when applied on $\Gamma'$, it follows that:
-		\[2\abs {E'} = \sum_{v \in \mathcal V_1}\deg(v) \leq \sum_{v \in \mathcal V_1}1 = \abs {\mathcal V_1}.\]
+			Since in a graph, the sum of the degree of each vertex is equal to twice the amount of edges, when applied on $\Gamma'$, it follows that:
+			\[2\abs {E'} = \sum_{v \in \mathcal V_1}\deg(v) \leq \sum_{v \in \mathcal V_1}1 = \abs {\mathcal V_1}.\]
 
-		We then deduce that $\abs {E'} \leq \frac {\abs {\mathcal V_1}}2 \leq \frac {\abs V}2$. Thus $\mathcal V_1$ must be \textit{strictly} included in $V$,
-		and then there must exist $v \in V$ such that $\deg(v) \geq 2$. Thus:
-		\[\forall m > \frac {\abs V}2 : \forall \Gamma(V, E) \in \Gamma_m(V, \cdot) : \Gamma(V, E) \not \in \Lambda_2^m(V, \cdot).\]
-		\end{proof}
+			We then deduce that $\abs {E'} \leq \frac {\abs {\mathcal V_1}}2 \leq \frac {\abs V}2$. Thus $\mathcal V_1$ must be \textit{strictly} included in $V$,
+			and then there must exist $v \in V$ such that $\deg(v) \geq 2$. Thus:
+			\[\forall m > \frac {\abs V}2 : \forall \Gamma(V, E) \in \Gamma_m(V, \cdot) : \Gamma(V, E) \not \in \Lambda_2^m(V, \cdot).\]
+			\end{proof}
 
-		\begin{lemma} For $\Gamma(V, E) \in \Gamma(V, \cdot)$ a graph and $k \in \intint 1{\abs V}$, if there exists a vertex $v \in V$ such that $\deg(v) = k$,
-		then $\abs {\LCC(\Gamma(V, E))} \geq k+1$.
-		\end{lemma}
+			\begin{lemma} For $\Gamma(V, E) \in \Gamma(V, \cdot)$ a graph and $k \in \intint 1{\abs V}$, if there exists a vertex $v \in V$ such that $\deg(v) = k$,
+			then $\abs {\LCC(\Gamma(V, E))} \geq k+1$.
+			\end{lemma}
 
-		\begin{proof} Take $v \in V$ such that $\deg(v) = k$. There exist $\{v_{i_1}, \ldots, v_{i_k}\} \subset V$ such that:
-		\[\forall j \in \intint 1k : \{v, v_{i_j}\} \in E.\]
+			\begin{proof} Take $v \in V$ such that $\deg(v) = k$. There exist $\{v_{i_1}, \ldots, v_{i_k}\} \subset V$ such that:
+			\[\forall j \in \intint 1k : \{v, v_{i_j}\} \in E.\]
 
-		Thus $\{v, v_{i_1}, v_{i_k}\}$ is a connected component of size $k+1$. Thus the largest connected component must have size at least that big.
-		\end{proof}
+			Thus $\{v, v_{i_1}, \ldots, v_{i_k}\}$ is a connected component of size $k+1$. Thus the largest connected component must have size at least that big.
+			\end{proof}
 
-		\begin{proposition}[Upper boundary of edges amount generalized] For $k \in \intint 1{\abs V}$, and $m > \frac {\abs V(k-1)}2$, we have $\Lambda_k^m(V, \cdot) = \emptyset$.
-		\end{proposition}
+			\begin{proposition}[Upper boundary of edges amount generalized] For $k \in \intint 1{\abs V}$, and $m > \frac {\abs V(k-1)}2$, we have $\Lambda_k^m(V, \cdot) = \emptyset$.
+			\end{proposition}
 
-		\begin{proof} Take $m > \frac {(k-1)\abs V}2$, and $\Gamma(V, E) \in \Gamma_m(V, \cdot)$. Take $\mathcal V_k \coloneqq \{v \in V \st \deg(v) \leq k-1\}$.
-		Let $\Gamma'(\mathcal V_k, E')$ be defined by $\Delta_{\mathcal V_k}(\Gamma(V, E))$. We know that:
-		\[2\abs {E'} = \sum_{v \in \mathcal V_k}\deg(v) \leq (k-1)\abs {\mathcal V_k} \leq (k-1)\abs V.\]
+			\begin{proof} Take $m > \frac {(k-1)\abs V}2$, and $\Gamma(V, E) \in \Gamma_m(V, \cdot)$. Take $\mathcal V_k \coloneqq \{v \in V \st \deg(v) \leq k-1\}$.
+			Let $\Gamma'(\mathcal V_k, E')$ be defined by $\Delta_{\mathcal V_k}(\Gamma(V, E))$. We know that:
+			\[2\abs {E'} = \sum_{v \in \mathcal V_k}\deg(v) \leq (k-1)\abs {\mathcal V_k} \leq (k-1)\abs V.\]
 
-		We deduce that $\abs {E'} \leq \frac {(k-1)\abs V}2 < m = \abs E$. Thus $\abs E \gneqq \abs {E'}$, and this implies that there exists $v \in V$ such that $\deg(v) \geq k$.
-		By previous lemma, largest connected component size must be at least $k+1$.
-		\end{proof}
+			We deduce that $\abs {E'} \leq \frac {(k-1)\abs V}2 < m = \abs E$. Thus $\abs E \gneqq \abs {E'}$, and this implies that there exists $v \in V$ such that $\deg(v) \geq k$.
+			By previous lemma, largest connected component size must be at least $k+1$.
+			\end{proof}
+
+			\begin{remark} We can understand this upper boundary as $m > \frac {\abs V(k-1)}2 = \frac {\abs V}k\frac {k(k-1)}2 = \frac {\abs V}k \cdot X(k)$. So in
+			order to have a LCC of size $k$, edges can be distributed to make $\floor {\frac {\abs V}k}$ complete graphs having each $X(k)$ edges.
+			The maximum amount of edges is then given by $\frac {\abs V(k-1)}2$.
+			\end{remark}
+
+		\subsubsection{$\abs {\Lambda_{k=2}(V, \cdot)}$}
+			Example of size 2 is a bit more complicated:
+			\[\forall m \in \intint 1{\floor {\frac {\abs V}2}} : \abs {\Lambda_2^m(V, \cdot)} = \begin{cases}
+				\frac 1{m!}\prod_{k=0}^{m-1}\binom {\abs V-2k}2 &\text{ if } m \leq \frac {\abs V}2 \\
+				0 &\text{ else}
+			\end{cases}.\]
+
+			\begin{proof} For $m > \frac {\abs V}2$, result is shown in Lemma~\ref{lemma:upper boundary k=2}. The part $\prod_{k=0}^{m-1}\binom {\abs V-2k}2$ corresponds
+			to the choice of $m$ edges without making a connected component of size $\geq 3$.
+
+			$\binom {\abs V-2 \cdot 0}2$ is the choice of the first edge (two vertices) among $\abs V$ vertices, $\binom {\abs V-2}2$ is the choice of the second edge
+			(two vertices) among the $\abs V-2$ vertices left, etc. At step $\ell$, only $\abs V-2(\ell-1)$ vertices are available because two are selected per step, and
+			a selected vertex cannot be used again, otherwise its degree would be $\geq 2$, and then the largest component size would be $\geq 3$.
+
+			The $\frac 1{m!}$ comes from the fact that the order the edges are selected doesn't matter (so for each choice of $m$ edges, there are $m!$ permutations
+			of these).
+			\end{proof}
+
+			\begin{remark} This can also be expressed as:
+			\[\abs {\Lambda_2^m(V, \cdot)} = \frac 1{m!}\frac {\abs V!}{2^m\left(\abs V-2m\right)!},\]
+			by simplification of the product.
+			\end{remark}
+
+\section{Processing on examples}
+	\begin{align*}
+		\abs {\Lambda_3^0(V, \cdot)} = \abs {\Lambda_3^1(V, \cdot)} &= 0 \\
+		\abs {\Lambda_3^2(V, \cdot)} &= \binom {\abs V}3\binom 32 \\
+		\abs {\Lambda_3^3(V, \cdot)} &= \binom {\abs V}3\binom 33 + \binom {\abs V}3\binom 32\binom {\abs V-3}2 \\
+		\abs {\Lambda_3^4(V, \cdot)} &= \binom {\abs V}3\binom 33\binom {\abs V-3}2 + \binom {\abs V}3\binom 32\binom {\abs V-3}3\binom 32 + \binom {\abs V}3\binom 32\binom {\abs V-3}2\binom {\abs V-5}2.
+	\end{align*}
+
+	\begin{definition} Let's denote equally $\abs {\Lambda_k^m(n)} = \Lambda_k^m(n) \equiv \abs {\Lambda_k^m(V, \cdot)}$ for $V$ such that $\abs V = n$.
+	\end{definition}
+
+	This notation allows to lighten the expressions.
+
+	\begin{conjecture}
+	\[\abs {\Lambda_k^m(\abs V)}
+		= \sum_{\ell=k-1}^{\min\left(m, X(k)\right)}\binom {\abs V}k\abs {\Lambda_k^\ell(k)}\sum_{p=1}^k\abs {\Lambda_p^{m-\ell}(\abs V-k)}\beta_{p\,\ell}(m, k, \abs V),\]
+	with $\beta_{p\,\ell}(m, k, \abs V)$, a coefficient.
+	\end{conjecture}
+
+	\begin{remark} The idea behind this formula is explained in introduction of Section~\ref{sec:results}: to find the amount of graphs having $n$ vertices, $m$ edges
+	and a largest connected component of size $k$, let's place a connected component of size $k$ somewhere in the graph (so choose $k$ in $\abs V$ vertices), and then multiply this
+	by the amount of possible graphs of largest connected component of size $p \in \{1, \ldots, k\}$ (so lower or equal to $k$).
+	\end{remark}
+
+	\begin{proof}[Idea of proof of conjecture] In order to prove the equality of the cardinalities, let's find a bijective function $\Omega$ between
+	$\Lambda_k^m(V)$ and a set like:
+	\[\mathfrak Q_k^m(V) \coloneqq \bigsqcup_{W \in \mathcal P(V) \st \abs W = k}\bigsqcup_{\ell=k-1}^{\min\left(m, X(k)\right)}\bigsqcup_{p=1}^k
+		\Lambda_k^\ell(W) \times \Lambda_p^{m-\ell}(V \setminus W).\]
+	\end{proof}
 
 \end{document}
