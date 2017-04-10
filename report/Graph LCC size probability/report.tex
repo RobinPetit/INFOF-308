@@ -5,6 +5,8 @@
 \usepackage[T1]{fontenc}
 \usepackage{fullpage}
 \usepackage[parfill]{parskip}
+\usepackage{tikz}
+\usepackage{float}
 
 \usepackage{palatino, eulervm}
 
@@ -31,6 +33,7 @@
  % operators
 \DeclareMathOperator{\LCC}{LCC}
 \DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 
  % commands
 \renewcommand{\P}{\mathbb P}
@@ -129,14 +132,40 @@
 		\end{definition}
 
 		\begin{definition} We define the \textit{connected component of vertex $v_i \in V$ in graph $\Gamma(V, E)$} by the biggest subset (in the sense of inclusion) $W$
-		of $V$ such that $\Delta_W(\Gamma(V, E)) \in \chi(W, \cdot)$.
+		of $V$ such that $v_i \in W$ and $\Delta_W(\Gamma(V, E)) \in \chi(W, \cdot)$.
+
+		For graph $\Gamma(V, E) \in \Gamma(V, \cdot)$, we define $\abs {\LCC(\Gamma(V, E))}$ by:
+		\[\abs {\LCC(\Gamma(V, E)} \coloneqq \max_{W \in \mathcal P(V)}\abs W\mathbb I_{\left[\Delta_W(\Gamma(V, E) \in \chi(V, \cdot)\right]}.\]
 
 		We then define the \textit{largest connected component of the graph $\Gamma(V, E)$} as:
-		\[\LCC(\Gamma(V, E)) \coloneqq \argmax_{\stackrel {W \in \mathcal P(W)}{\Delta_W(\Gamma(V, E) \in \chi(W, \cdot)}}\abs W
-			= \argmax_{W \in \mathcal P(V)}\abs W\mathbb I_{\left[\Delta_W(\Gamma(V, E) \in \chi(W, \cdot)\right]}.\]
+		\[\LCC(\Gamma(V, E)) \coloneqq \argmin_{\stackrel {W \in \mathcal P(V)}{\abs W =
+			\abs {\LCC(\Gamma(V, E))}}}\min_{i \in \intint 1{\abs V}}i \times \mathbb I_{[v_i \in W]}.\]
 
 		The set $\Lambda_k^m(V, \cdot)$ is then the set of all graphs $\Gamma(V, E) \in \Gamma(V, \cdot)$, such that $\abs E = m$ and $\abs {\LCC(\Gamma(V, E))} = k$.
 		\end{definition}
+
+		\begin{remark} The notations here are consistent since $\abs {\LCC(\Gamma(V, E))}$ corresponds indeed to the cardinality of $\LCC(\Gamma(V, E))$.
+
+		Furthermore, this definition of largest connected component allows to define uniquely the LCC, even though a graph $\Gamma(V, E)$ has several connected component
+		of same size. For example, following graph has two connected component of size 2, i.e. $\{1, 2\}$ (in red) and $\{3, 4\}$ (in blue).
+
+		\begin{figure}[H]
+		\begin{center}
+			\begin{tikzpicture}
+				\node[shape=circle, draw=black](1) at (0, 3) {1};
+				\node[shape=circle, draw=black](2) at (3, 3) {2};
+				\node[shape=circle, draw=black](3) at (3, 0) {3};
+				\node[shape=circle, draw=black](4) at (0, 0) {4};
+
+				\path[draw=red] (1) -- (2);
+				\path[draw=blue] (3) -- (4);
+			\end{tikzpicture}
+		\end{center}
+		\caption{Graph $\Gamma\left(\{1, 2, 3, 4\}, \left\{\{1, 2\}, \{3, 4\}\right\}\right)$}
+		\end{figure}
+
+		Nevertheless, the $\LCC$ operator yields $\{1, 2\}$ since it minimizes the lowest id of element in connected component ($1$ for this graph).
+		\end{remark}
 
 		\begin{remark} Since $\Lambda_k(V, \cdot) = \bigsqcup_{m=0}^{X(\abs V)}\Lambda_k^m(V, \cdot)$ and:
 		\[\Gamma(V, \cdot) = \bigsqcup_{k=1}^{\abs V}\bigsqcup_{m=0}^{X(\abs V)}\Lambda_k^m(V, \cdot),\]
@@ -253,8 +282,8 @@
 	\end{remark}
 
 	\begin{proof}[Idea of proof of conjecture] In order to prove the equality of the cardinalities, let's find a bijective function $\Omega$ between
-	$\Lambda_k^m(V)$ and a set like:
-	\[\mathfrak Q_k^m(V) \coloneqq \bigsqcup_{W \in \mathcal P(V) \st \abs W = k}\bigsqcup_{\ell=k-1}^{\min\left(m, X(k)\right)}\bigsqcup_{p=1}^k
+	$\Lambda_k^m(V, \cdot)$ and a set like:
+	\[\mathfrak Q_k^m(V) \coloneqq \bigsqcup_{\stackrel {W \in \mathcal P(V)}{\abs W = k}}\bigsqcup_{\ell=k-1}^{\min\left(m, X(k)\right)}\bigsqcup_{p=1}^k
 		\Lambda_k^\ell(W) \times \Lambda_p^{m-\ell}(V \setminus W).\]
 	\end{proof}
 
