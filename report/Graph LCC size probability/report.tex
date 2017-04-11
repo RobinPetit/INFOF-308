@@ -149,6 +149,7 @@
 		Furthermore, this definition of largest connected component allows to define uniquely the LCC, even though a graph $\Gamma(V, E)$ has several connected component
 		of same size. For example, following graph has two connected component of size 2, i.e. $\{1, 2\}$ (in red) and $\{3, 4\}$ (in blue).
 
+		% Plot graph with 4 nodes and two non-adjacent edges
 		\begin{figure}[H]
 		\begin{center}
 			\begin{tikzpicture}
@@ -272,7 +273,7 @@
 
 	\begin{conjecture}
 	\[\abs {\Lambda_k^m(\abs V)}
-		= \sum_{\ell=k-1}^{\min\left(m, X(k)\right)}\binom {\abs V}k\abs {\Lambda_k^\ell(k)}\sum_{p=1}^k\abs {\Lambda_p^{m-\ell}(\abs V-k)}\beta_{p\,\ell}(m, k, \abs V),\]
+		= \binom {\abs V}k\sum_{\ell=k-1}^{\min\left(m, X(k)\right)}\abs {\Lambda_k^\ell(k)}\sum_{p=1}^k\abs {\Lambda_p^{m-\ell}(\abs V-k)}\beta_{p\,\ell}(m, k, \abs V),\]
 	with $\beta_{p\,\ell}(m, k, \abs V)$, a coefficient.
 	\end{conjecture}
 
@@ -283,8 +284,27 @@
 
 	\begin{proof}[Idea of proof of conjecture] In order to prove the equality of the cardinalities, let's find a bijective function $\Omega$ between
 	$\Lambda_k^m(V, \cdot)$ and a set like:
-	\[\mathfrak Q_k^m(V) \coloneqq \bigsqcup_{\stackrel {W \in \mathcal P(V)}{\abs W = k}}\bigsqcup_{\ell=k-1}^{\min\left(m, X(k)\right)}\bigsqcup_{p=1}^k
-		\Lambda_k^\ell(W) \times \Lambda_p^{m-\ell}(V \setminus W).\]
+	\[\mathfrak Q_k^m(V) \coloneqq \bigsqcup_{\stackrel {W \in \mathcal P(V)}{\abs W = k}}\bigsqcup_{\ell=k-1}^{\min\left(m, X(k)\right)}
+		\Lambda_k^\ell(W, \cdot) \times \left(\bigsqcup_{p=1}^k \Lambda_p^{m-\ell}(V \setminus W, \cdot)\right).\]
+
+%	\begin{align*}
+%		\mathfrak Q_k^m(V) \coloneqq& \qquad
+%			\left(\bigsqcup_{\ell=k-1}^{\min(m, X(k))}\bigsqcup_{W \in \mathcal P(V)}\bigsqcup_{p=1}^{k-1}
+%				\Lambda_k^\ell(W, \cdot) \times \Lambda_p^{m-\ell}(V \setminus W, \cdot)\right) \\
+%			\bigsqcup& \qquad
+%				\left(\bigsqcup_{\ell=k-1}^{\min(m, X(k))}\bigsqcup_{\mu=k}^{\abs V}\bigsqcup_{W \in \mathcal P\left(\{v_1, \ldots, v_{\mu-1}\}\right)}
+%					\Lambda_k^\ell\left(W \sqcup \{v_\mu\}\right) \times \Lambda_k^{m-\ell}\left(\left\{v_{\mu+1}, \ldots, v_{\abs V}\right\}\right)\right).
+%	\end{align*}
+	\end{proof}
+
+	\begin{lemma} The sets $\chi_\ell(V, \cdot)$ and $\Lambda_{\abs V}^\ell(V, \cdot)$ are equal.
+	\end{lemma}
+
+	\begin{proof} A graph $\Gamma(V, E)$ is connected if and only if its largest connected component contains all its vertices, i.e. $\LCC(\Gamma(V, E)) = V$.
+
+	This is equivalent to say that $\abs {\LCC(\Gamma(V, E))} = \abs V$ since $\forall W \in \mathcal P(V) : \abs W = \abs V \Rightarrow V = W$:
+	\[\forall W \in \mathcal P(V) : \abs {\left\{\widetilde W \in \mathcal P(V) \st \abs W = \abs {\widetilde W}\right\}} = \binom {\abs V}{\abs W},\]
+	and $\binom {\abs V}{\abs V} = 1$, thus $\left\{W \in \mathcal P(V) \st \abs W = \abs V\right\} = \{V\}$.
 	\end{proof}
 
 \end{document}
