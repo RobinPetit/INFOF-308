@@ -40,7 +40,7 @@
 
 \newcommand{\R}{\mathbb R}
 \newcommand{\N}{\mathbb N}
-\newcommand{\intint}[2]{\left\llbracket#1, #2\right\rrbracket}
+\newcommand{\intint}[2]{\left\llbracket#1, \, #2\right\rrbracket}
 \newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
 \newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
 \newcommand{\st}{\text{ s.t.}}
@@ -306,5 +306,52 @@
 	\[\forall W \in \mathcal P(V) : \abs {\left\{\widetilde W \in \mathcal P(V) \st \abs W = \abs {\widetilde W}\right\}} = \binom {\abs V}{\abs W},\]
 	and $\binom {\abs V}{\abs V} = 1$, thus $\left\{W \in \mathcal P(V) \st \abs W = \abs V\right\} = \{V\}$.
 	\end{proof}
+
+	\subsection{Decomposing set $\Lambda_k(V)$}
+		\begin{definition} For $k \in \N$, and $\alpha \in \N$, we define:
+		\[\Lambda_{k,\alpha}(V, \cdot) \coloneqq \left\{\Gamma(V, E) \in \Lambda_k(V, \cdot) \st
+			\left\{W \in \mathcal P(V) \st \Delta_W(\Gamma(V, E)) \in \chi(W) \text{ and } \abs W = \abs {\LCC(\Gamma(V, E))}\right\} = \alpha\right\},\]
+		the class of all graphs in $\Lambda_k(V, \cdot)$ having exactly $\alpha$ connected components of maximum size.
+		\end{definition}
+
+		\begin{remark} Even though several connected components of maximum size do exist in a graph, \textit{the one} $\LCC$ is still defined unambiguously!
+		\end{remark}
+
+		\begin{lemma}~
+		\begin{enumerate}
+			\item For $k > \abs V$ or $k=0$, we have: $\forall \alpha \in \N : \Lambda_{k,\alpha}(V, \cdot) = \emptyset$.
+			\item For $k \in \intint 1{\abs V}$ and $\alpha > \floor {\frac {\abs V}k}$, we have $\Lambda_{k,\alpha}(V, \cdot) = \emptyset$.
+		\end{enumerate}
+		\end{lemma}
+
+		\begin{proof}~
+		\begin{enumerate}
+			\item For $k > \abs V$ or $k=0$, it is obvious that: $\Lambda_k(V, \cdot) = \emptyset$ (and then $\Lambda_{k,\alpha}(V, \cdot)$).
+			\item Take such $k$ and $\alpha$. Assume (\textit{ad absurdum}) that there exists $\Gamma(V, E) \in \Lambda_{k, \alpha}(V, \cdot)$. We have then
+			$L_1, \ldots, L_\alpha \in \mathcal P(V)$ such that $\forall i \in \intint 1\alpha : \abs {L_i} = k$. Also, since the $L_i$'s are connected component,
+			they are disjoint, i.e. $\forall (i, j) \in \intint 1\alpha^2 : i \neq j \Rightarrow L_i \cap L_j = \emptyset$.
+
+			Thus $\bigcup_{i=1}^\alpha L_i \subset V$, and $\sum_{i=1}^\alpha \abs {L_i} \leq \abs V$. But:
+			\[\sum_{i=1}^\alpha\abs {L_i} = \alpha k > \floor {\frac {\abs V}k}k > \frac {\abs V}kk = \abs V,\]
+			which leads a contradiction: $\abs V > \abs V$.
+			We deduce that $\Lambda_{k,\alpha}(V, \cdot) = \emptyset$.
+		\end{enumerate}
+		\end{proof}
+
+		\begin{remark} Again, for $m \in \intint 1{X(\abs V)}$, we define $\Lambda_{k,\alpha}^m(V, \cdot)$ by $\Lambda_k^m(V, \cdot) \cap \Lambda_{k,\alpha}(V, \cdot)$.
+		\end{remark}
+
+		\begin{corollary}
+		\[\forall k < \abs V : \Lambda_k(V, \cdot) = \bigsqcup_{m=k-1}^{X(\abs V)}\bigsqcup_{\alpha=1}^{\floor {\frac {\abs V}k}}\Lambda_{k,\alpha}^m(V, \cdot).\]
+		\end{corollary}
+
+		\begin{proof} Unions are trivially disjointed.
+
+		Now show the equality. The right-hand side is trivially included in $\Lambda_k(V, \cdot)$ (by definition of $\Lambda_{k,\alpha}^m(V, \cdot)$).
+
+		now take $\Gamma(V, E) \in \Lambda_k(V, \cdot)$. We know that $\Lambda_k^{\abs E}(V, \cdot)$ with $\abs E \leq X(\abs V)$. As well, we know that the amount
+		of connected components of size $\abs {\LCC(\Gamma(V, E))} = k$ is at least 1 (because $\Gamma(V, E) \in \Lambda_k(V, \cdot)$), and lower or equal to
+		$\floor {\frac {\abs V}k}$ by previous Lemma.
+		\end{proof}
 
 \end{document}
