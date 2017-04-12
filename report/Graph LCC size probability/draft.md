@@ -18,6 +18,7 @@ but this does not fit graphs having several connected components with same size 
 is counted twice: once for $W = \{1, 2\} \subset V = \{1, 2, 3, 4\}$, and once for $W = \{3, 4\} \subset V$.
 
 To remove this redundance, two options are possible:
+
 + find if a given proportion is redundant, thus divide the cardinality of $\chi_\ell(W, \cdot) \times \Lambda_k^{m-\ell}(V \setminus W, \cdot)$,
 + or change the expression in order to isolate the case where $p=k$, and find the right expression (would something like $\chi_\ell(W) \times \mathcal L_k^{m-\ell}(V, W)$, for:
 $$\mathcal L_k^{m-\ell}(V, W) \coloneqq \Lambda_k^{m-\ell}(V \setminus W, \cdot) \setminus \mathfrak L_k^{m-\ell}(V, W),$$
@@ -26,3 +27,12 @@ $$\mathfrak L_k^{m-\ell}(V, W) \coloneqq \left\{\Gamma(V, E) \in \Lambda_k^{m-\e
 work knowing that:
 $$\mu(W) \coloneqq \max_{i = 1, \ldots, \abs V}i\mathbb I_{\left[v_i \in W\right]}$$
 ?)
+
+## Function to prove cardinality equality
+
+To prove that two sets have equal cardinality, a bijective function must be determined between these two. If $\mathfrak Q_k^m(V)$ is the set having the right cardinality,
+the function will be:
+
+$$\Omega : \Lambda_k^m(V) \to \mathfrak Q_k^m(V) : \Gamma(V, E) \mapsto \left(\Delta_{\text{LCC}(\Gamma(V, E))}(\Gamma(V, E)), \Delta_{V \setminus \text{LCC}(\Gamma(V, E))}(\Gamma(V, E))\right).$$
+
+This $\Omega$ function is obviously injective. Now, the right set $\mathfrak Q_k^m(V)$ needs to be found in order to be surjective (the hard point is on graphs having more than one connected component of maximum size.)
