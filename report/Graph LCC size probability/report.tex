@@ -179,7 +179,7 @@
 
 	\subsection{Objectives}
 		The objective now is to find an expression for $\abs {\Lambda_k(V, \cdot)}$ since we are looking for:
-		\[\P\left[\LCC(\mathscr G(V)) = k\right] = \frac {\abs {\Lambda_k(V, \cdot)}}{\abs {\Gamma(V, \cdot)}}
+		\[\P\left[\abs {\LCC(\mathscr G(V))} = k\right] = \frac {\abs {\Lambda_k(V, \cdot)}}{\abs {\Gamma(V, \cdot)}}
 			= \frac 1{\abs {\Gamma(V, E)}}\sum_{m=0}^{X(\abs V)}\abs {\Lambda_k^m(V, \cdot)}.\]
 
 		Let's denote this value $p_k \coloneqq \P\left[\abs {\LCC(\mathscr G(V))} = k\right].$
@@ -349,9 +349,45 @@
 
 		Now show the equality. The right-hand side is trivially included in $\Lambda_k(V, \cdot)$ (by definition of $\Lambda_{k,\alpha}^m(V, \cdot)$).
 
-		now take $\Gamma(V, E) \in \Lambda_k(V, \cdot)$. We know that $\Lambda_k^{\abs E}(V, \cdot)$ with $\abs E \leq X(\abs V)$. As well, we know that the amount
+		Now take $\Gamma(V, E) \in \Lambda_k(V, \cdot)$. We know that $\Lambda_k^{\abs E}(V, \cdot)$ with $\abs E \leq X(\abs V)$. As well, we know that the amount
 		of connected components of size $\abs {\LCC(\Gamma(V, E))} = k$ is at least 1 (because $\Gamma(V, E) \in \Lambda_k(V, \cdot)$), and lower or equal to
 		$\floor {\frac {\abs V}k}$ by previous Lemma.
+		\end{proof}
+
+		From now on, let's write:
+		\[\mathfrak Q_{k,1}^m(V) \coloneqq \bigsqcup_{\stackrel {W \in \mathcal P(V)}{\abs W = k}}\bigsqcup_{\ell=k-1}^{\min\left(m, X(k)\right)}
+			\chi_\ell(W, \cdot) \times \left(\bigsqcup_{p=1}^{k-1}\Lambda_p^{m-\ell}(V, \cdot)\right).\]
+
+		\begin{proposition} For $k \in \intint 1{\abs V}$ and $m \in \intint 1{X(\abs V)}$, we have:
+		\[\Lambda_{k,1}^m(V, \cdot) \cong \mathfrak Q_{k,1}^m(V),\]
+		i.e. there exists a bijection between these two sets.
+		\end{proposition}
+
+		\begin{proof} Consider the function defined by:
+		\[\Omega : \Lambda_{k,1}^m(V, \cdot) \to \mathfrak Q_{k,1}^m(V) :
+			\Gamma(V, E) \mapsto \left(\Delta_{\LCC(\Gamma(V, E))}(\Gamma(V, E)), \Delta_{V \setminus \LCC(\Gamma(V, E))}(\Gamma(V, E))\right).\]
+
+		We know that $\Omega(\Gamma(V, E))$ gives a partition of $\Gamma(V, E)$ because there doesn't exist $e = \{v_{i_1}, v_{i_2}\} \in E$ such that
+		$v_{i_1} \in \LCC(\Gamma(V, E))$ and $v_{i_2} \in V \setminus \LCC(\Gamma(V, E))$ by definition of connected component. Thus if:
+		\[\left(\Gamma_1(\LCC(\Gamma(V, E)), E_{\LCC}), \Gamma_2(V \setminus \LCC(\Gamma(V, E)), E_{V \setminus \LCC})\right) = \Omega(\Gamma(V, E)),\]
+		we have $E_{\LCC} \sqcup E_{V \setminus \LCC} = E$.
+
+		Let's prove that $\Omega$ is injective. Take $\Gamma_1(V, E_1)$ and $\Gamma_2(V, E_2)$ in $\Lambda_k^m(V, \cdot)$. Assume that
+		$\Omega(\Gamma_1(V, E_1)) = \Omega(\Gamma_2(V, E_2))$. This implies that $\LCC(\Gamma_1(V, E_1)) = \LCC(\Gamma_2(V, E_2))$ (and thus that their complementary
+		in $V$ are equal as well) and that the restriction of $\Gamma_1(V, E_1)$ and $\Gamma_2(V, E_2)$ to their common LCC are equal. Their restriction to the
+		complementary of the common LCC in $V$ are equal as well.
+
+		Thus $\Gamma_1(V, E_1)$ and $\Gamma_2(V, E_2)$ have the same partition and are then equal (i.e. $E_1=E_2$).
+
+		Now, let's prove that $\Omega$ is surjective. For $W \in \mathcal P(V)$, take:
+		\[\left(\Gamma_1(W, E_1), \Gamma_2(V \setminus W, E_2)\right) \in \mathfrak Q_{k,1}^m(V).\]
+
+		We deduce that if $\ell \coloneqq \abs {E_1}$, we have $\abs {E_2} = m-\ell$. Also, $\abs {\LCC(\Gamma_2(V \setminus W, E_2))} \lneqq k$ and
+		$\Gamma_1(W, E_1) \in \chi_\ell(W)$.
+
+		For $\Gamma(V, E) \coloneqq \Gamma(V \setminus W \sqcup W, E_1 \sqcup E_2)$, we have indeed that $\Gamma(V, E) \in \Lambda_k^m(V, \cdot)$ and
+		$\Omega(\Gamma(V, E)) = \left(\Gamma_1, \Gamma_2\right)$ because $\abs {\LCC(\Gamma(V, E))} = \abs {W} = k$ since $W$ is the only connected
+		component of size $k$.
 		\end{proof}
 
 \end{document}
