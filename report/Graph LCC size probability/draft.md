@@ -36,3 +36,27 @@ the function will be:
 $$\Omega : \Lambda_k^m(V) \to \mathfrak Q_k^m(V) : \Gamma(V, E) \mapsto \left(\Delta_{\text{LCC}(\Gamma(V, E))}(\Gamma(V, E)), \Delta_{V \setminus \text{LCC}(\Gamma(V, E))}(\Gamma(V, E))\right).$$
 
 This $\Omega$ function is obviously injective. Now, the right set $\mathfrak Q_k^m(V)$ needs to be found in order to be surjective (the hard point is on graphs having more than one connected component of maximum size.)
+
+# 04/13
+
+Since the set $\Lambda_l^m(V, \cdot)$ has been split again into a disjoint union of $\Lambda_{k,\alpha}^m(V, \cdot)$, it has been proven that the conjecture stands for $\alpha=1$ and the $\beta$ coefficients equal to 1.
+
+Yet, the formula has to be proven and arranged for $\alpha > 1$. Something like the follwing could work:
+$$\abs {\Lambda_{k,\alpha}^m(V, \cdot)} = \abs {\mathfrak Q_{k,\alpha}^m(V)},$$
+for:
+$$\mathfrak Q_{k,\alpha}^m(V) \coloneqq \bigsqcup_{(W_1, \ldots, W_\alpha) \in \mathcal P_{k,\alpha}(V)}\bigsqcup_{\stackrel {i_1, \ldots, i_\alpha}{\sum_{j=1}^\alpha i_j} \leq m}
+	\left[
+		\left(\prod_{j=1}^\alpha \chi_{i_j}(W_j)\right)
+			\times
+		\left(\bigsqcup_{p=1}^{k-1}\Lambda_p^{m-\sum_{j=1}^\alpha i_j}(V, \cdot)\right)
+	\right].$$
+with:
+$$\mathcal P_{k,\alpha}(V) \coloneqq \left\{(W_1, \ldots, W_\alpha) \in \mathcal P(V) \text{ s.t. }
+	\begin{cases}
+		&\forall i \in \{1, \ldots, \alpha\} : \abs {W_i} = k \\
+		&\forall (i, j) \in \{1, \ldots, \alpha\}^2 : i \neq j \Leftrightarrow W_i \cap W_j = \emptyset
+	\end{cases}
+\right\}$$
+
+**Remark:** Since tuples in $\mathcal P_{k,\alpha}(V)$ are sensitive to order (i.e. $(W_1, W_2) \neq (W_2, W_1)$), we have that:
+$$\abs {\mathcal P_{k,\alpha}(V)} = \alpha!\prod_{i=1}^\alpha\binom {\abs V-i(k-1)}k = \alpha!\frac {\abs V!}{(k!)^\alpha(\abs V-k\alpha)!}.$$

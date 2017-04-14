@@ -19,8 +19,17 @@ The repository is for now organized as follows:
 
 ## TODO
 
+### Bioinformatics
+
 + Have the provided source code to evolve from Python2 to Python3.  [**DONE**]
 + Factorize scripts in order to avoid duplication.  [**DONE**]
 + Run analysis source code on both *old* data (provided by the authors) and newer versions.
 + Get last version of required datasets.
 + Write report.
+
+### Mathematics
+
++ Check if current proof of $\Lambda_{k,\alpha}^m(V, \cdot)$ isomorphism (and thus cardinalty) is correct, and check
+on several examples to see if result can be used in Python3 scripts.
++ If not correct, then correct it, and if correct, then re-arrange report and improve rigorous treatments.
++ (If result is correct, then compare efficiency with curent simulation model).

@@ -43,7 +43,7 @@
 \newcommand{\intint}[2]{\left\llbracket#1, \, #2\right\rrbracket}
 \newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
 \newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
-\newcommand{\st}{\text{ s.t.}}
+\newcommand{\st}{\text{ s.t. }}
 
 % link amsthm and mdframed
 \iftrue
@@ -126,6 +126,10 @@
 		\begin{lemma} For $m < \abs V$ or $m > X(\abs V)$, we have $\abs {\chi_m(V, \cdot)} = 0$.
 		\end{lemma}
 
+		\begin{definition}\label{def:mu function} Let's define the function:
+		\[\mu : \mathcal P(V) \to \intint 1{\abs V} : W \mapsto \mu(W) \coloneqq \inf\; \{i \in \intint 1{\abs V} \st v_i \in W\}.\]
+		\end{definition}
+
 		\begin{definition} For every $W \in \mathcal P(V)$, we define $\Delta_W : \Gamma(V, \cdot) \to \Gamma(W, \cdot) : \Gamma(V, E) \mapsto \Gamma'(W, E')$
 		such that:
 		\[E' = \left\{\{v_i, v_j\} \in E \st v_i, v_j \in W\right\}.\]
@@ -138,8 +142,7 @@
 		\[\abs {\LCC(\Gamma(V, E)} \coloneqq \max_{W \in \mathcal P(V)}\abs W\mathbb I_{\left[\Delta_W(\Gamma(V, E) \in \chi(V, \cdot)\right]}.\]
 
 		We then define the \textit{largest connected component of the graph $\Gamma(V, E)$} as:
-		\[\LCC(\Gamma(V, E)) \coloneqq \argmin_{\stackrel {W \in \mathcal P(V)}{\abs W =
-			\abs {\LCC(\Gamma(V, E))}}}\min_{i \in \intint 1{\abs V}}i \times \mathbb I_{[v_i \in W]}.\]
+		\[\LCC(\Gamma(V, E)) \coloneqq \argmin_{\stackrel {W \in \mathcal P(V)}{\abs W = \abs {\LCC(\Gamma(V, E))}}} \mu(W).\]
 
 		The set $\Lambda_k^m(V, \cdot)$ is then the set of all graphs $\Gamma(V, E) \in \Gamma(V, \cdot)$, such that $\abs E = m$ and $\abs {\LCC(\Gamma(V, E))} = k$.
 		\end{definition}
@@ -173,16 +176,16 @@
 		we want to know what is $\abs {\Lambda_k^m(V, \cdot)}$ equal to.
 		\end{remark}
 
-		\begin{definition} Let's declare a new random variable $\mathscr G(V)$, a graph uniformly distributed in $\Gamma(V, \cdot)$, thus such that:
-		\[\forall \Gamma(V, E) \in \Gamma(V, \cdot) : \P[\mathscr G(V) = \Gamma(V, E)] = \frac 1{\abs {\Gamma(V, \cdot)}} = 2^{-X(\abs V)}.\]
+		\begin{definition} Let's declare a new random variable $\mathscr G(V, m)$, a graph uniformly distributed in $\Gamma_m(V, \cdot)$, thus such that:
+		\[\forall \Gamma(V, E) \in \Gamma_m(V, \cdot) : \P[\mathscr G(V, m) = \Gamma(V, E)] = \frac 1{\abs {\Gamma_m(V, \cdot)}} = \frac 1{\binom {X(\abs V)}m}.\]
 		\end{definition}
 
 	\subsection{Objectives}
 		The objective now is to find an expression for $\abs {\Lambda_k(V, \cdot)}$ since we are looking for:
-		\[\P\left[\abs {\LCC(\mathscr G(V))} = k\right] = \frac {\abs {\Lambda_k(V, \cdot)}}{\abs {\Gamma(V, \cdot)}}
+		\[\P\left[\abs {\LCC(\mathscr G(V, m))} = k\right] = \frac {\abs {\Lambda_k(V, \cdot)}}{\abs {\Gamma(V, \cdot)}}
 			= \frac 1{\abs {\Gamma(V, E)}}\sum_{m=0}^{X(\abs V)}\abs {\Lambda_k^m(V, \cdot)}.\]
 
-		Let's denote this value $p_k \coloneqq \P\left[\abs {\LCC(\mathscr G(V))} = k\right].$
+		Let's denote this value $p_k \coloneqq \P\left[\abs {\LCC(\mathscr G(V, m))} = k\right].$
 
 \section{Results}\label{sec:results}
 	The general idea in order to determine $\abs {\Lambda_k^m(V, \cdot)}$ is to insert a connected component of size $k$ on vertices set $V$, and then to tally the configurations
@@ -271,30 +274,20 @@
 
 	This notation allows to lighten the expressions.
 
-	\begin{conjecture}
+	\begin{remark} Current explorations tend to a formula looking something like:
 	\[\abs {\Lambda_k^m(\abs V)}
 		= \binom {\abs V}k\sum_{\ell=k-1}^{\min\left(m, X(k)\right)}\abs {\Lambda_k^\ell(k)}\sum_{p=1}^k\abs {\Lambda_p^{m-\ell}(\abs V-k)}\beta_{p\,\ell}(m, k, \abs V),\]
 	with $\beta_{p\,\ell}(m, k, \abs V)$, a coefficient.
-	\end{conjecture}
 
-	\begin{remark} The idea behind this formula is explained in introduction of Section~\ref{sec:results}: to find the amount of graphs having $n$ vertices, $m$ edges
+	The idea behind this formula is explained in introduction of Section~\ref{sec:results}: to find the amount of graphs having $n$ vertices, $m$ edges
 	and a largest connected component of size $k$, let's place a connected component of size $k$ somewhere in the graph (so choose $k$ in $\abs V$ vertices), and then multiply this
 	by the amount of possible graphs of largest connected component of size $p \in \{1, \ldots, k\}$ (so lower or equal to $k$).
 	\end{remark}
 
-	\begin{proof}[Idea of proof of conjecture] In order to prove the equality of the cardinalities, let's find a bijective function $\Omega$ between
+	\begin{proof}[Idea of proof to be extended later on] In order to prove the equality of the cardinalities, let's find a bijective function $\Omega$ between
 	$\Lambda_k^m(V, \cdot)$ and a set like:
 	\[\mathfrak Q_k^m(V) \coloneqq \bigsqcup_{\stackrel {W \in \mathcal P(V)}{\abs W = k}}\bigsqcup_{\ell=k-1}^{\min\left(m, X(k)\right)}
 		\Lambda_k^\ell(W, \cdot) \times \left(\bigsqcup_{p=1}^k \Lambda_p^{m-\ell}(V \setminus W, \cdot)\right).\]
-
-%	\begin{align*}
-%		\mathfrak Q_k^m(V) \coloneqq& \qquad
-%			\left(\bigsqcup_{\ell=k-1}^{\min(m, X(k))}\bigsqcup_{W \in \mathcal P(V)}\bigsqcup_{p=1}^{k-1}
-%				\Lambda_k^\ell(W, \cdot) \times \Lambda_p^{m-\ell}(V \setminus W, \cdot)\right) \\
-%			\bigsqcup& \qquad
-%				\left(\bigsqcup_{\ell=k-1}^{\min(m, X(k))}\bigsqcup_{\mu=k}^{\abs V}\bigsqcup_{W \in \mathcal P\left(\{v_1, \ldots, v_{\mu-1}\}\right)}
-%					\Lambda_k^\ell\left(W \sqcup \{v_\mu\}\right) \times \Lambda_k^{m-\ell}\left(\left\{v_{\mu+1}, \ldots, v_{\abs V}\right\}\right)\right).
-%	\end{align*}
 	\end{proof}
 
 	\begin{lemma} The sets $\chi_\ell(V, \cdot)$ and $\Lambda_{\abs V}^\ell(V, \cdot)$ are equal.
@@ -358,7 +351,7 @@
 		\[\mathfrak Q_{k,1}^m(V) \coloneqq \bigsqcup_{\stackrel {W \in \mathcal P(V)}{\abs W = k}}\bigsqcup_{\ell=k-1}^{\min\left(m, X(k)\right)}
 			\chi_\ell(W, \cdot) \times \left(\bigsqcup_{p=1}^{k-1}\Lambda_p^{m-\ell}(V, \cdot)\right).\]
 
-		\begin{proposition} For $k \in \intint 1{\abs V}$ and $m \in \intint 1{X(\abs V)}$, we have:
+		\begin{proposition}\label{prp:Lambda_k,alpha^m(V, cdot) cong mathfrak Q_k,alpha^m(V)} For $k \in \intint 1{\abs V}$ and $m \in \intint 1{X(\abs V)}$, we have:
 		\[\Lambda_{k,1}^m(V, \cdot) \cong \mathfrak Q_{k,1}^m(V),\]
 		i.e. there exists a bijection between these two sets.
 		\end{proposition}
@@ -389,5 +382,97 @@
 		$\Omega(\Gamma(V, E)) = \left(\Gamma_1, \Gamma_2\right)$ because $\abs {\LCC(\Gamma(V, E))} = \abs {W} = k$ since $W$ is the only connected
 		component of size $k$.
 		\end{proof}
+
+		\begin{definition} For $k, \alpha \in \N^*$, let's define:
+		\[\mathcal P_{k,\alpha}(V) \coloneqq \left\{\{W_1, \ldots, W_\alpha\} \in \mathcal P\left(\mathcal P(V)\right) \st
+			\begin{cases}
+					&\forall i \in \intint 1\alpha : \abs {W_i} = k \\
+					&\forall (i, j) \in \intint 1\alpha^2 : i \neq j \Leftrightarrow W_i \cap W_j = \emptyset
+				\end{cases}
+		\right\},\]
+		thus $\mathcal P_{k,\alpha}(V)$ is the set of all sets containing $\alpha$ subsets of $V$ which are disjointed and of size $k$.
+		\end{definition}
+
+		\begin{remark} We can tell:
+		\[\abs {\mathcal P_{k,\alpha}(V)} = \frac 1{\alpha!}\prod_{\beta=0}^{\alpha-1}\binom {\abs V-k\beta}k = \frac 1{\alpha!}\frac {\abs V!}{(k!)^\alpha(\abs V-k\alpha)!}.\]
+		\end{remark}
+
+		\begin{definition} For $k \in \intint 1{\abs V}, m \in \intint 0{X(\abs V)}$, and $\alpha \in \intint 2{\floor {\frac {\abs V}k}}$, let's define:
+		\begin{align*}
+			\mathfrak Q_{k,\alpha}^m(V) &\coloneqq
+					\bigsqcup_{\stackrel {\{W_1, \ldots, W_\alpha\} \in \mathcal P_{k,\alpha}(V)}{\mu(W_1) < \ldots < \mu(W_\alpha)}}
+						\bigsqcup_{\stackrel {(i_1, \ldots, i_\alpha) \in \intint {k-1}{X(k)}^\alpha}{\st \sum_{j=1}^\alpha i_j \leq \min\left(m, \alpha X(k)\right)}}
+						\left[\left(\prod_{j=1}^\alpha \chi_{i_j}(W_j, \cdot)\right) \times \left(\bigsqcup_{p=1}^{k-1}
+							\Lambda_p^{m-\sum_{j=1}^\alpha i_j}\left(V \setminus \bigsqcup_{j=1}^\alpha W_j, \cdot\right)\right)\right] \\
+				&= \bigsqcup_{\stackrel {\{W_1, \ldots, W_\alpha\} \in \mathcal P_{k,\alpha}(V)}{\mu(W_1) < \ldots < \mu(W_\alpha)}}
+					\bigsqcup_{\Sigma=\alpha(k-1)}^{\min\left(m, \alpha X(k)\right)}
+					\bigsqcup_{\stackrel {(i_1, \ldots, i_\alpha) \in \intint {k-1}{X(k)}^\alpha}{\st \sum_{j=1}^\alpha i_j = \Sigma}}
+						\left[\left(\prod_{j=1}^\alpha \chi_{i_j}(W_j, \cdot)\right) \times \left(\bigsqcup_{p=1}^{k-1}
+							\Lambda_p^{m-\Sigma}\left(V \setminus \bigsqcup_{j=1}^\alpha W_j, \cdot\right)\right)\right]
+		\end{align*}
+		\end{definition}
+
+		\begin{theorem} For $(k, m) \in \intint 1{\abs V} \times \intint 0{X(\abs V)}$ and $\alpha \in \intint 1{\floor {\frac {\abs V}k}}$, we have:
+		\[\Lambda_{k,\alpha}^m(V, \cdot) \cong \mathfrak Q_{k,\alpha}^m(V).\]
+		\end{theorem}
+
+		\begin{proof} For $\alpha=1$, the theorem is proven by Proposition~\ref{prp:Lambda_k,alpha^m(V, cdot) cong mathfrak Q_k,alpha^m(V)}.\footnote{This Proposition is not exactly
+		expressed the same way because $\mathfrak Q_{k,1}^m(V)$ does not consider a set $\{W_1\} \in \mathcal P\left(\mathcal P(V)\right)$ but only a subset $W \in \mathcal P(V)$.
+		Yet, the proof is equivalent.}
+
+		Now, for $\alpha \geq 2$, we have the function:
+		\begin{align*}
+			\Omega_\alpha &: \Lambda_{k,\alpha}^m(V, \cdot) \to \mathfrak Q_{k,\alpha}^m(V) : \\
+			&\Gamma(V, E) \mapsto \left(\Delta_{W_1}(\Gamma(V, E)), \ldots, \Delta_{W_\alpha}(\Gamma(V, E)), \Delta_{V \setminus \bigsqcup_{j=1}^\alpha W_j}(\Gamma(V, E))\right),
+		\end{align*}
+		for $W_1, \ldots, W_\alpha$ the subsets of $V$ two by two disjoints, such that $\forall i \in \intint 1\alpha : \abs {W_i}=k$, and that:
+		\[\forall i \in \intint 2\alpha : \mu(W_{i-1}) \lneqq \mu(W_i).\]
+
+		We know that $W_1, \ldots, W_\alpha$ are the only connected components of size $k$ because $\Gamma(V, E) \in \Lambda_{k,\alpha}^m(V, \cdot)$. And also,
+		values of $\mu(W_j)$ can't be equal for different indices by definition of connected components. This implies that function $\Omega_\alpha$ is properly
+		defined.
+
+		Now, prove that $\Omega_\alpha$ is bijective.
+
+		\paragraph{Injective} Take $\Gamma_1(V, E_1), \Gamma_2(V, E_2) \in \Lambda_{k,\alpha}^m(V, \cdot)$. Let's assume that:
+		\[\Omega_\alpha(\Gamma_1(V, E)) = \Omega_\alpha(\Gamma_2(V, E_2)).\]
+
+		We can deduce that $\Gamma_1$ and $\Gamma_2$ have the same connected components, and that their restrictions to these connected components are equal as well.
+		By similar argument than in proof of Proposition~\ref{prp:Lambda_k,alpha^m(V, cdot) cong mathfrak Q_k,alpha^m(V)}, we find that $\Gamma_1$ and $\Gamma_2$ must be equal.
+
+		\paragraph{Surjective} Take:
+		\[\left(\Gamma_1(W_1, E_1), \ldots, \Gamma_\alpha(W_\alpha, E_\alpha), \Gamma(W, E)\right) \in \mathfrak Q_{k,\alpha}^m(V),\]
+		and proof that there exists a graph $\hat \Gamma(V, \hat E) \in \Lambda_{k,\alpha}^m(V, \cdot)$ such that:
+		\[\Omega_\alpha(\hat \Gamma(V, \hat E)) = \left(\Gamma_1(W_1, E_1), \ldots, \Gamma_\alpha(W_\alpha, E_\alpha), \Gamma(V, E)\right).\]
+
+		We know that $\{W_1, \ldots, W_\alpha\} \in \mathcal P_{k,\alpha}(V)$ by definition of $\mathfrak Q_{k,\alpha}^m(V)$, and that:
+		\[V = W \sqcup \bigsqcup_{j=1}^\alpha W_j.\]
+
+		As well, by definition of $\mathfrak Q_{k,\alpha}^m(V)$, we know that if $\hat E \coloneqq E \sqcup \bigsqcup_{j=1}^\alpha E_j$, then $\abs {\hat E} = m$.
+		So $\hat \Gamma(V, \hat E)$, the graph created by \textit{assembling} the different components $\Gamma_1$ to $\Gamma_\alpha$ and $\Gamma$, is indeed in
+		$\Lambda_{k,\alpha}^m$ because:
+		\[\forall j \in \intint 1\alpha : \abs {\LCC(\Gamma_j(W_j, E_j)} = k\qquad \text{ and } \abs {\LCC(\Gamma(V, E))} \lneqq k\]
+		by definition of $\mathfrak Q_{k,\alpha}^m(V)$.
+
+		Finally, $\Omega_\alpha(\hat \Gamma(V, \hat E))$ yields indeed $(\Gamma_1, \ldots, \Gamma_\alpha, \Gamma)$ since connected components are ordered according
+		to the $\mu$ function defined in Definition~\ref{def:mu function}
+		\end{proof}
+
+		\begin{remark} The problem of the largest connected component size has been reduced to a problem of connected graphs and recursive combinatorics.
+
+		Recursive values like these ones can be computed pretty efficiently thanks to dynamic programming.
+		\end{remark}
+
+\section{Conclusion}
+	We have then proved that the cardinality of set $\Lambda_k^m$ is equal to:
+	\begin{align*}
+		\abs {\Lambda_k^m(V, \cdot)} &= \abs {\bigsqcup_{\alpha=1}^{\floor {\frac {\abs V}k}}\Lambda_{k,\alpha}^m(V, \cdot)}
+			= \sum_{\alpha=1}^{\floor {\frac {\abs V}k}}\abs {\Lambda_{k,\alpha}^m(V, \cdot)} = \sum_{\alpha=1}^{\floor {\frac {\abs V}k}}\abs {\mathfrak Q_{k,\alpha}^m(V)} \\
+		&= \sum_{\alpha=1}^{\floor {\frac {\abs V}k}}\abs {\mathcal P_{k,\alpha}(V)}\sum_{\Sigma=\alpha(k-1)}^{\min(m, \alpha X(k))}
+			\sum_{\stackrel {(i_1, \ldots, i_\alpha) \in \intint {k-1}{X(k)}^\alpha}{\sum_{j=1}^\alpha i_j = \Sigma}}
+			\left(\prod_{j=1}^\alpha\abs {\chi_{i_j}(k)} \times \sum_{p=1}^{k-1}\abs {\Lambda_p^{m-\Sigma}(\abs V-k\alpha)}\right),
+	\end{align*}
+	from which we eventually deduce:
+	\[\forall k \in \intint 1{\abs V} : \P\left[\abs {\LCC(\mathscr G(V, m))} = k\right] = \frac {\abs {\Lambda_k^m(V, \cdot)}}{\abs {\Gamma(V, \cdot)}}.\]
 
 \end{document}
