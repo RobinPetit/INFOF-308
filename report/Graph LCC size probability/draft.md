@@ -60,3 +60,28 @@ $$\mathcal P_{k,\alpha}(V) \coloneqq \left\{(W_1, \ldots, W_\alpha) \in \mathcal
 
 **Remark:** Since tuples in $\mathcal P_{k,\alpha}(V)$ are sensitive to order (i.e. $(W_1, W_2) \neq (W_2, W_1)$), we have that:
 $$\abs {\mathcal P_{k,\alpha}(V)} = \alpha!\prod_{i=1}^\alpha\binom {\abs V-i(k-1)}k = \alpha!\frac {\abs V!}{(k!)^\alpha(\abs V-k\alpha)!}.$$
+
+# 04/21
+
+Formula in report.pdf reduces problem of largest connected component size to problem of counting connected graphs having $n$ vertices and $k$ edges.
+A result (recursive form) by Marko Riedel can be found on MSE (#689526) but only works for $n \leq 11$\ldots Let's then try to use the same type of reasonment as he did in order to find a correct formula:
+
+$$\begin{aligned}
+	\log\left(1+\sum_{m=1}^n(1+u)^{X(m)}\frac {z^m}{m!}\right) &= \sum_{q \geq 1}(-1)^{q+1}\frac 1q\left[\sum_{m=1}^n(1+u)^{X(m)}\frac {z^m}{m!}\right]^q \\
+	&\simeq \sum_{q=1}^n(-1)^{q+1}\frac 1q\sum_{\abs \alpha = q}\binom {q}{\alpha}\prod_{m=1}^n\left((1+u)^{X(m)}\frac {z^m}{m!}\right)^{\alpha_m} \\
+	&=: G(z, u).
+\end{aligned}$$
+
+Therefore, we find:
+$$\begin{aligned}~
+	[u^k]G(z, u) &= \sum_{q=1}^n(-1)^{q+1}\frac 1q\sum_{\abs \alpha=q}\binom q\alpha\left(\prod_{m=1}^n\frac {z^{m \cdot \alpha_m}}{(m!)^{\alpha_m}}\right)[u^k](1+u)^{\sum_{m=1}^nX(m)\alpha_m} \\
+	&=\sum_{q=1}^n(-1)^{q+1}\frac 1q\sum_{\abs \alpha=q}\binom q\alpha\left(\prod_{m=1}^n\frac {z^{m \cdot \alpha_m}}{(m!)^{\alpha_m}}\right)\binom {\sum_{m=1}^nX(m)\alpha_m =: \beta_\alpha}{k},
+\end{aligned}$$
+
+and thus, for $\Theta_q$ lthe set of all vectors $\alpha$ in $\mathbb N^n$ such that $\sum_{m=1}^nm\alpha_m = q$ :
+
+$$\begin{aligned}~
+[u^k][z^n]G(z, u) &= \sum_{q=1}^n(-1)^{q+1}\frac 1q\sum_{\abs \alpha=q}\binom q\alpha[z^n]\left(\prod_{m=1}^n\frac {z^{m \cdot \alpha_m}}{(m!)^{\alpha_m}}\right)\binom {\beta_\alpha}{k} \\
+&= \sum_{q=1}^n(-1)^{q+1}\frac 1q\sum_{\alpha \in \Theta_q}\binom q\alpha\binom {\beta_\alpha}k\prod_{m=1}^n\frac 1{(m!)^{\alpha_m}}
+\end{aligned}$$
+
