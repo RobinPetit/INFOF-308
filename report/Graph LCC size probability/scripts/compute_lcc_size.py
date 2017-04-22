@@ -1,10 +1,6 @@
 #!/usr/bin/python3
 
 from time import time
-from math import factorial  # effective enough, might implement tree factorial algorithm
-                            # if computation time gets too large
-
-from PermWeightedSum import PermWeightedSum
 from Combinatorics import Combinatorics
 from ConnectedCounter import ConnectedCounter
 
@@ -13,29 +9,47 @@ def X(n):
     return n*(n-1)//2
 
 def Pkalpha(n, k, alpha):
-    return (factorial(n)) // (factorial(alpha) * (factorial(k))**alpha * factorial(n - k*alpha))
+    return Combinatorics.factorial(n) // (Combinatorics.factorial(alpha) * (Combinatorics.factorial(k))**alpha * Combinatorics.factorial(n - k*alpha))
 
+time_counter = 0
 def get_permutations_that_sum_to(value, nb_elements, beg=0, end=-1):
+    global time_counter
+    a = time()
     if end < 0:
         end=value
     if end < beg or nb_elements * beg > value or nb_elements * end < value:
+        time_counter += time()-a
         raise StopIteration
     perm = [beg] * nb_elements
+    s = beg*nb_elements
     # Can be optimized...
     while True:
-        if sum(perm) == value:
+        if s > value:
+            s -= perm[-1]
+            perm[-1] = end+1
+            s += end+1
+        elif s == value:
+            time_counter += time()-a
             yield perm
-        perm[-1] += 1
+            a = time()
+            perm[-1] += 1
+            s += 1
+        else:
+            perm[-1] += value-s
+            s = value
         idx = nb_elements-1
-        while idx >= 1 and perm[idx] == end+1:
+        while idx >= 1 and perm[idx] > end:
+            perm[idx-1] += 1
+            s += 1 + beg  - perm[idx]
             perm[idx] = beg
             idx -= 1
-            perm[idx] += 1
         if perm[0] > end:
             break
 
 class GSS:  # Graph Set Size
-    # TODO: implement a cache
+    print('caching...')
+    cache = [[[0 for m in range(n*(n-1)//2+1)] for k in range(n+1)] for n in range(150+1)]
+    print('cache finalized')
 
     @staticmethod
     def connected(n, m):
@@ -55,16 +69,22 @@ class GSS:  # Graph Set Size
                 return 1
             else:
                 return 0
+        if m < k-1 or m > n*(n-1)//2 or k > n:
+            return 0
+        if n <= 150:
+            if GSS.cache[n][k][m] > 0:
+                return GSS.cache[n][k][m]
         ret = 0
         for alpha in range(1, n//k + 1):
             ret += GSS.lcc_kmalpha(n, k, m, alpha)
+        GSS.cache[n][k][m] = ret
         return ret
 
     @staticmethod
     def lcc_kmalpha(n, k, m, alpha):
         if k == 0 and (m != 0 or n != 0):
             return 0
-        if alpha > n//k or m < k-1 or m > n*(k-1)/2 or k > n:
+        if alpha > n//k: #or m < k-1 or m > n*(k-1)/2 or k > n:
             return 0
         if m == 0:
             return int(
@@ -131,9 +151,12 @@ def test_sum_lcc_k():
         total += GSS.lcc_k(N, k)
     print('total: {}  ---  expected: {}'.format(total, 2**X(N)))
 
-    for N in range(3, 30):
-        print(N)
+    a = time()
+    for N in range(3, 17):
+        #print(N)
         print(sum([GSS.lcc_k(N, k) for k in range(1, N+1)]), 2**X(N),sep='\n', end='\n\n')
+    b = time()
+    print('with caching, time == {} ms'.format(int((b-a)*1000)))
 
 def test_sum_connected():
     for N in range(3, 30):
@@ -143,7 +166,8 @@ if __name__ == '__main__':
     #test_connected()
     #test_Pkalpha()
     #test_permutations()
-    test_lcc_km()
+    #test_lcc_km()
     #print('\n\n\t----------------\n\n')
     test_sum_lcc_k()
     #test_sum_connected()
+    print('total perm time: {} ms'.format(int(time_counter*1000)))

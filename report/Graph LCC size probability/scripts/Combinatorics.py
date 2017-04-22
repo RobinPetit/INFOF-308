@@ -1,7 +1,6 @@
 import math
-import numpy as np
 
-BINOM_CACHE_SIZE = 100
+BINOM_CACHE_SIZE = 1000
 FACTORIAL_CACHE_SIZE = 1000
 
 class Combinatorics:
@@ -11,12 +10,12 @@ class Combinatorics:
 
     @staticmethod
     def binom(n, k):
-        if k > n or k < 0:
-            return 0
         if k == n or k == 0:
             return 1
         if k == 1 or k == n-1:
             return n
+        if k > n or k < 0:
+            return 0
         if n <= BINOM_CACHE_SIZE and Combinatorics.binom_cache[n-1][k-1] > 0:
             return Combinatorics.binom_cache[n-1][k-1]
         ret = Combinatorics.factorial(n) // Combinatorics.factorial(k) // Combinatorics.factorial(n-k)
@@ -34,10 +33,14 @@ class Combinatorics:
 
     @staticmethod
     def factorial(n):
-        if n > FACTORIAL_CACHE_SIZE:
-            return math.factorial(n)
         if n <= Combinatorics.factorial_last_cache:
             return Combinatorics.factorial_cache[n]
+        if n > FACTORIAL_CACHE_SIZE:
+            #ret = Combinatorics.factorial_cache[Combinatorics.factorial_last_cache]
+            #for i in range(Combinatorics.factorial_last_cache+1, n):
+            #    ret *= i
+            #return ret
+            return math.factorial(n)
         ret = Combinatorics.factorial_cache[Combinatorics.factorial_last_cache]
         for i in range(Combinatorics.factorial_last_cache+1, n+1):
             ret *= i
