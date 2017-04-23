@@ -68,8 +68,12 @@
 \title{On the distribution of the largest connected component size in random graphs with fixed edges set size}
 
 \begin{document}
+\pagenumbering{Roman}
 \maketitle
 \tableofcontents
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
 
 \section{Introduction}
 	\subsection{Definitions}
@@ -489,6 +493,36 @@
 			Recursive values like these ones can be computed pretty efficiently thanks to dynamic programming.
 			\end{remark}
 
+\section{Counting connected graphs}
+	\subsection{Connected graphs of $\abs V$ vertices}
+		Harary and Palmer proposed a solution in~\cite{Harary&Palmer1973} in 1973 to the number of connected graphs of $n$ vertices, no matter the number of edges.
+
+		\begin{definition} For notations to be consistent with~\cite{Harary&Palmer1973}, let's define:
+		\[\forall p \in \mathbb N : C_p \coloneqq \abs {\chi(p)},\]
+		the number of connected graphs having $p$ vertices.
+		\end{definition}
+
+		Let's state the following theorem from~\cite{Harary&Palmer1973}, pages 7-8.
+
+		\begin{theorem}[Harary and Palmer] For all $p \in \mathbb N^*$, the number of connected graphs of $p$ vertices is given by:
+		\[C_p = \sum_{k=1}^{p-1}\binom {p-2}{k-1}\left(2^k-1\right)C_kC_{p-k}.\]
+
+		The second equality stands as well:
+		\[C_p = 2^{X(p)} - \frac 1p\sum_{k=1}^{p-1}k\binom pk2^{X(p-k)}C_k.\]
+		\end{theorem}
+
+	\subsection{Connected graphs of $\abs V$ vertices \textbf{and} $m$ edges}
+		Yet, in definition of set $\mathfrak Q_{k,\alpha}^m(V)$, it is the cardinality of $\chi_\ell(n)$ that is needed, i.e. $C_p$ is not sufficient.
+
+		\begin{definition} Again, in order to stay consistent with cited references, let's denote:
+		\[\forall n \in \mathbb N^* : \forall k \in \intint 0{X(n)} : q_{n,k} \coloneqq \abs {\chi_k(n)}.\]
+		\end{definition}
+
+		Starting from generating function equality given by Bona and Noy in~\cite{Bona&Noy2015}, namely:
+		\[\sum_{n \geq 0}\sum_{k \geq 0}q_{n,k}u^k\frac {z^n}{n!} = \log\left(\sum_{n \geq 0}(1+u)^{X(n)}\frac {z^n}{n!}\right),\]
+		one can find the recursion relation given by Marko Riedel [ADD SOURCE!]:
+		\[q_{n,k} = \binom {X(n)}k - \sum_{m=0}^{n-2}\binom {n-1}m\sum_{p=0}^k\binom {X(n-m-1)}pq_{m+1,k-p}.\]
+
 \section{Conclusion}
 	We have then proved that the cardinality of set $\Lambda_k^m(V, \cdot)$ is equal to:
 	\begin{align*}
@@ -496,9 +530,11 @@
 			= \sum_{\alpha=1}^{\floor {\frac {\abs V}k}}\abs {\Lambda_{k,\alpha}^m(V, \cdot)} = \sum_{\alpha=1}^{\floor {\frac {\abs V}k}}\abs {\mathfrak Q_{k,\alpha}^m(V)} \\
 		&= \sum_{\alpha=1}^{\floor {\frac {\abs V}k}}\abs {\mathcal P_{k,\alpha}(V)}\sum_{\Sigma=\alpha(k-1)}^{\min(m, \alpha X(k))}
 			\sum_{\stackrel {(i_1, \ldots, i_\alpha) \in \intint {k-1}{X(k)}^\alpha}{\sum_{j=1}^\alpha i_j = \Sigma}}
-			\left(\prod_{j=1}^\alpha\abs {\chi_{i_j}(k)} \times \sum_{p=1}^{k-1}\abs {\Lambda_p^{m-\Sigma}(\abs V-k\alpha)}\right),
+			\left(\prod_{j=1}^\alpha q_{i_j,k} \times \sum_{p=1}^{k-1}\abs {\Lambda_p^{m-\Sigma}(\abs V-k\alpha)}\right),
 	\end{align*}
 	from which we eventually deduce:
-	\[\forall k \in \intint 1{\abs V} : \P\left[\abs {\LCC(\mathscr G(V, m))} = k\right] = \frac {\abs {\Lambda_k^m(V, \cdot)}}{\abs {\Gamma(V, \cdot)}}.\]
+	\[\forall k \in \intint 1{\abs V} : \P\left[\abs {\LCC(\mathscr G(V, m))} = k\right] = \frac {\abs {\Lambda_k^m(V, \cdot)}}{\abs {\Gamma_m(V, \cdot)}}.\]
 
+\bibliography{report}{}
+\bibliographystyle{ieeetr}
 \end{document}

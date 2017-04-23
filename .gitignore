@@ -12,3 +12,7 @@
 *.aux
 *.log
 *.toc
+
+# BibTeX
+*.bbl
+*.blg
