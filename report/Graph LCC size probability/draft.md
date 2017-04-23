@@ -85,3 +85,9 @@ $$\begin{aligned}~
 &= \sum_{q=1}^n(-1)^{q+1}\frac 1q\sum_{\alpha \in \Theta_q}\binom q\alpha\binom {\beta_\alpha}k\prod_{m=1}^n\frac 1{(m!)^{\alpha_m}}
 \end{aligned}$$
 
+# 04/23
+
+Riedel's formula:
+$$q_{n,k} = \binom {X(n)}k - \sum_{m=0}^{n-2}\binom {n-1}m\sum_{p=0}^k\binom {X(n-m-1)}pq_{m+1,k-p}$$
+is indeed correct, and thus complete formula works. Last step to do is to write about Riedel's solution in mathematical report.
+
