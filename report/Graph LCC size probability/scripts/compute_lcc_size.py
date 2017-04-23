@@ -162,12 +162,32 @@ def test_sum_connected():
     for N in range(3, 30):
         print('{}\n{}\n'.format(N, sum([GSS.connected(N, k) for k in range(N-1, X(N)+1)])))
 
+def get_distribution_lcc_m(n, m):
+    '''return a vector [p_k]_k such that p_k is the probability that |LCC| = k'''
+    ret = [GSS.lcc_km(n, k, m) for k in range(n+1)]
+    s = sum(ret)
+    for i in range(n+1):
+        ret[i] /= s
+    return ret
+
+def get_distribution_lcc(n):
+    ret = [GSS.lcc_k(n, k) for k in range(n+1)]
+    assert sum(ret) == 2**X(n)
+    s = 2**X(n)
+    for k in range(n+1):
+        ret[k] /= s
+    return ret
+
 if __name__ == '__main__':
     #test_connected()
     #test_Pkalpha()
     #test_permutations()
     #test_lcc_km()
     #print('\n\n\t----------------\n\n')
-    test_sum_lcc_k()
+    #test_sum_lcc_k()
     #test_sum_connected()
-    print('total perm time: {} ms'.format(int(time_counter*1000)))
+    #print('total perm time: {} ms'.format(int(time_counter*1000)))
+    distribution = get_distribution_lcc(12)
+    for k in range(len(distribution)):
+        print('probability that |LCC| of a graph in \\Gamma(12, .) is {} == {} %'.format(k, 100*distribution[k]))
+    print('(summing to {})'.format(sum(distribution)))
