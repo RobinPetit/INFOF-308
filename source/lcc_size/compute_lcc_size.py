@@ -11,14 +11,10 @@ def X(n):
 def Pkalpha(n, k, alpha):
     return Combinatorics.factorial(n) // (Combinatorics.factorial(alpha) * (Combinatorics.factorial(k))**alpha * Combinatorics.factorial(n - k*alpha))
 
-time_counter = 0
 def get_permutations_that_sum_to(value, nb_elements, beg=0, end=-1):
-    global time_counter
-    a = time()
     if end < 0:
         end=value
     if end < beg or nb_elements * beg > value or nb_elements * end < value:
-        time_counter += time()-a
         raise StopIteration
     perm = [beg] * nb_elements
     s = beg*nb_elements
@@ -29,9 +25,7 @@ def get_permutations_that_sum_to(value, nb_elements, beg=0, end=-1):
             perm[-1] = end+1
             s += end+1
         elif s == value:
-            time_counter += time()-a
             yield perm
-            a = time()
             perm[-1] += 1
             s += 1
         else:
@@ -186,8 +180,10 @@ if __name__ == '__main__':
     #print('\n\n\t----------------\n\n')
     #test_sum_lcc_k()
     #test_sum_connected()
-    #print('total perm time: {} ms'.format(int(time_counter*1000)))
-    distribution = get_distribution_lcc(12)
-    for k in range(len(distribution)):
-        print('probability that |LCC| of a graph in \\Gamma(12, .) is {} == {} %'.format(k, 100*distribution[k]))
-    print('(summing to {})'.format(sum(distribution)))
+    for m in range(66+1):
+        distribution = get_distribution_lcc_m(12, m)
+        print('average LCC size in \\Gamma_{}(12, .): {}'.format(m, sum([i*p_i for (i, p_i) in enumerate(distribution)])))
+    #distribution = get_distribution_lcc(12)
+    #for k in range(len(distribution)):
+    #    print('probability that |LCC| of a graph in \\Gamma(12, .) is {} == {} %'.format(k, 100*distribution[k]))
+    #print('(summing to {})'.format(sum(distribution)))
