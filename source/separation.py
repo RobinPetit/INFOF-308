@@ -27,7 +27,7 @@
 # -----------------------------------------------------------------------
 
 INTERACTOME_DEFAULT_PATH = '../data/DataS1_interactome.tsv'
-DEBUG = False
+DEBUG = True  #False
 
 import networkx as nx
 import numpy as np
@@ -478,7 +478,7 @@ def get_disease_genes(path, all_genes_in_network):
 def load_network(network_file):
     """
     loads the network from a given file
-    
+
     PARAMETERS:
     -----------
         - network_file: path to the file containing the interactome
@@ -493,7 +493,7 @@ def load_network(network_file):
     # get all genes ad remove self links
     all_genes_in_network = set(G.nodes())
     remove_self_links(G)
-    
+
     return G, all_genes_in_network
 
 # =============================================================================

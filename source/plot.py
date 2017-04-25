@@ -38,7 +38,7 @@ def get_program_arguments():
                       help    ='print more info on how to use this script',
                       action  ="callback",
                       callback=print_usage)
-                      
+
     parser.add_option('-v', '--verbose',
                       help    ='displays details of the steps',
                       action  ='callback',
@@ -57,14 +57,14 @@ def get_all_disease_files():
     """
     returns a list of disease files
     """
-    return glob(DISEASES_LOCATION + '*.txt')
+    return sorted(glob(DISEASES_LOCATION + '*.txt'))
 
 def get_relative_module_size_and_zscore(G, all_genes_in_network,
         disease_file_list, return_non_significant, significance_threshold,
         nb_simulations_per_disease):
     """
     returns a list of relative module sizes and a list of zscores of these module sizes
-    
+
     PARAMETERS:
     -----------
         + G: the interactome network
@@ -76,7 +76,7 @@ def get_relative_module_size_and_zscore(G, all_genes_in_network,
           z-score considered as significant (in absolute value)
         + nb_simulations_per_disease: the number of simulations to make for each
           disease in order to get the z-score
-    
+
     RETURNS:
     --------
         + relative_size_list: a list of relative module sizes
@@ -87,7 +87,7 @@ def get_relative_module_size_and_zscore(G, all_genes_in_network,
     non_significant_counter = 0
     relative_size_list = list()
     zscore_list = list()
-    
+
     nb_diseases = len(disease_file_list)
     for idx, disease_file in enumerate(disease_file_list):
         if VERBOSE:
@@ -105,7 +105,7 @@ def get_relative_module_size_and_zscore(G, all_genes_in_network,
     if VERBOSE:
         print('\n{} non significant z-scores'.format(non_significant_counter))
     return relative_size_list, zscore_list, non_significant_counter
-    
+
 def plot_linear_regression(x, y, xlabel='x', ylabel='y'):
     """
     makes a linear regression of given data
@@ -136,7 +136,7 @@ def plot_zscore_vs_relative_size(G, all_genes_in_network, disease_file_list,
         show_linear_regression=True, path=''):
     """
     make a plot of relative module size on x axis vs z-score of module size on y axis
-    
+
     PARAMETERS:
     -----------
         + G: the interactome network
@@ -148,7 +148,7 @@ def plot_zscore_vs_relative_size(G, all_genes_in_network, disease_file_list,
           sizes should be displayed with the other (with a mark) or simply hidden
         + path: the path of of the pdf to save the plot in (empty string to
           display on screen
-          
+
     RETURNS:
     --------
         + None

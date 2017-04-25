@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
 from time import time
-from Combinatorics import Combinatorics
-from ConnectedCounter import ConnectedCounter
+from .Combinatorics import Combinatorics
+from .ConnectedCounter import ConnectedCounter
+
+import numpy as np
 
 # Avoid computing factorials
 def X(n):
@@ -51,12 +53,15 @@ def get_permutations_that_sum_to(value, nb_elements, beg=0, end=-1):
         if perm[0] > end:
             break
 
+LCC_CACHE_SIZE = 250
 class LccCounter:
     '''
         Static class made for counting graphs having given largest connected component
     '''
     # allocating cache
-    cache = [[[0 for m in range(n*(n-1)//2+1)] for k in range(n+1)] for n in range(100+1)]
+    print('creating cache')
+    cache = [[[0 for m in range(k-1, n*(n-1)//2+1)] for k in range(n+1)] for n in range(LCC_CACHE_SIZE+1)]
+    print('cache created')
 
     @staticmethod
     def connected(n, m):
@@ -83,11 +88,12 @@ class LccCounter:
                 return 0
         if m < k-1 or m > n*(n-1)//2 or k > n:
             return 0
-        if n <= 100:
-            if LccCounter.cache[n][k][m] > 0:
-                return LccCounter.cache[n][k][m]
+        if n <= LCC_CACHE_SIZE:
+            if LccCounter.cache[n][k][m-k+1] > 0:
+                return LccCounter.cache[n][k][m-k+1]
         ret = sum([LccCounter.lcc_kmalpha(n, k, m, alpha) for alpha in range(1, n//k+1)])
-        LccCounter.cache[n][k][m] = ret
+        if n <= LCC_CACHE_SIZE:
+            LccCounter.cache[n][k][m-k+1] = ret
         return ret
 
     @staticmethod
@@ -143,13 +149,32 @@ class LccCounter:
     @staticmethod
     def get_expectation_lcc(n):
         '''return the expectation of the LCC of a random graph having n vertices'''
-        return sum([k*p_k for k, p_k in enumerate(LccCounter.get_distribution_lcc(n))])
+        return LccCounter.weighted_sum(LccCounter.get_distribution_lcc(n))
 
     @staticmethod
     def get_expectation_lcc_m(n, m):
         '''return the expectation of the LCC of a random graph having n
         vertices and m edges'''
-        return sum([k*p_k for k, p_k in enumerate(LccCounter.get_distribution_lcc_m(n, m))])
+        return LccCounter.weighted_sum(LccCounter.get_distribution_lcc_m(n, m))
+
+    @staticmethod
+    def get_std_lcc(n):
+        '''return the standard deviation of the LCC of a random graph having n
+        vertices'''
+        expectation = LccCounter.get_expectation_lcc(n)
+        return LccCounter.weighted_sum([(p_k - expectation)**2 for p_k in LccCounter.get_distribution_lcc(n)])
+
+    @staticmethod
+    def get_std_lcc_m(n, m):
+        '''return the standard deviation of the LCC of a random graph having n
+        vertices and m edges'''
+        expectation = LccCounter.get_expectation_lcc(n)
+        return LccCounter.weighted_sum([(p_k - expectation)**2 for p_k in LccCounter.get_distribution_lcc_m(n, m)])
+
+    @staticmethod
+    def weighted_sum(vect):
+        return sum([idx*value for idx, value in enumerate(vect)])
+
 
 ##### tests
 

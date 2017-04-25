@@ -1,5 +1,4 @@
-from Combinatorics import Combinatorics
-from PermWeightedSum import PermWeightedSum
+from .Combinatorics import Combinatorics
 
 class ConnectedCounter:
     '''SEE MSE #689526'''

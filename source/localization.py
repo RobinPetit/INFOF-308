@@ -36,6 +36,10 @@ import sys
 
 import separation as tools
 
+
+from lcc_size import LccCounter
+from lcc_size.LccCounter import LccCounter as LccCounterClass
+
 INTERACTOME_DEFAULT_PATH = tools.INTERACTOME_DEFAULT_PATH
 DEBUG = tools.DEBUG
 
@@ -89,6 +93,12 @@ directory as this python script:
     exit()
 
 # =================================================================================
+def get_density(G):
+    nb_genes = G.number_of_nodes()
+    nb_edges = G.number_of_edges()
+    return nb_edges / LccCounter.X(nb_genes)
+
+# =================================================================================
 def get_lcc_size(G,seed_nodes):
     """
     return the lcc size
@@ -100,14 +110,31 @@ def get_lcc_size(G,seed_nodes):
     if g.number_of_nodes() != 0:
         # get all components
         components = nx.connected_components(g)
-        # return length of biggest connected component
+        # return size of biggest connected component
         return max(list(map(len, components)))
     else:
         return 0
 
-# =============================================================================
-def get_random_comparison(G,gene_set,sims):
+def get_random_comparison(G, gene_set, sims):
+    #return get_random_comparison_simulation(G, gene_set, sims)
+    return get_random_comparison_probability(G, gene_set)
 
+def get_random_comparison_probability(G, gene_set):
+    interactome_density = get_density(G)
+    print('interactome density: {}'.format(interactome_density))
+    # a random graph in the interactome having `gene_set` vertices should have
+    # interactome_density * X(|gene_set|) edges
+    nb_random_vertices = len(gene_set & set(G.nodes()))
+    nb_random_edges = round(interactome_density * LccCounter.X(nb_random_vertices))
+    print('random for (n, m) == {}'.format((nb_random_vertices, nb_random_edges)))
+    l_mean = LccCounterClass.get_expectation_lcc_m(nb_random_vertices, nb_random_edges)
+    l_std = LccCounterClass.get_std_lcc_m(nb_random_vertices, nb_random_edges)
+    lcc_observed = get_lcc_size(G, gene_set)
+    z_score = (1.*lcc_observed - l_mean)/l_std
+    return l_mean, l_std, z_score
+
+# =============================================================================
+def get_random_comparison_simulation(G,gene_set,sims):
     """
     gets the random expectation for the lcc size for a given gene set
     by drawing the same number of genes at random from the network
@@ -129,7 +156,7 @@ def get_random_comparison(G,gene_set,sims):
 
     number_of_seed_genes = len(gene_set & set(all_genes))
 
-    l_list  = []
+    l_list = []
 
     # simulations with randomly distributed seed nodes
     for i in range(1,sims+1):
