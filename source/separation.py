@@ -27,12 +27,11 @@
 # -----------------------------------------------------------------------
 
 INTERACTOME_DEFAULT_PATH = '../data/DataS1_interactome.tsv'
-DEBUG = True  #False
+DEBUG = False
 
 import networkx as nx
 import numpy as np
 import optparse
-import sys
 
 
 # =============================================================================
@@ -322,7 +321,7 @@ def calc_set_pair_distances(G,given_gene_set1,given_gene_set2):
     gene_set2 = given_gene_set2 & all_genes_in_network
 
     # get the network distances for all gene pairs:
-    all_path_lenghts = get_pathlengths_for_two_sets(G,gene_set1,gene_set2)
+    all_path_lengths = get_pathlengths_for_two_sets(G,gene_set1,gene_set2)
 
     all_distances = []
 
@@ -340,18 +339,13 @@ def calc_set_pair_distances(G,given_gene_set1,given_gene_set2):
             # where to look up the distance of that pair in the
             # all_path_lengths dict
             else:
-                if geneA < geneB:
-                    try:
-                        all_distances_A.append(all_path_lenghts[geneA][geneB])
-                    except:
-                        pass
-
-                else:
-                    try:
-                        all_distances_A.append(all_path_lenghts[geneB][geneA])
-                    except:
-                        pass
-
+                try:
+                    if geneA < geneB:
+                        all_distances_A.append(all_path_lengths[geneA][geneB])
+                    else:
+                        all_distances_A.append(all_path_lengths[geneB][geneA])
+                except:
+                    pass
 
         if len(all_distances_A) > 0:
             l_min = min(all_distances_A)
@@ -371,17 +365,13 @@ def calc_set_pair_distances(G,given_gene_set1,given_gene_set2):
             # where to look up the distance of that pair in the
             # all_path_lengths dict
             else:
-                if geneA < geneB:
-                    try:
-                        all_distances_A.append(all_path_lenghts[geneA][geneB])
-                    except:
-                        pass
-
-                else:
-                    try:
-                        all_distances_A.append(all_path_lenghts[geneB][geneA])
-                    except:
-                        pass
+                try:
+                    if geneA < geneB:
+                        all_distances_A.append(all_path_lengths[geneA][geneB])
+                    else:
+                        all_distances_A.append(all_path_lengths[geneB][geneA])
+                except:
+                    pass
 
         if len(all_distances_A) > 0:
             l_min = min(all_distances_A)
@@ -495,6 +485,15 @@ def load_network(network_file):
     remove_self_links(G)
 
     return G, all_genes_in_network
+
+# ============================================================================
+def get_separation(G, genes_A, genes_B):
+    d_A = calc_single_set_distance(G, genes_A)
+    d_B = calc_single_set_distance(G, genes_B)
+    d_AB = calc_set_pair_distances(G,genes_A,genes_B)
+
+    s_AB = d_AB - (d_A + d_B)/2
+    return s_AB
 
 # =============================================================================
 #

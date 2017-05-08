@@ -37,8 +37,8 @@ import sys
 import separation as tools
 
 
-from lcc_size import LccCounter
-from lcc_size.LccCounter import LccCounter as LccCounterClass
+#from lcc_size import LccCounter
+#from lcc_size.LccCounter import LccCounter as LccCounterClass
 
 INTERACTOME_DEFAULT_PATH = tools.INTERACTOME_DEFAULT_PATH
 DEBUG = tools.DEBUG
@@ -116,8 +116,8 @@ def get_lcc_size(G,seed_nodes):
         return 0
 
 def get_random_comparison(G, gene_set, sims):
-    #return get_random_comparison_simulation(G, gene_set, sims)
-    return get_random_comparison_probability(G, gene_set)
+    return get_random_comparison_simulation(G, gene_set, sims)
+    #return get_random_comparison_probability(G, gene_set)
 
 def get_random_comparison_probability(G, gene_set):
     interactome_density = get_density(G)
@@ -134,6 +134,7 @@ def get_random_comparison_probability(G, gene_set):
     return l_mean, l_std, z_score
 
 # =============================================================================
+simulations_cache = dict()
 def get_random_comparison_simulation(G,gene_set,sims):
     """
     gets the random expectation for the lcc size for a given gene set
@@ -147,47 +148,49 @@ def get_random_comparison_simulation(G,gene_set,sims):
 
     RETURNS:
     --------
-        - a string containing the results
-
+        - a tuple containing (mean, std, zscore)
     """
-
+    global simulations_cache
     # getting all genes in the network
     all_genes = G.nodes()
 
     number_of_seed_genes = len(gene_set & set(all_genes))
+    if number_of_seed_genes not in simulations_cache:
+        l_list = []
 
-    l_list = []
+        # simulations with randomly distributed seed nodes
+        for i in range(1,sims+1):
+            # print out status
+            if i % 50 == 0:
+                if DEBUG:
+                    sys.stdout.write("> random simulation [{} of {}]\r" \
+                                     .format(i, sims))
+                    sys.stdout.flush()
 
-    # simulations with randomly distributed seed nodes
-    for i in range(1,sims+1):
-        # print out status
-        if i % 100 == 0:
-            if DEBUG:
-                sys.stdout.write("> random simulation [{} of {}]\r" \
-                                 .format(i, sims))
-                sys.stdout.flush()
+            # get random seeds
+            rand_seeds = set(random.sample(all_genes,number_of_seed_genes))
 
-        # get random seeds
-        rand_seeds = set(random.sample(all_genes,number_of_seed_genes))
+            # get rand lcc
+            lcc = get_lcc_size(G,rand_seeds)
+            l_list.append(lcc)
 
-        # get rand lcc
-        lcc = get_lcc_size(G,rand_seeds)
-        l_list.append(lcc)
-
+        # get the lcc z-score:
+        l_mean = np.mean(l_list)
+        l_std  = np.std(l_list)
+        simulations_cache[number_of_seed_genes] = (l_mean, l_std)
+    else:
+        l_mean, l_std = simulations_cache[number_of_seed_genes]
 
     # get the actual value
     lcc_observed = get_lcc_size(G,gene_set)
 
-    # get the lcc z-score:
-    l_mean = np.mean(l_list)
-    l_std  = np.std(l_list)
 
     if l_std == 0:
         z_score = 'not available'
     else:
         z_score = (1.*lcc_observed - l_mean)/l_std
 
-    return l_mean, l_std, z_score
+    return (l_mean, l_std, z_score)
 
 # =============================================================================
 def get_program_arguments():
