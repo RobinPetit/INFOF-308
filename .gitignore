@@ -16,3 +16,12 @@
 # BibTeX
 *.bbl
 *.blg
+
+# Output
+*.ps
+*.dvi
+*.pdf
+*.eps
+
+# Directories
+report/template/
