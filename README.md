@@ -30,6 +30,6 @@ The repository is for now organized as follows:
 ### Mathematics
 
 + Check if current proof of $\Lambda_{k,\alpha}^m(V, \cdot)$ isomorphism (and thus cardinalty) is correct, and check
-on several examples to see if result can be used in Python3 scripts.
-+ If not correct, then correct it, and if correct, then re-arrange report and improve rigorous treatments.
-+ (If result is correct, then compare efficiency with curent simulation model).
+on several examples to see if result can be used in Python3 scripts.  [**DONE**: is corretr]
++ If not correct, then correct it, and if correct, then re-arrange report and improve rigorous treatments.  [**DONE**]
++ If result is correct, then compare efficiency with current simulation model.  [**DONE**: fundamentally useless, several orders of magnitude slower and awful complexity]
