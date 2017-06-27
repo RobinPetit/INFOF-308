@@ -8,6 +8,9 @@
 *.pyc
 **/__pycache/
 
+# shelve module storage files
+results.shelve
+
 # LaTeX
 *.aux
 *.log

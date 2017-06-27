@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 
+from mpl_toolkits.axes_grid1 import host_subplot
+import mpl_toolkits.axisartist as AA
 import matplotlib.pyplot as plt
 import shelve
 
-from multiprocessing import Array, Process, Value
+from multiprocessing import Array, Process, Value, Pool
 from glob import glob
 from time import time
 
@@ -14,8 +16,8 @@ import math_treatment as math
 
 DISEASES_DIR = '../data/diseases/'
 INTERACTOME_PATH = '../data/DataS1_interactome.tsv'
-NB_SIMS = 100
-STEP = 10  # step taken between two
+NB_SIMS = 200
+STEP = 5
 
 SHELVE_PATH = 'results.shelve'
 
@@ -23,46 +25,58 @@ def get_key():
     SEPARATOR = ';'
     return SEPARATOR.join((DISEASES_DIR, INTERACTOME_PATH, str(NB_SIMS), str(STEP)))
 
-def compute_mean_std_process(process_id, counter, mean_list, std_list):
-    print('process {} starting'.format(process_id))
-    amount_tests = len(mean_list)
-    while True:
-        with counter.get_lock():
-            if counter.value > amount_tests:
-                break
-            n = int(counter.value)
-            counter.value += 1
-        print('{} out of {}'.format(STEP*n, STEP*amount_tests), end='\r')
-        mean, std = localization.get_random_comparison(G, set(all_genes_as_list[:STEP*n]), NB_SIMS)[:2]
-        mean_list[n-1] = mean
-        std_list[n-1] = std
-    print('process {} finishing'.format(process_id))
+nb_processes = Value('i', 0)
+def compute_mean_std_process(k):
+    with nb_processes.get_lock():
+        nb_processes.value += 1
+        print('{} out of {}'.format(nb_processes.value, G.number_of_nodes() // STEP), end='\r')
+    return localization.get_random_comparison(G, set(all_genes_as_list[:STEP*k]), NB_SIMS)[:2]
 
 def compute_mean_std():
     max_value = G.number_of_nodes() // STEP
     NB_PROCESSES = 4
-    counter = Value('i', 1)
-    mean_list = Array('d', max_value)
-    std_list = Array('d', max_value)
-    processes = list()
-    for k in range(NB_PROCESSES):
-        processes.append(Process(target=compute_mean_std_process, args=(k+1, counter, mean_list, std_list)))
-        processes[-1].start()
-    for process in processes:
-        process.join()
-    return list(mean_list), list(std_list)
+    results = list()
+    with Pool() as pool:
+        results = pool.map(compute_mean_std_process, range(max_value))
+    mean_list = list()
+    std_list = list()
+    for idx, result in enumerate(results):
+        mean, std = result
+        mean_list.append(mean)
+        std_list.append(std)
+    return mean_list, std_list
 
-if __name__ == '__main__':
-    a = time()
-    with shelve.open(SHELVE_PATH) as db:
-        try:
-            mean_list, std_list = db[get_key()]
-        except KeyError:
-            G, all_genes_in_network = separation.load_network(INTERACTOME_PATH)
-            all_genes_as_list = list(all_genes_in_network)
-            mean_list, std_list = compute_mean_std()
-            db[get_key()] = (mean_list, std_list)
+def plot_srand_mean_std(means, stds, plot=False, same=True):
+    if same:
+        plot_mean_std_same_plot(means, stds, plot)
+    else:
+        plot_mean_std_horizontal(means, stds, plot)
 
+def plot_mean_std_same_plot(means, stds, plot):
+    x_list = [STEP*k for k in range(1, len(means)+1)]
+    m, p = math.linear_regression(x_list, mean_list)
+
+    host = host_subplot(111, axes_class=AA.Axes)
+
+    right_axis = host.twinx()
+    host.set_xlabel('number of genes in subset')
+    host.set_ylabel('mean of random module size')
+    right_axis.set_ylabel('std of random module size')
+
+    mean_plot = host.plot(x_list, means)
+    std_plot = right_axis.plot(x_list, stds)
+    regression_line_plot = host.plot([0, STEP*len(means)], [p, STEP*len(means)*m + p],
+        label=r'$\langle S^r \rangle = $' + ('{:.2f}'.format(m)) + r'$\times$ n' + ('+' if p >= 0 else '-') + ('{:.2f}'.format(abs(p))))
+    host.legend(loc='upper left')
+
+    host.axis['left'].label.set_color(mean_plot[0].get_color())
+    right_axis.axis['right'].label.set_color(std_plot[0].get_color())
+    host.set_title('standard deviation of random module size\nvs size of gene subset ({} simulations)'.format(NB_SIMS))
+    plt.draw()
+    if plot:
+        plt.plot()
+
+def plot_mean_std_horizontal(means, stds, plot):
     x_list = [STEP*k for k in range(1, len(mean_list)+1)]
     plt.subplot(121)
     plt.title('mean of random module size\nvs size of gene subset ({} simulations)'.format(NB_SIMS))
@@ -74,10 +88,24 @@ if __name__ == '__main__':
         label=r'$\langle S^r \rangle = $' + ('{:.2f}'.format(m)) + r'$\times$ n' + ('+' if p >= 0 else '-') + ('{:.2f}'.format(abs(p))))
     plt.legend(handles=[mean_plot[0], regression_line[0]], loc='upper left')
     plt.subplot(122)
-    plt.title('standard deviation of random module size\nvs size of gene subset ({} simulations)'.format(NB_SIMS))
+    plt.title('mean and standard deviation of random module size vs size of gene subset ({} simulations)'.format(NB_SIMS))
     std_plot = plt.plot(x_list, std_list, 'b-', label=r'$\sigma\left(S^r\right)$')
     plt.axis([0, STEP*len(mean_list)*1.1, 0, max(std_list)*1.1])
     plt.xlabel('number of genes in subset')
     plt.legend(handles=[std_plot[0]], loc='upper left')
+    if plot:
+        plt.plot()
+
+if __name__ == '__main__':
+    a = time()
+    with shelve.open(SHELVE_PATH) as db:
+        try:
+            mean_list, std_list = db[get_key()]
+        except KeyError:
+            G, all_genes_in_network = separation.load_network(INTERACTOME_PATH)
+            all_genes_as_list = list(all_genes_in_network)
+            mean_list, std_list = compute_mean_std()
+            db[get_key()] = (mean_list, std_list)
+    plot_srand_mean_std(mean_list, std_list)
     print('\ntook {} seconds to execute'.format(int(time()-a)))
     plt.show()
