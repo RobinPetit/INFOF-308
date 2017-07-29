@@ -25,6 +25,7 @@ results.shelve
 *.dvi
 *.pdf
 *.eps
+*.out
 
 # Directories
 report/template/
