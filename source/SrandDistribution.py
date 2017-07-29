@@ -1,39 +1,40 @@
 #!/usr/bin/python3
 
+# std
+from glob import glob
+from time import time
+import shelve
+from multiprocessing import Value, Pool
+
 from mpl_toolkits.axes_grid1 import host_subplot
 import mpl_toolkits.axisartist as AA
 import matplotlib.pyplot as plt
-import shelve
 
-from multiprocessing import Array, Process, Value, Pool
-from glob import glob
-from time import time
-
+# local
 import separation
 import localization
-
+from constants import *
 import math_treatment as math
 
-DISEASES_DIR = '../data/diseases/'
 INTERACTOME_PATH = '../data/DataS1_interactome.tsv'
-NB_SIMS = 200
-STEP = 5
-
-SHELVE_PATH = 'results.shelve'
+NB_SIMS = 1000
+STEP = 10
 
 def get_key():
     SEPARATOR = ';'
-    return SEPARATOR.join((DISEASES_DIR, INTERACTOME_PATH, str(NB_SIMS), str(STEP)))
+    return SEPARATOR.join(('srand', DISEASES_DIR, INTERACTOME_PATH, str(NB_SIMS), str(STEP)))
 
 nb_processes = Value('i', 0)
 def compute_mean_std_process(k):
     with nb_processes.get_lock():
         nb_processes.value += 1
-        print('{} out of {}'.format(nb_processes.value, G.number_of_nodes() // STEP), end='\r')
-    return localization.get_random_comparison(G, set(all_genes_as_list[:STEP*k]), NB_SIMS)[:2]
+        n = nb_processes.value
+    ret = localization.get_random_comparison(G, set(all_genes_as_list[:STEP*k]), NB_SIMS)[:2]
+    print('{} out of {}'.format(nb_processes.value, G.number_of_nodes() // STEP + 1), end='\r')
+    return ret
 
 def compute_mean_std():
-    max_value = G.number_of_nodes() // STEP
+    max_value = G.number_of_nodes() // STEP + 1
     NB_PROCESSES = 4
     results = list()
     with Pool() as pool:
@@ -66,8 +67,9 @@ def plot_mean_std_same_plot(means, stds, plot):
     mean_plot = host.plot(x_list, means)
     std_plot = right_axis.plot(x_list, stds)
     regression_line_plot = host.plot([0, STEP*len(means)], [p, STEP*len(means)*m + p],
-        label=r'$\langle S^r \rangle = $' + ('{:.2f}'.format(m)) + r'$\times$ n' + ('+' if p >= 0 else '-') + ('{:.2f}'.format(abs(p))))
+        label=r'$\langle S^r \rangle = $' + ('{:.2f}'.format(m)) + r'$\times$n ' + ('+' if p >= 0 else '-') + (' {:.2f}'.format(abs(p))))
     host.legend(loc='upper left')
+    host.plot([0, STEP*len(means)], [0, STEP*len(means)], label=r'$y=x$')
 
     host.axis['left'].label.set_color(mean_plot[0].get_color())
     right_axis.axis['right'].label.set_color(std_plot[0].get_color())
