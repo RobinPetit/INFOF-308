@@ -4,14 +4,15 @@
 \usepackage[sort, comma]{natbib}
 \usepackage{alifexi}
 \usepackage[bottom]{footmisc}
-\usepackage[colorlinks=true,citecolor=black,linkcolor=blue]{hyperref}
+\usepackage[colorlinks=true,citecolor=green,linkcolor=blue]{hyperref}
 
 \usepackage{mathtools}
 \usepackage{commath}
 
 \usepackage{dblfloatfix}
 
-\title{Uncovering disease-disease relationships\\through the incomplete interactome}
+\title{Reproducing and updating results from
+\textit{Uncovering disease-disease relationships\\through the incomplete interactome}}
 \author{Robin Petit$^{1}$ \and Tom Lenaerts$^{1}$\\
 \mbox{}\\
 $^1$Université Libre de Bruxelles}
@@ -24,10 +25,20 @@ $^1$Université Libre de Bruxelles}
   This paper intends to work on the results exposed in~\cite{originalPaper} in order to
 	reproduce them, and update the different datasets to check if the presented procedure,
 	which intends to be a systematic analysis, still stands for current version of the
-	interactome.
+	interactome, and if the results exposed have shifted towards a more or less significant
+	level.
 \end{abstract}
 
 \section{Introduction}
+An interactome is a graph containing all the molecular interactions within a cell. This notion appeared
+in~\cite{sanchez1999grasping} (for the drosophila) and the need to thoroughly study this structure has
+been expressed by~\cite{UnderstandingTheCellFunctionalOrganization}.
+
+The interactome presented in~\cite{originalPaper} has been used because authors showed that it is
+sufficiently complete to be systematically studied. Even though the main idea was to study the diseases
+behaviour inside the graph, different studies can be applied, e.g. drug-disease correlation~\cite{Yu2016extraction},
+or digenic diseases~\cite{gazzo2015dida}.
+
 In~\cite{originalPaper}, authors applied disease genes databases (in particular OMIM and GWAS) on
 the human interactome in order to determine the properties of their distribution in the graph.
 Major results were that: firstly diseases tend to \textit{cluster} in denser subgraphs than the
@@ -37,7 +48,7 @@ secondly that phenotypically close diseases tend to overlap on a significant amo
 Authors of the original paper also remind that the interactome is incomplete and estimated around $20\%$-complete
 for the interactions by the estimation that the interactome contains roughly $6.5 \times 10^5$ interactions
 in~\cite{estimatingTheSizeOfTheHumanInteractome}, and around $54\%$-complete for the proteins involved by the
-estimations in~\cite{ATruerMeasureOfOurIgnorance}.
+estimations that the interactome contains roughly $2.5 \times 10^4$ nodes in~\cite{ATruerMeasureOfOurIgnorance}.
 
 \underline{NOTE:} references expressed as Sx refer to the original paper's supplementary materials. Any
 other reference is to this very paper, unless explicitly mentioned.
@@ -55,14 +66,6 @@ Diseases from OMIM (Online Mandelian Inheritance in Man) and GWAS (Genome-Wide A
 related to at least 20 genes have been compiled to be applied to the interactome.
 
 	\subsection{Clustering of disease modules}\label{subsec:clustering of disease modules}
-	Figure S4.b plots the relative size of each disease module versus its relative size (defined as the
-	quotient of the largest connected component size by the number of genes related to the disease).
-
-	When plotting the same data making $10^5$ random simulations per disease and setting the significance
-	threshold to be $1.6$\footnote{Considering the distribution to be normal as in~\cite{fluctuationGiantComponent},
-	a $z$-score $\geq 1.6$ represents a $p$-value $\leq 0.05$ which corresponds to considered
-	\textit{significant} results.}, the obtained result is shown on
-	Figure~\ref{fig:zscore}, which fits the one presented in the original paper.
 
 	\begin{figure}[!h]
 		\includegraphics[width=.5\textwidth]{images/S4.b100000.eps}
@@ -71,9 +74,19 @@ related to at least 20 genes have been compiled to be applied to the interactome
 
 	\begin{figure*}[!t]
 		\hspace{-1.8cm}
+		\vspace{-1cm}
 		\includegraphics[scale=.35]{images/s_AB_histograms.eps}
 		\caption{Disease pairs separation.\label{fig:s_AB histogram}}
+
 	\end{figure*}
+	Figure S4.b plots the relative size of each disease module versus its relative size (defined as the
+	quotient of the largest connected component size by the number of genes related to the disease).
+
+	When plotting the same data making $10^5$ random simulations per disease and setting the significance
+	threshold to be $1.6$\footnote{Considering the distribution to be normal as in~\cite{fluctuationGiantComponent},
+	a $z$-score $\geq 1.6$ represents a $p$-value $\leq 0.05$ which corresponds to considered
+	\textit{significant} results.}, the obtained result is shown on
+	Figure~\ref{fig:zscore}, which fits the one presented in the original paper.
 
 	This figure shows that several diseases do not present a significantly larger largest connected component
 	than expected by chance, but that these diseases have a thin relative size ($< 0.2$, so that less than $20\%$
@@ -161,15 +174,17 @@ related to at least 20 genes have been compiled to be applied to the interactome
 
 	\begin{figure*}[!t]
 		\hspace{-1.8cm}
+		\vspace{-1cm}
 		\includegraphics[scale=.35]{images/new_interactome_s_AB_histogram.eps}
 		\caption{Disease pairs separation in the new interactome.\label{fig:new interactome s_AB}}
 	\end{figure*}
 
-	Yet, the degree distribution still follows a power law, which is inherent to biological networks as explained
-	in~\cite{InteractomeNetworksAndHumanDisease} (coefficient 1.6 for the newer one versus 1.53 for the original one)
-	as described in~~\cite{UnderstandingTheCellFunctionalOrganization} and~\cite{ProteinProteinInteractionNetworks}.\footnote{
-	Determined by taking coefficient $\gamma$ in the relation $\log(P(k)) \sim -\gamma\log(k)$ found by a linear regression.}
-	$\gamma$ is bigger than 1 and smaller than 3, which is considered relevant in~\cite{UnderstandingTheCellFunctionalOrganization}.
+	Yet, the network is still scale-free, and its degree distribution still follows a power law, which is inherent to
+	biological networks as explained in~\cite{InteractomeNetworksAndHumanDisease} (coefficient 1.6 for the newer one
+	versus 1.53 for the original one) as described in~~\cite{UnderstandingTheCellFunctionalOrganization}
+	and~\cite{ProteinProteinInteractionNetworks}.\footnote{Determined by taking coefficient $\gamma$ in the relation
+	$\log(P(k)) \sim -\gamma\log(k)$ found by a linear regression.} $\gamma$ is bigger than 1 and smaller than 3, which
+	is considered relevant in~\cite{UnderstandingTheCellFunctionalOrganization}.
 
 	The 12 diseases which have a decrease of $z$-score below 1.6 is due to the increase of the interactome density implying
 	that a subgraph taken at random tends to have a wider LCC at equal size.
@@ -188,8 +203,8 @@ related to at least 20 genes have been compiled to be applied to the interactome
 \section{Improvements}
 
 	\subsection{Subgraph largest connected component distribution}
-	The $z$-score plotted in Figures~\ref{fig:zscore} and~\ref{fig:new interactome zscore} require a null hypothesis, being the random one.
-	Those are computed as follows: if $S_D$ is the disease module associated with a given disease $D$,
+	Figures~\ref{fig:zscore} and~\ref{fig:new interactome zscore} require a null hypothesis in order to define a $z$-score,
+	being the random one. Those are computed as follows: if $S_D$ is the disease module associated with a given disease $D$,
 	then its $z$-score is given by:
 	\begin{equation}
 		z\text{-score} = \frac {\abs {S_D} - \mu(S^{\text{rand}})}{\sigma(S^{\text{rand}})},
@@ -208,9 +223,18 @@ related to at least 20 genes have been compiled to be applied to the interactome
 	plots simulated mean and standard deviations of largest connected component size versus
 	subgraph size.
 
-	% \subsection{Analytically determined probability density}
-	% Explain the theoretical method for computing the expected largest connected component size and
-	% explain that it is too slow to be used
+	\subsection{Analytically determined probability density}
+	In order to avoid simulation computation time, a probability mass function has been determined. For a graph $\Gamma = (V, E)$
+	such that $\abs E = m$ and $\Lambda_k^m(V, \cdot)$, the set of all graphs having $V$ as vertex set, $m$ edges, and a LCC of size $k$,
+	we define $p_k$, the probability that $\Gamma$ has LCC of size $k$ as:
+	\begin{equation}
+		p_k = \abs {\Lambda_k^m(V, \cdot)}/\binom {\binom {\abs V}2}m,
+	\end{equation}
+	which requires $\abs {\Lambda_k^m(V, \cdot)}$ to be computed. Yet, this set cardinality is defined by a recurrence relation
+	(see proof in supplementary materials), which makes computations several orders of magnitude slower (even with dynamic programming
+	and caching).
+
+	A Python3 implementation is given in \texttt{source/lcc\_size/}.
 
 \section{Conclusion}
 
