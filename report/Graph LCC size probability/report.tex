@@ -65,7 +65,8 @@
 
 \author{Robin Petit}
 \date{March-April 2017}
-\title{On the distribution of the largest connected component size in random graphs with fixed edges set size}
+\title{On the distribution of the largest connected component size in random
+undirected graphs with fixed edges set size}
 
 \begin{document}
 \pagenumbering{Roman}
@@ -79,7 +80,7 @@
 	\subsection{Definitions}
 		Let's consider $V = \{v_1, \ldots, v_{\abs V}\}$ a set of vertices. We denote by $\abs V$ the cardinality of the set $V$. Let's define
 		the function:
-		\[X : \N \to \N : n \mapsto \frac {n(n-1)}2.\]
+		\[X : \N \to \N : n \mapsto \frac {n(n-1)}2 = \binom n2.\]
 
 		\begin{definition} For $(\alpha, \beta) \in \N^2$, if $\beta \geq \alpha$, we define:
 		\[\intint \alpha\beta \coloneqq \left\{n \in \N \st \alpha \leq n \leq \beta\right\}.\]
@@ -87,21 +88,24 @@
 
 		\begin{definition} An undirected graph $\Gamma$ is denoted $\Gamma = (V, E)$ for $V$ its vertices set, and $E$ its edges set, with $E = \{e_1, \ldots, e_{\abs E}\}$
 		and $\forall i \in \intint 1{\abs E} : e_i = \{v_{i_1}, v_{i_2}\}$ for $1 \leq i_1, i_2 \leq \abs V$ with $i_1 \neq i_2$ (i.e. loops are not tolerated).
+
+		For a given graph $\Gamma = (V, E)$, we also write $V = V(\Gamma)$ and $E = E(\Gamma)$.
 		\end{definition}
 
-		\begin{remark} $\abs E$ is usually denoted as $m$, and $\abs V$ is sometimes denoted as $n$. Both these numbers are (non-strictly) positive integers.
+		\begin{remark} $\abs E$ is usually denoted as $m$, and $\abs V$ is sometimes denoted as $n$. Both these numbers are non-negative integers.
 		\end{remark}
 
-		\begin{definition} The set of all the existing graphs having given vertices set $V$ is denoted by $\Gamma(V, \cdot)$. We denote $\Gamma_m(V, \cdot)$
+		\begin{definition} The set of all the existing graphs having given vertices set $V$ is denoted by $\Gamma(V, \cdot)$. For $m \in \N$, we denote $\Gamma_m(V, \cdot)$
 		the subset of $\Gamma(V, \cdot)$ such that~:
-		\[\forall \Gamma = (V, E) \in \Gamma_m(V, \cdot) : \abs E = m.\]
+		\[\forall \Gamma \in \Gamma_m(V, \cdot) : \abs {E(\Gamma)} = m.\]
 		\end{definition}
 
 		\begin{remark} We observe that:
 		\[\Gamma(V, \cdot) = \bigsqcup_{m \in \N}\Gamma_m(V, \cdot).\]
 		\end{remark}
 
-		\begin{definition} For every $n \in \N$, we define $\mathcal K_n$ as the \textit{complete graph} of size $n$.
+		\begin{definition} For every $n \in \N$, we define $\mathcal K_n$ as the \textit{complete graph} of size $n$, such that:
+		\[E(\mathcal K_n) = \{\{v_i, v_j\} \st v_i \neq v_j \text{ and } (v_i, v_j) \in V^2\}.\]
 		\end{definition}
 
 		\begin{lemma} For a graph $\Gamma = (V, E)$, we have $\abs E \leq X(\abs V)$.
@@ -128,8 +132,8 @@
 		\end{proof}
 
 		\begin{definition} A graph $\Gamma = (V, E)$ is said to be connected if for each $v, w \in V$, there exists a path between $v$ and $w$. We denote by
-		$\chi(V, \cdot)$ the set of all connected graphs having vertices set $V$. Again, for $m \in \N$, we denote by $\chi_m(V, \cdot) \subset \chi(V, \cdot)$
-		the set of connected graphs having $m$ edges.
+		$\chi(V, \cdot)$ the set of all connected graphs having vertices set $V$. Again, for $m \in \N$, we denote by $\chi_m(V, \cdot) \coloneqq
+		\chi(V, \cdot) \cap \Gamma_m(V, \cdot)$ the set of connected graphs having $m$ edges.
 		\end{definition}
 
 		\begin{remark} $\chi(V, \cdot) \subset \Gamma(V, \cdot)$, and:
@@ -142,7 +146,7 @@
 		\begin{proof} For $m > X(\abs V)$, we know that $\Gamma_m(V, \cdot) = \emptyset$. As $\chi_m(V, \cdot) \subset \Gamma_m(V, \cdot)$, we know that
 		$\chi_m(V, \cdot) = \emptyset$.
 
-		For $m < \abs V-1$, let's notice firstly that a cyclic graph needs at least $\abs V$ edges: for a cyclic graph, each vertex's degree must be at least 2. We
+		For $m < \abs V-1$, let's notice firstly that a cyclic graph needs at least $\abs V$ edges: for a cyclic graph, each vertex degree must be at least 2. We
 		can deduce:
 		\[2\abs E = \sum_{v \in V}\deg(v) \geq 2\abs V.\]
 
@@ -156,9 +160,12 @@
 		representing the lowest index of a vertex present in a given subset of $W \subset V$.
 		\end{definition}
 
+		\begin{remark} This definition depends then on the order of the elements in $V$, but is well defined for any labeling of $V$.
+		\end{remark}
+
 		\begin{definition} For every $W \in \mathcal P(V)$, we define $\Delta_W : \Gamma(V, \cdot) \to \Gamma(W, \cdot) : \Gamma \mapsto \Gamma'$
 		such that:
-		\[E(\Gamma') = E' = \left\{\{v_i, v_j\} \in E \st v_i, v_j \in W\right\},\]
+		\[E(\Gamma') = \left\{\{v_i, v_j\} \in E \st v_i, v_j \in W\right\},\]
 		and $V(\Gamma') = W$.
 
 		Let's call $\Delta_W$ the \textit{restriction to subset $W$} operator.
@@ -167,14 +174,20 @@
 	\subsection{(Largest) Connected Components}
 		\begin{definition} We define the \textit{connected component of vertex $v_i \in V$ in graph $\Gamma = (V, E)$} by the biggest subset (in the sense of inclusion) $W$
 		of $V$ such that $v_i \in W$ and $\Delta_W(\Gamma) \in \chi(W, \cdot)$.
+		\end{definition}
 
+		\begin{definition}
 		For graph $\Gamma \in \Gamma(V, \cdot)$, we define $\abs {\LCC(\Gamma)}$ by:
-		\[\abs {\LCC(\Gamma} \coloneqq \max_{W \in \mathcal P(V)}\abs W\mathbb I_{\left[\Delta_W(\Gamma \in \chi(V, \cdot)\right]}.\]
+		\[\abs {\LCC(\Gamma)} \coloneqq \max_{W \in \mathcal P(V)}\abs W\mathbb I_{\chi(V, \cdot)}(\Delta_W(\Gamma)),\]
+		for $\mathbb I_X$ being the characteristic function defined by $\mathbb I_X(x) = 1$ if $x \in X$ and 0 otherwise.
 
 		We then define the \textit{largest connected component of the graph $\Gamma = (V, E)$} as:
 		\[\LCC(\Gamma) \coloneqq \argmin_{\stackrel {W \in \mathcal P(V)}{\abs W = \abs {\LCC(\Gamma)}}} \mu(W).\]
+		\end{definition}
 
-		The set $\Lambda_k^m(V, \cdot)$ is then the set of all graphs $\Gamma = (V, E) \in \Gamma(V, \cdot)$, such that $\abs E = m$ and $\abs {\LCC(\Gamma)} = k$.
+		\begin{definition}
+		For $k \in \N$, we define $\Lambda_k(V, \cdot)$ to be the set of all graphs $\Gamma \in \Gamma(V, \cdot)$ such that $\abs {\LCC(\Gamma)} = k$. Again, for $m \in \N$,
+		we define $\Lambda_k^m(V, \cdot) \coloneqq \Lambda_k(V, \cdot) \cap \Gamma_m(V, \cdot)$.
 		\end{definition}
 
 		\begin{remark} The notations here are consistent since for $\Gamma$ a graph, $\abs {\LCC(\Gamma)}$ corresponds indeed to the cardinality of $\LCC(\Gamma)$.
@@ -211,15 +224,14 @@
 		\end{definition}
 
 	\subsection{Objectives}
-		The objective now is to find an expression for $\abs {\Lambda_k(V, \cdot)}$ since we are looking for:
-		\[\P\left[\abs {\LCC(\mathscr G(V, m))} = k\right] = \frac {\abs {\Lambda_k(V, \cdot)}}{\abs {\Gamma(V, \cdot)}}
-			= \frac 1{\abs {\Gamma(V, \cdot)}}\sum_{m=0}^{X(\abs V)}\abs {\Lambda_k^m(V, \cdot)}.\]
+		The objective now is to find an expression for $\abs {\Lambda_k^m(V, \cdot)}$ since we are looking for:
+		\[\P\left[\abs {\LCC(\mathscr G(V, m))} = k\right] = \frac {\abs {\Lambda_k^m(V, \cdot)}}{\abs {\Gamma_m(V, \cdot)}}.\]
 
 		Let's denote this value $p_k \coloneqq \P\left[\abs {\LCC(\mathscr G(V, m))} = k\right].$
 
 \section{Preliminary Results}\label{sec:results}
-	The general idea in order to determine $\abs {\Lambda_k^m(V, \cdot)}$ is to insert a connected component of size $k$ on vertices set $V$, and then to tally the configurations
-	placing $m-k$ vertices without making a bigger connected component than the first one.
+	The general idea in order to determine $\abs {\Lambda_k^m(V, \cdot)}$ is to insert a connected component of size $k$ on vertices set $V$, and then to complete the graph
+	placing $m-k$ vertices without making a connected component of size $\gneqq k$.
 
 	\subsection{$\abs {\Lambda_{k=1}(V, \cdot)}$}
 		It is trivial to tell $\abs {\Lambda_1^m(V, \cdot)} = \delta_0^m$\footnote{$\delta_i^j$ is the Kronecker delta operator.}, i.e. equals one if $m=0$ and equals zero
@@ -227,21 +239,6 @@
 		$\{v_i, v_j\} \subset V$ is a connected component of size 2.
 
 	\subsection{Upper Boundary of $m$ for $\abs {\Lambda_k^m(V, \cdot)}$}
-		\begin{lemma}[Upper boundary of edges amount for $k=2$]\label{lemma:upper boundary k=2} For $m > \frac {\abs V}2$, we have $\Lambda_2^m(V, \cdot) = \emptyset$.
-		\end{lemma}
-
-		\begin{proof} To have a largest connected component of size $2$, each vertex must have degree $0$ or $1$. Take $m \in \N$ such that $m > \frac V2$. Take
-		$\Gamma = (V, E)$ such that $\abs E = m$, and take $\mathcal V_1 \coloneqq \{v \in V \st \deg(v) \leq 1\} \subset V$. Take the restriction
-		$\Gamma' = (\mathcal V_1, E') = \Delta_{\mathcal V_1}(\Gamma)$.
-
-		Since in a graph, the sum of the degree of each vertex is equal to twice the amount of edges, when applied on $\Gamma'$, it follows that:
-		\[2\abs {E'} = \sum_{v \in \mathcal V_1}\deg(v) \leq \sum_{v \in \mathcal V_1}1 = \abs {\mathcal V_1}.\]
-
-		We then deduce that $\abs {E'} \leq \frac {\abs {\mathcal V_1}}2 \leq \frac {\abs V}2$. Thus $\mathcal V_1$ must be \textit{strictly} included in $V$,
-		and then there must exist $v \in V$ such that $\deg(v) \geq 2$. Thus:
-		\[\forall m > \frac {\abs V}2 : \forall \Gamma \in \Gamma_m(V, \cdot) : \Gamma \not \in \Lambda_2^m(V, \cdot).\]
-		\end{proof}
-
 		\begin{lemma} For $\Gamma \in \Gamma(V, \cdot)$ a graph and $k \in \intint 1{\abs V}$, if there exists a vertex $v \in V$ such that $\deg(v) = k$,
 		then $\abs {\LCC(\Gamma)} \geq k+1$.
 		\end{lemma}
@@ -252,7 +249,8 @@
 		Thus $\{v, v_{i_1}, \ldots, v_{i_k}\}$ is a connected component of size $k+1$. Thus the largest connected component must have size at least that big.
 		\end{proof}
 
-		\begin{proposition}[Upper boundary of edges amount generalized] For $k \in \intint 1{\abs V}$, and $m > \frac {\abs V(k-1)}2$, we have $\Lambda_k^m(V, \cdot) = \emptyset$.
+		\begin{proposition}[Upper boundary of edges amount]\label{proposition:upper boundary k} For $k \in \intint 1{\abs V}$, and $m > \frac {\abs V(k-1)}2$,
+		we have $\Lambda_k^m(V, \cdot) = \emptyset$.
 		\end{proposition}
 
 		\begin{proof} Take $m > \frac {(k-1)\abs V}2$, and $\Gamma = (V, E) \in \Gamma_m(V, \cdot)$. Take $\mathcal V_k \coloneqq \{v \in V \st \deg(v) \leq k-1\}$.
@@ -275,7 +273,7 @@
 			0 &\text{ else}
 		\end{cases}.\]
 
-		\begin{proof} For $m > \frac {\abs V}2$, result is shown in Lemma~\ref{lemma:upper boundary k=2}. The part $\prod_{k=0}^{m-1}\binom {\abs V-2k}2$ corresponds
+		\begin{proof} For $m > \frac {\abs V}2$, result is shown in Proposition~\ref{proposition:upper boundary k}. The part $\prod_{k=0}^{m-1}\binom {\abs V-2k}2$ corresponds
 		to the choice of $m$ edges without making a connected component of size $\geq 3$.
 
 		$\binom {\abs V-2 \cdot 0}2$ is the choice of the first edge (two vertices) among $\abs V$ vertices, $\binom {\abs V-2}2$ is the choice of the second edge
@@ -291,34 +289,12 @@
 		by simplification of the product.
 		\end{remark}
 
-\section{Processing on Examples --- Cardinality of $\Lambda_k^m(V, \cdot)$}
-	\begin{align*}
-		\abs {\Lambda_3^0(V, \cdot)} = \abs {\Lambda_3^1(V, \cdot)} &= 0 \\
-		\abs {\Lambda_3^2(V, \cdot)} &= \binom {\abs V}3\binom 32 \\
-		\abs {\Lambda_3^3(V, \cdot)} &= \binom {\abs V}3\binom 33 + \binom {\abs V}3\binom 32\binom {\abs V-3}2 \\
-		\abs {\Lambda_3^4(V, \cdot)} &= \binom {\abs V}3\binom 33\binom {\abs V-3}2 + \binom {\abs V}3\binom 32\binom {\abs V-3}3\binom 32 + \binom {\abs V}3\binom 32\binom {\abs V-3}2\binom {\abs V-5}2.
-	\end{align*}
+	\subsection{Generalization}
 
-	\begin{definition} Let's denote equally $\abs {\Lambda_k^m(n)} = \Lambda_k^m(n) \equiv \abs {\Lambda_k^m(V, \cdot)}$ for $V$ such that $\abs V = n$.
+	\begin{definition} Let's denote equally $\Lambda_k^m(n) \equiv \abs {\Lambda_k^m(V, \cdot)}$ for $V$ such that $\abs V = n$.
 	\end{definition}
 
 	This notation allows to lighten the expressions.
-
-	\begin{remark} Current explorations tend to a formula looking something like:
-	\[\abs {\Lambda_k^m(\abs V)}
-		= \binom {\abs V}k\sum_{\ell=k-1}^{\min\left(m, X(k)\right)}\abs {\Lambda_k^\ell(k)}\sum_{p=1}^k\abs {\Lambda_p^{m-\ell}(\abs V-k)}\beta_{p\,\ell}(m, k, \abs V),\]
-	with $\beta_{p\,\ell}(m, k, \abs V)$, a coefficient.
-
-	The idea behind this formula is explained in introduction of Section~\ref{sec:results}: to find the amount of graphs having $n$ vertices, $m$ edges
-	and a largest connected component of size $k$, let's place a connected component of size $k$ somewhere in the graph (so choose $k$ in $\abs V$ vertices), and then multiply this
-	by the amount of possible graphs of largest connected component of size $p \in \{1, \ldots, k\}$ (so lower or equal to $k$).
-	\end{remark}
-
-	\begin{proof}[Idea of proof to be extended later on] In order to prove the equality of the cardinalities, let's find a bijective function $\Omega$ between
-	$\Lambda_k^m(V, \cdot)$ and a set like:
-	\[\mathfrak Q_k^m(V) \coloneqq \bigsqcup_{\stackrel {W \in \mathcal P(V)}{\abs W = k}}\bigsqcup_{\ell=k-1}^{\min\left(m, X(k)\right)}
-		\Lambda_k^\ell(W, \cdot) \times \left(\bigsqcup_{p=1}^k \Lambda_p^{m-\ell}(V \setminus W, \cdot)\right).\]
-	\end{proof}
 
 	\begin{lemma} The sets $\chi_\ell(V, \cdot)$ and $\Lambda_{\abs V}^\ell(V, \cdot)$ are equal.
 	\end{lemma}
@@ -336,7 +312,7 @@
 			\abs {\left\{W \in \mathcal P(V) \st \Delta_W(\Gamma) \in \chi(W) \text{ and } \abs W = \abs {\LCC(\Gamma)}\right\}} = \alpha\right\},\]
 		the class of all graphs in $\Lambda_k(V, \cdot)$ having exactly $\alpha$ connected components of maximum size.
 
-		Again, for $m \in \intint 1{X(\abs V)}$, we define $\Lambda_{k,\alpha}^m(V, \cdot)$ by $\Lambda_k^m(V, \cdot) \cap \Lambda_{k,\alpha}(V, \cdot)$.
+		Again, for $m \in \intint 0{X(\abs V)}$, we define $\Lambda_{k,\alpha}^m(V, \cdot)$ by $\Lambda_k^m(V, \cdot) \cap \Lambda_{k,\alpha}(V, \cdot)$.
 		\end{definition}
 
 		\begin{remark} Even though several connected components of maximum size do exist in a graph, \textit{the one} $\LCC$ is still defined unambiguously!
@@ -351,14 +327,23 @@
 
 		\begin{proof}~
 		\begin{enumerate}
-			\item For $k > \abs V$ or $k=0$, it is obvious that: $\Lambda_k(V, \cdot) = \emptyset$ (and then $\Lambda_{k,\alpha}(V, \cdot)$).
+			\item For $k > \abs V$ or $k=0$, it is obvious that: $\Lambda_k(V, \cdot) = \emptyset$ (and then $\Lambda_{k,\alpha}(V, \cdot) = \emptyset$ as well).
 			\item Take such $k$ and $\alpha$. Assume (\textit{ad absurdum}) that there exists $\Gamma \in \Lambda_{k, \alpha}(V, \cdot)$. We have then
 			$L_1, \ldots, L_\alpha \in \mathcal P(V)$ such that $\forall i \in \intint 1\alpha : \abs {L_i} = k$. Also, since the $L_i$'s are connected component,
 			they are disjoint, i.e. $\forall (i, j) \in \intint 1\alpha^2 : i \neq j \Rightarrow L_i \cap L_j = \emptyset$.
 
-			Thus $\bigsqcup_{i=1}^\alpha L_i \subset V$, and $\sum_{i=1}^\alpha \abs {L_i} \leq \abs V$. But:
-			\[\sum_{i=1}^\alpha\abs {L_i} = \alpha k > \floor {\frac {\abs V}k}k \geq \frac {\abs V}kk = \abs V,\]
+			Thus $\bigsqcup_{i=1}^\alpha L_i \subseteq V$, and $\sum_{i=1}^\alpha \abs {L_i} = k\alpha \leq \abs V$
+
+			If $\abs V \in k\N$, we have:
+			\[\alpha k > \floor {\frac {\abs V}k}k = \abs V,\]
 			which yields a contradiction: $\abs V > \abs V$.
+
+			If $\abs V \not \in k\N$, we have:
+			\[\alpha > \floor {\frac {\abs V}k} \Rightarrow \alpha \geq \left(\floor {\frac {\abs V}k}+1\right),\]
+			and as $\floor {\abs V/k}k > \abs V-k$, we have:
+			\[\alpha k \geq \left(\floor {\frac {\abs V}k}+1\right)k > \abs V - k + k > \abs V,\]
+			which yields the same contradiction.
+
 			We deduce that $\Lambda_{k,\alpha}(V, \cdot) = \emptyset$.
 		\end{enumerate}
 		\end{proof}
@@ -367,7 +352,7 @@
 		\[\forall k < \abs V : \Lambda_k(V, \cdot) = \bigsqcup_{m=k-1}^{X(\abs V)}\bigsqcup_{\alpha=1}^{\floor {\frac {\abs V}k}}\Lambda_{k,\alpha}^m(V, \cdot).\]
 		\end{corollary}
 
-		\begin{proof} Unions are trivially disjointed.
+		\begin{proof} Unions are trivially disjoint.
 
 		Now show the equality. The right-hand side is trivially included in $\Lambda_k(V, \cdot)$ (by definition of $\Lambda_{k,\alpha}^m(V, \cdot)$).
 
@@ -378,41 +363,6 @@
 
 
 	\subsection{The Set $\mathfrak Q_{k,\alpha}^m(V)$}
-		\subsubsection{Special case of $\alpha=1$}
-			From now on, let's write:
-			\[\mathfrak Q_{k,1}^m(V) \coloneqq \bigsqcup_{\stackrel {W \in \mathcal P(V)}{\abs W = k}}\bigsqcup_{\ell=k-1}^{\min\left(m, X(k)\right)}
-				\chi_\ell(W, \cdot) \times \left(\bigsqcup_{p=1}^{k-1}\Lambda_p^{m-\ell}(V, \cdot)\right).\]
-
-			\begin{proposition}\label{prp:Lambda_k,alpha^m(V, cdot) cong mathfrak Q_k,alpha^m(V)} For $k \in \intint 1{\abs V}$ and $m \in \intint 1{X(\abs V)}$, we have:
-			\[\Lambda_{k,1}^m(V, \cdot) \cong \mathfrak Q_{k,1}^m(V),\]
-			i.e. there exists a bijection between these two sets.
-			\end{proposition}
-
-			\begin{proof} Consider the function defined by:
-			\[\Omega : \Lambda_{k,1}^m(V, \cdot) \to \mathfrak Q_{k,1}^m(V) :
-				\Gamma \mapsto \left(\Delta_{\LCC(\Gamma)}(\Gamma), \Delta_{V \setminus \LCC(\Gamma)}(\Gamma)\right).\]
-
-			For $\Gamma = (V, E)$, we know that $\Omega(\Gamma)$ gives a partition of $\Gamma$ because there doesn't exist $e = \{v_{i_1}, v_{i_2}\} \in E$ such that
-			$v_{i_1} \in \LCC(\Gamma)$ and $v_{i_2} \in V \setminus \LCC(\Gamma)$ by definition of connected component. Thus if:
-			\[\left(\Gamma_1 = (\LCC(\Gamma), E_{\LCC}), \Gamma_2(V \setminus \LCC(\Gamma), E_{V \setminus \LCC})\right) = \Omega(\Gamma(V, E)),\]
-			we have $E_{\LCC} \sqcup E_{V \setminus \LCC} = E$.
-
-			Let's prove that $\Omega$ is injective. Take $\Gamma_1 = (V, E_1)$ and $\Gamma_2 = (V, E_2)$ in $\Lambda_k^m(V, \cdot)$. Assume that
-			$\Omega(\Gamma_1) = \Omega(\Gamma_2)$. This implies that $\LCC(\Gamma_1) = \LCC(\Gamma_2)$ (and thus that their complementary in $V$ are equal as well)
-			and that the restriction of $\Gamma_1$ and $\Gamma_2$ to their common LCC are equal. Their restriction to the complementary of the common LCC in $V$ are then equal as well.
-
-			Thus $\Gamma_1$ and $\Gamma_2$ have the same partition and are then equal (i.e. $E_1=E_2$).
-
-			Now, let's prove that $\Omega$ is surjective. For $W \in \mathcal P(V)$, take:
-			\[\left(\Gamma_1 = (W, E_1), \Gamma_2 = (V \setminus W, E_2)\right) \in \mathfrak Q_{k,1}^m(V).\]
-
-			We deduce that if $\ell \coloneqq \abs {E_1}$, we have $\abs {E_2} = m-\ell$. Also, $\abs {\LCC(\Gamma_2)} \lneqq k$ and $\Gamma_1 \in \chi_\ell(W)$.
-
-			For $\Gamma = (V, E) \coloneqq (V \setminus W \sqcup W, E_1 \sqcup E_2)$, we have indeed that $\Gamma = (V, E) \in \Lambda_k^m(V, \cdot)$ and
-			$\Omega(\Gamma) = \left(\Gamma_1, \Gamma_2\right)$ because $\abs {\LCC(\Gamma)} = \abs W = k$ since $W$ is the only connected component of size $k$.
-			\end{proof}
-
-		\subsubsection{General Case}
 			\begin{definition} For $k, \alpha \in \N^*$, let's define:
 			\[\mathcal P_{k,\alpha}(V) \coloneqq \left\{\{W_1, \ldots, W_\alpha\} \in \mathcal P\left(\mathcal P(V)\right) \st
 				\begin{cases}
@@ -420,7 +370,7 @@
 						&\forall (i, j) \in \intint 1\alpha^2 : i \neq j \Leftrightarrow W_i \cap W_j = \emptyset
 					\end{cases}
 			\right\},\]
-			thus $\mathcal P_{k,\alpha}(V)$ is the set of all sets containing $\alpha$ subsets of $V$ which are disjointed and of size $k$.
+			thus $\mathcal P_{k,\alpha}(V)$ is the set of all sets containing $\alpha$ subsets of $V$ which are disjoint and of size $k$.
 			\end{definition}
 
 			\begin{remark} We can tell:
@@ -442,15 +392,11 @@
 			\end{align*}
 			\end{definition}
 
-			\begin{theorem} For $(k, m) \in \intint 1{\abs V} \times \intint 0{X(\abs V)}$ and $\alpha \in \intint 1{\floor {\frac {\abs V}k}}$, we have:
-			\[\Lambda_{k,\alpha}^m(V, \cdot) \cong \mathfrak Q_{k,\alpha}^m(V).\]
+			\begin{theorem} For $(k, m) \in \intint 1{\abs V} \times \intint 0{X(\abs V)}$ and $\alpha \in \intint 1{\floor {\frac {\abs V}k}}$,  there exists a
+			bijection between $\Lambda_{k,\alpha}^m(V, \cdot)$ and $\mathfrak Q_{k,\alpha}^m(V)$.
 			\end{theorem}
 
-			\begin{proof} For $\alpha=1$, the theorem is proven by Proposition~\ref{prp:Lambda_k,alpha^m(V, cdot) cong mathfrak Q_k,alpha^m(V)}.\footnote{This Proposition is not exactly
-			expressed the same way because $\mathfrak Q_{k,1}^m(V)$ does not consider a set $\{W_1\} \in \mathcal P\left(\mathcal P(V)\right)$ but only a subset $W \in \mathcal P(V)$.
-			Yet, the proof is equivalent.}
-
-			Now, for $\alpha \geq 2$, we have the function:
+			\begin{proof} For such $k, m, \alpha$, we have the function:
 			\begin{align*}
 				\Omega_\alpha &: \Lambda_{k,\alpha}^m(V, \cdot) \to \mathfrak Q_{k,\alpha}^m(V) : \\
 				&\Gamma \mapsto \left(\Delta_{W_1}(\Gamma), \ldots, \Delta_{W_\alpha}(\Gamma), \Delta_{V \setminus \bigsqcup_{j=1}^\alpha W_j}(\Gamma)\right),
@@ -462,13 +408,15 @@
 			values of $\mu(W_j)$ can't be equal for different indices by definition of connected components. This implies that function $\Omega_\alpha$ is properly
 			defined.
 
+			Also, we notice that for a graph $\Gamma$, $\Omega(\Gamma)$ provides a partition of $\Gamma$ by the definition of connected components.
+
 			Now, prove that $\Omega_\alpha$ is bijective.
 
 			\paragraph{Injective} Take $\Gamma_1 = (V, E_1), \Gamma_2 = (V, E_2) \in \Lambda_{k,\alpha}^m(V, \cdot)$. Let's assume that:
 			\[\Omega_\alpha(\Gamma_1) = \Omega_\alpha(\Gamma_2).\]
 
 			We can deduce that $\Gamma_1$ and $\Gamma_2$ have the same connected components, and that their restrictions to these connected components are equal as well.
-			By similar argument than in proof of Proposition~\ref{prp:Lambda_k,alpha^m(V, cdot) cong mathfrak Q_k,alpha^m(V)}, we find that $\Gamma_1$ and $\Gamma_2$ must be equal.
+			Thus we know that $V(\Gamma_1) = V(\Gamma_2)$ and $E(\Gamma_1) = E(\Gamma_2)$. Thus $\Gamma_1$ and $\Gamma_2$ must be equal.
 
 			\paragraph{Surjective} Take:
 			\[\left(\Gamma_1 = (W_1, E_1), \ldots, \Gamma_\alpha = (W_\alpha, E_\alpha), \Gamma = (W, E)\right) \in \mathfrak Q_{k,\alpha}^m(V),\]
@@ -498,7 +446,7 @@
 		Harary and Palmer proposed a solution in~\cite{Harary&Palmer1973} in 1973 to the number of connected graphs of $n$ vertices, no matter the number of edges.
 
 		\begin{definition} For notations to be consistent with~\cite{Harary&Palmer1973}, let's define:
-		\[\forall p \in \mathbb N : C_p \coloneqq \abs {\chi(p)},\]
+		\[\forall p \in \mathbb N : C_p \coloneqq \chi(p),\]
 		the number of connected graphs having $p$ vertices.
 		\end{definition}
 
@@ -520,7 +468,7 @@
 
 		Starting from generating function equality given by Bona and Noy in~\cite{Bona&Noy2015}, namely:
 		\[\sum_{n \geq 0}\sum_{k \geq 0}q_{n,k}u^k\frac {z^n}{n!} = \log\left(\sum_{n \geq 0}(1+u)^{X(n)}\frac {z^n}{n!}\right),\]
-		one can find the recursion relation given by Marko Riedel [ADD SOURCE!]:
+		one can find the recursion relation given by Marko Riedel~\cite{Riedelformula}:
 		\[q_{n,k} = \binom {X(n)}k - \sum_{m=0}^{n-2}\binom {n-1}m\sum_{p=0}^k\binom {X(n-m-1)}pq_{m+1,k-p}.\]
 
 \section{Conclusion}
@@ -536,5 +484,5 @@
 	\[\forall k \in \intint 1{\abs V} : \P\left[\abs {\LCC(\mathscr G(V, m))} = k\right] = \frac {\abs {\Lambda_k^m(V, \cdot)}}{\abs {\Gamma_m(V, \cdot)}}.\]
 
 \bibliography{report}{}
-\bibliographystyle{ieeetr}
+\bibliographystyle{IEEEtran}
 \end{document}
