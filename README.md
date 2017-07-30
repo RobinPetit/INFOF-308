@@ -23,8 +23,8 @@ The repository is for now organized as follows:
 
 + [x] Have the provided source code to evolve from Python2 to Python3.
 + [x] Factorize scripts in order to avoid duplication.
-+ [ ] Run analysis source code on both *old* data (provided by the authors) and newer versions.
-+ [ ] Get last version of required datasets.
++ [x] Run analysis source code on both *old* data (provided by the authors) and newer versions.
++ [x] Get last version of required datasets.
 + [ ] Write report.
 
 ### Mathematics
