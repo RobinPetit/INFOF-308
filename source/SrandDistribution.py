@@ -10,6 +10,8 @@ from mpl_toolkits.axes_grid1 import host_subplot
 import mpl_toolkits.axisartist as AA
 import matplotlib.pyplot as plt
 
+import numpy as np
+
 # local
 import separation
 import localization
@@ -17,6 +19,7 @@ from constants import *
 import math_treatment as math
 
 INTERACTOME_PATH = '../data/DataS1_interactome.tsv'
+#INTERACTOME_PATH = '../data/human_interactome 20170727.tsv'
 NB_SIMS = 1000
 STEP = 10
 
@@ -54,7 +57,7 @@ def plot_srand_mean_std(means, stds, plot=False, same=True):
         plot_mean_std_horizontal(means, stds, plot)
 
 def plot_mean_std_same_plot(means, stds, plot):
-    x_list = [STEP*k for k in range(1, len(means)+1)]
+    x_list = [0] + [STEP*k for k in range(1, len(means))]
     m, p = math.linear_regression(x_list, mean_list)
 
     host = host_subplot(111, axes_class=AA.Axes)
@@ -66,10 +69,11 @@ def plot_mean_std_same_plot(means, stds, plot):
 
     mean_plot = host.plot(x_list, means)
     std_plot = right_axis.plot(x_list, stds)
-    regression_line_plot = host.plot([0, STEP*len(means)], [p, STEP*len(means)*m + p],
-        label=r'$\langle S^r \rangle = $' + ('{:.2f}'.format(m)) + r'$\times$n ' + ('+' if p >= 0 else '-') + (' {:.2f}'.format(abs(p))))
+    #regression_line_plot = host.plot([0, STEP*len(means)], [p, STEP*len(means)*m + p],
+    #    label=r'$\langle S^r \rangle = $' + ('{:.2f}'.format(m)) + r'$\times$n ' + ('+' if p >= 0 else '-') + (' {:.2f}'.format(abs(p))))
+    #host.plot([0, STEP*len(means)], [0, STEP*len(means)], label=r'$y=x$')
+    host.plot(plt.xlim(), plt.xlim(), label=r'$y=x$')
     host.legend(loc='upper left')
-    host.plot([0, STEP*len(means)], [0, STEP*len(means)], label=r'$y=x$')
 
     host.axis['left'].label.set_color(mean_plot[0].get_color())
     right_axis.axis['right'].label.set_color(std_plot[0].get_color())

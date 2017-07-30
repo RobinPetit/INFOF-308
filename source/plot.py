@@ -170,7 +170,7 @@ def get_relative_module_size_and_zscore(G, all_genes_in_network, disease_file_li
                 i += 1
     return relative_size_list, zscore_list, non_significant_counter
 
-def plot_linear_regression(x, y, xlabel='x', ylabel='y'):
+def plot_linear_regression(x, y, xlabel='x', ylabel='y', color='b'):
     """
     makes a linear regression of given data
     """
@@ -182,7 +182,7 @@ def plot_linear_regression(x, y, xlabel='x', ylabel='y'):
     else:
         label = ''
     # plot the regression
-    regression_line = plt.plot([0, 1], [p, m+p], label=label)[0]
+    regression_line = plt.plot([0, 1], [p, m+p], color + '-', label=label)[0]
     # display label if exists
     if label != '':
         plt.legend(handles=[regression_line], loc='upper left')
@@ -219,6 +219,9 @@ def plot_zscore_vs_relative_size(G, all_genes_in_network, disease_file_list,
     fig = plt.figure()
     # dot plot for each disease
     plt.plot(relative_size_list, zscore_list, 'ro')
+    print('interactome: {}\tmean z-score: {:.3g}\t(min, max) == {}\tmean relative size: {:.3g}\tmean(zscore*rel_size) == {:.3g}' \
+          .format(INTERACTOME_PATH, sum(zscore_list)/len(zscore_list), (min(zscore_list), max(zscore_list)), sum(relative_size_list)/len(relative_size_list),
+                  sum([zscore_list[i]*relative_size_list[i] for i in range(len(zscore_list))])/len(zscore_list)))
     # plot significance threshold
     if show_non_significant:
         significance_line = plt.plot([0, 1], [SIGNIFICANCE_THRESHOLD]*2, 'b--', label=r'significance threshold: $z$-score = ' + str(SIGNIFICANCE_THRESHOLD))[0]
@@ -256,7 +259,7 @@ def plot_data_histogram_comparison(disease_file_list, xlabel, idx, is_log=False)
         G, all_genes_in_network = separation.load_network(path)
         data.append(get_relative_module_size_and_zscore(G, all_genes_in_network, disease_file_list, True, SIGNIFICANCE_THRESHOLD, path)[idx])
     fig = plt.figure()
-    plt.hist(data, 30, color=('lightblue', 'salmon'), label=('original interactome', 'newer interactome'))
+    plt.hist(data, 20, color=('lightblue', 'salmon'), label=('original interactome', 'newer interactome'))
     plt.legend()
     plt.xlabel(xlabel)
     plt.ylabel('number of diseases')
@@ -360,22 +363,24 @@ def plot_overlapping(G, all_genes_in_network):
     b = time()-a
     print('took {} s to compute separation values'.format(int(b)))
     fig = plt.figure()
+    NB_BINS = 60
+    bins = [-4] + [i/NB_BINS*6 - 4 for i in range(1, NB_BINS+1)]
     plt.subplot(221)
     plt.title(r'({\bf A}) No overlapping')
-    plt.hist(no_overlapping, 22, color='tomato')
+    plt.hist(no_overlapping, bins, color='tomato')
     plt.plot([0, 0], [0, 1e4], 'k-.')
     plt.ylabel('number of disease pairs')
     plt.annotate('{} pairs\n({} with'.format(len(no_overlapping), len([s_AB for s_AB in no_overlapping if s_AB < 0])) + (r' $s_{AB} < 0$)'), xy=(.2, 1100), xytext=(.2, 1100), fontsize=14)
     plt.yscale('log')
     plt.subplot(222)
     plt.title(r'({\bf B}) Complete subset')
-    plt.hist(subset, 30, facecolor='limegreen')
+    plt.hist(subset, bins, facecolor='limegreen')
     plt.plot([0, 0], [0, 1e3], 'k-.')
     plt.annotate('{} pairs\n({} with'.format(len(subset), len([s_AB for s_AB in subset if s_AB > 0])) + (r' $s_{AB} > 0$)'), xy=(-1.75, 100), xytext=(-1.75, 100), fontsize=14)
     plt.yscale('log')
     plt.subplot(223)
     plt.title(r'({\bf C}) Partial overlap')
-    plt.hist(partial_overlap, 30, facecolor='paleturquoise')
+    plt.hist(partial_overlap, bins, facecolor='paleturquoise')
     plt.plot([0, 0], [0, 1e4], 'k-.')
     plt.xlabel(r'separation $s_{AB}$')
     plt.ylabel('number of disease pairs')
@@ -383,8 +388,8 @@ def plot_overlapping(G, all_genes_in_network):
     plt.subplot(224)
     plt.title(r'({\bf D}) All separations')
     plt.xlabel(r'separation $s_{AB}$')
-    plt.hist(all_separations, 40, facecolor='orchid')
-    plt.plot([0, 0], [0, 1e4], 'k-.')
+    plt.hist(all_separations, bins, facecolor='orchid')
+    plt.plot([0, 0], [0, 1e5], 'k-.')
     plt.yscale('log')
     return fig
 
@@ -429,6 +434,10 @@ def plot_degree_distribution(G):
     fig = plt.figure()
     plt.title('Degree distribution')
     plot_one_degree_distribution(G)
+    plt.xlabel(r'degree ($k$)')
+    plt.ylabel(r'probability ($P(k)$)')
+    plt.xscale('log')
+    plt.yscale('log')
     return fig
 
 def plot_one_degree_distribution(G, color='r', label=''):
@@ -448,10 +457,15 @@ def plot_one_degree_distribution(G, color='r', label=''):
     if label:
         label += ' --- '
     plt.plot(degrees, frequencies, color + 'o', label=label + 'mean degree = {}'.format(mean_degree))
-    plt.xlabel(r'degree ($k$)')
-    plt.ylabel(r'probability ($P(k)$)')
-    plt.xscale('log')
-    plt.yscale('log')
+    return degrees, frequencies
+
+def get_power_law_coefficient(x, y):
+    if 0 in x:
+        del y[x.index(0)]
+        del x[x.index(0)]
+    x = [log(v, 10) for v in x]
+    y = [log(v, 10) for v in y]
+    return -math.linear_regression(x, y)[0]
 
 def plot_degree_distribution_comparison():
     fig = plt.figure()
@@ -460,8 +474,13 @@ def plot_degree_distribution_comparison():
     plt.title('comparison of degree distribution between original and newer interactomes')
     for idx, path in enumerate((NEW_INTERACTOME_PATH, INTERACTOME_DEFAULT_PATH)):
         G = separation.load_network(path)[0]
-        plot_one_degree_distribution(G, color=colors[idx], label=labels[idx])
+        degrees, frequencies = plot_one_degree_distribution(G, color=colors[idx], label=labels[idx])
+        print('interactome: {}\t\tpower law coefficient: {:.3g}'.format(path, get_power_law_coefficient(degrees, frequencies)))
     plt.legend()
+    plt.xlabel(r'degree ($k$)')
+    plt.ylabel(r'probability ($P(k)$)')
+    plt.xscale('log')
+    plt.yscale('log')
     return fig
 
 if __name__ == '__main__':

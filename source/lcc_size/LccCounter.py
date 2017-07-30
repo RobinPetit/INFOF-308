@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 from time import time
-from .Combinatorics import Combinatorics
-from .ConnectedCounter import ConnectedCounter
+from Combinatorics import Combinatorics
+from ConnectedCounter import ConnectedCounter
 
 import numpy as np
 
@@ -211,6 +211,7 @@ def test_lcc_km():
     print('total is: {}  --- expected: {}'.format(total, 2**X(N)))
     for (m, v) in enumerate(m_cache):
         print('for m == {}, there are {} graphs --- expected: {}'.format(m, v, Combinatorics.binom(X(N), m)))
+    print('sum: {}'.format(sum(m_cache)))
 
 def test_sum_lcc_k():
     N = 5
@@ -236,7 +237,7 @@ if __name__ == '__main__':
     #test_connected()
     #test_Pkalpha()
     #test_permutations()
-    #test_lcc_km()
+    test_lcc_km()
     #print('\n\n\t----------------\n\n')
     #test_sum_lcc_k()
     #test_sum_connected()

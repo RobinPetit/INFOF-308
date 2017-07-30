@@ -1,4 +1,4 @@
-from .Combinatorics import Combinatorics
+from Combinatorics import Combinatorics
 
 class ConnectedCounter:
     '''SEE MSE #689526'''
