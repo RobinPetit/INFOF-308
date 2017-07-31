@@ -40,15 +40,16 @@ sufficiently complete to be systematically studied. Even though the main idea wa
 behaviour inside the graph, different studies can be applied, e.g. drug-disease correlation~\citep{Yu2016extraction},
 or digenic diseases~\citep{gazzo2015dida}.
 
-In the original paper, authors applied disease genes databases (in particular OMIM and GWAS) on
-the human interactome in order to determine the properties of their distribution in the graph.
-Major results were that: firstly diseases tend to \textit{cluster} in denser subgraphs than the
-interactome itself (shown by bigger largest connected component than expected in random interactome subgraphs),
-secondly that phenotypically close diseases tend to overlap on a significant amount of genes.
+In the original paper, authors applied disease genes databases (in particular OMIM~\citep{amberger2008OMIM}
+and GWAS compiled by PhenGenI~\cite{ramos2014PhenGenI}) on the human interactome in order to determine
+the properties of their distribution in the graph. Major results were that: firstly diseases tend to
+\textit{cluster} in denser subgraphs than the interactome itself (shown by bigger largest connected
+component than expected in random interactome subgraphs), secondly that phenotypically close diseases
+tend to overlap on a significant amount of genes.
 
 Authors of the original paper also remind that the interactome is incomplete and estimated around $20\%$-complete
 for the interactions by the estimation that the interactome contains roughly $6.5 \times 10^5$ interactions,
-and around $54\%$-complete for the proteins involved by the estimations that the interactome contains roughl
+and around $54\%$-complete for the proteins involved by the estimations that the interactome contains roughly
 $2.5 \times 10^4$ nodes~\citep{ATruerMeasureOfOurIgnorance,estimatingTheSizeOfTheHumanInteractome}
 
 \underline{NOTE:} references expressed as Sx refer to the original paper's supplementary materials. Any
@@ -60,26 +61,15 @@ namely the disease modules propensity to cluster into highly connected component
 lower separation indicator values for highly gene related disease pairs.
 
 The interactome used in the original paper contains 13460 genes and 141296 physical links constructed on several
-interactions databases including BioGRID, IntAct, TRANSFAC, MINT, HPRD, KEGG, BIGG, CORUM and PhosphitePlus and
-is available to download as supplementary material.
+interactions databases including BioGRID~\citep{chatr2017biogrid}, IntAct~\citep{kerrien2011intact},
+TRANSFAC~\citep{matys2003transfac}, MINT~\citep{licata2011mint}, HPRD~\citep{keshava2008HPRD}, KEGG and
+BIGG~\cite{lee2008KEGG-BIGG}, CORUM~\citep{ruepp2009corum} and PhosphitePlus~\citep{hornbeck2011phosphositeplus}
+and is available to download as supplementary material.
 
 Diseases from OMIM (Online Mandelian Inheritance in Man) and GWAS (Genome-Wide Asociation Studies)
 related to at least 20 genes have been compiled to be applied to the interactome.
 
 	\subsection{Clustering of disease modules}\label{subsec:clustering of disease modules}
-
-	\begin{figure}[!h]
-		\includegraphics[width=.5\textwidth]{images/S4.b100000.eps}
-		\caption{z-score of largest connected component size vs relative module size.\label{fig:zscore}}
-	\end{figure}
-
-	\begin{figure*}[!b]
-		\hspace{-1.8cm}
-		\vspace{-1cm}
-		\includegraphics[scale=.35]{images/s_AB_histograms.eps}
-		\caption{Disease pairs separation.\label{fig:s_AB histogram}}
-
-	\end{figure*}
 	Figure S4.b plots the relative size of each disease module versus its relative size (defined as the
 	quotient of the largest connected component size by the number of genes related to the disease).
 
@@ -88,6 +78,18 @@ related to at least 20 genes have been compiled to be applied to the interactome
 	a $z$-score $\geq 1.6$ represents a $p$-value $\leq 0.05$ which corresponds to considered
 	\textit{significant} results.}, the obtained result is shown on
 	Figure~\ref{fig:zscore}, which fits the one presented in the original paper.
+
+	\begin{figure}[!h]
+		\includegraphics[width=.5\textwidth]{images/S4.b100000.eps}
+		\caption{z-score of largest connected component size vs relative module size.\label{fig:zscore}}
+	\end{figure}
+
+	\begin{figure*}[!t]
+		\hspace{-1.8cm}
+		\vspace{-1cm}
+		\includegraphics[scale=.35]{images/s_AB_histograms.eps}
+		\caption{Disease pairs separation.\label{fig:s_AB histogram}}
+	\end{figure*}
 
 	This figure shows that several diseases do not present a significantly larger largest connected component
 	than expected by chance, but that these diseases have a thin relative size ($< 0.2$, so that less than $20\%$
@@ -138,7 +140,7 @@ related to at least 20 genes have been compiled to be applied to the interactome
 	we find that the newer interactome is more than 1.5 times denser than the original one ($0.156\%$ versus $0.234\%$
 	for the newer one).
 
-	\begin{figure}%[!h]
+	\begin{figure}[!h]
 		\includegraphics[width=.5\textwidth]{images/new_interactome_S4.b100000.eps}
 		\caption{z-score of the largest connected component size vs relative module size of the newer interactome.
 		\label{fig:new interactome zscore}}
@@ -148,7 +150,7 @@ related to at least 20 genes have been compiled to be applied to the interactome
 	We observe that 12 more diseases have a $z$-score below the threshold of $1.6$, which makes results less significant,
 	whereas general relative size has shifted towards right as seen in Figure~\ref{fig:rel sizes comparison}.
 
-	\begin{figure}%[!h]
+	\begin{figure}[!h]
 		\includegraphics[width=.5\textwidth]{images/rel_sizes_comparison.eps}
 		\caption{Comparison of relative size distribution between original and newer interactomes.\label{fig:rel sizes comparison}}
 	\end{figure}
@@ -173,7 +175,7 @@ related to at least 20 genes have been compiled to be applied to the interactome
 		\caption{Degree distribution comparison.\label{fig:degree distribution comparison}}
 	\end{figure}
 
-	\begin{figure*}[!t]
+	\begin{figure*}%[!t]
 		\hspace{-1.8cm}
 		\vspace{-1cm}
 		\includegraphics[scale=.35]{images/new_interactome_s_AB_histogram.eps}
