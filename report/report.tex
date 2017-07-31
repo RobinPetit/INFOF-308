@@ -22,43 +22,44 @@ $^1$Université Libre de Bruxelles}
 \maketitle
 
 \begin{abstract}
-  This paper intends to work on the results exposed in~\cite{originalPaper} in order to
-	reproduce them, and update the different datasets to check if the presented procedure,
-	which intends to be a systematic analysis, still stands for current version of the
-	interactome, and if the results exposed have shifted towards a more or less significant
-	level.
+  This paper intends to work on the results exposed in the paper \textit{Uncovering
+	disease-disease relationships through the incomplete interactome}~\citep{originalPaper}
+	in order to test their reproducibility, and update the different datasets to check if the
+	presented procedure, which intends to be a systematic analysis, still stands for a more
+	recent version of the interactome, and if the results exposed have shifted towards a more
+	or less significant level. We find that
 \end{abstract}
 
 \section{Introduction}
 An interactome is a graph containing all the molecular interactions within a cell. This notion appeared
-in~\cite{sanchez1999grasping} (for the drosophila) and the need to thoroughly study this structure has
-been expressed by~\cite{UnderstandingTheCellFunctionalOrganization}.
+in 1999 (for the drosophila)~\citep{sanchez1999grasping} and the need to thoroughly study this structure has
+been expressed less than 15 years ago~\citep{UnderstandingTheCellFunctionalOrganization}.
 
-The interactome presented in~\cite{originalPaper} has been used because authors showed that it is
+The interactome presented in the original paper~\citep{originalPaper} has been used because authors showed that it is
 sufficiently complete to be systematically studied. Even though the main idea was to study the diseases
-behaviour inside the graph, different studies can be applied, e.g. drug-disease correlation~\cite{Yu2016extraction},
-or digenic diseases~\cite{gazzo2015dida}.
+behaviour inside the graph, different studies can be applied, e.g. drug-disease correlation~\citep{Yu2016extraction},
+or digenic diseases~\citep{gazzo2015dida}.
 
-In~\cite{originalPaper}, authors applied disease genes databases (in particular OMIM and GWAS) on
+In the original paper, authors applied disease genes databases (in particular OMIM and GWAS) on
 the human interactome in order to determine the properties of their distribution in the graph.
 Major results were that: firstly diseases tend to \textit{cluster} in denser subgraphs than the
 interactome itself (shown by bigger largest connected component than expected in random interactome subgraphs),
 secondly that phenotypically close diseases tend to overlap on a significant amount of genes.
 
 Authors of the original paper also remind that the interactome is incomplete and estimated around $20\%$-complete
-for the interactions by the estimation that the interactome contains roughly $6.5 \times 10^5$ interactions
-in~\cite{estimatingTheSizeOfTheHumanInteractome}, and around $54\%$-complete for the proteins involved by the
-estimations that the interactome contains roughly $2.5 \times 10^4$ nodes in~\cite{ATruerMeasureOfOurIgnorance}.
+for the interactions by the estimation that the interactome contains roughly $6.5 \times 10^5$ interactions,
+and around $54\%$-complete for the proteins involved by the estimations that the interactome contains roughl
+$2.5 \times 10^4$ nodes~\citep{ATruerMeasureOfOurIgnorance,estimatingTheSizeOfTheHumanInteractome}
 
 \underline{NOTE:} references expressed as Sx refer to the original paper's supplementary materials. Any
 other reference is to this very paper, unless explicitly mentioned.
 
 \section{Reproducing results}
-The first part of this paper focuses on the reproduction of exposed results in~\cite{originalPaper},
+The first part of this paper focuses on the reproduction of exposed results in the original paper,
 namely the disease modules propensity to cluster into highly connected components and the significantly
 lower separation indicator values for highly gene related disease pairs.
 
-The interactome used in~\cite{originalPaper} contains 13460 genes and 141296 physical links constructed on several
+The interactome used in the original paper contains 13460 genes and 141296 physical links constructed on several
 interactions databases including BioGRID, IntAct, TRANSFAC, MINT, HPRD, KEGG, BIGG, CORUM and PhosphitePlus and
 is available to download as supplementary material.
 
@@ -72,7 +73,7 @@ related to at least 20 genes have been compiled to be applied to the interactome
 		\caption{z-score of largest connected component size vs relative module size.\label{fig:zscore}}
 	\end{figure}
 
-	\begin{figure*}[!t]
+	\begin{figure*}[!b]
 		\hspace{-1.8cm}
 		\vspace{-1cm}
 		\includegraphics[scale=.35]{images/s_AB_histograms.eps}
@@ -83,7 +84,7 @@ related to at least 20 genes have been compiled to be applied to the interactome
 	quotient of the largest connected component size by the number of genes related to the disease).
 
 	When plotting the same data making $10^5$ random simulations per disease and setting the significance
-	threshold to be $1.6$\footnote{Considering the distribution to be normal as in~\cite{fluctuationGiantComponent},
+	threshold to be $1.6$\footnote{Considering the distribution to be normal~\citep{fluctuationGiantComponent},
 	a $z$-score $\geq 1.6$ represents a $p$-value $\leq 0.05$ which corresponds to considered
 	\textit{significant} results.}, the obtained result is shown on
 	Figure~\ref{fig:zscore}, which fits the one presented in the original paper.
@@ -111,12 +112,12 @@ related to at least 20 genes have been compiled to be applied to the interactome
 \section{Databases update}
 
 	\subsection{Interactome update}
-	In order to update the interactome, the tool \textit{inter-tool} presented in~\cite{inter-tools} has
-	been used. Latest datasets from BioGRID, IntACT, and the Database of Interacting Proteins (DIP)
+	In order to update the interactome, the tool \textit{inter-tool}~\citep{inter-tools} has been used.
+	Latest datasets from BioGRID, IntACT, and the Database of Interacting Proteins (DIP)
 	(on July 25th) and of MINT (on July 27th) have been downloaded and merged via inter-tools.
 
 	Inter-build (one of the programs from Inter-tools) requires datasets in the PSI-MITAB format, an extension of the
-	PSI-MI format, described in~\cite{MITABFormat}, and outputs a tsv file described in~\cite{inter-tools}.
+	PSI-MI format~\citep{MITABFormat}, and outputs a tsv file.
 
 	The outputted file by Inter-build and the interactome provided with the original paper both use Entrez gene IDs, they
 	can therefore easily be merged. In order to merge these, the script \texttt{merger.py} has been written. As these two
@@ -125,19 +126,19 @@ related to at least 20 genes have been compiled to be applied to the interactome
 	This newer version merged with the original interactome yield a new graph having 17786 nodes and 370326 edges
 	(so a bit more than 1.3 times the initial amount of nodes, and more than 2.6 times the initial amount of edges).
 
-	This newer version is around $71\%$-complete for the proteins involved and $57\%$-complete for the interactions according
-	to estimations from~\cite{estimatingTheSizeOfTheHumanInteractome}~and~\cite{ATruerMeasureOfOurIgnorance}.
+	This newer version is around $71\%$-complete for the proteins involved and $57\%$-complete for the
+	interactions~\citep{estimatingTheSizeOfTheHumanInteractome,ATruerMeasureOfOurIgnorance}.
 
 	\subsection{Disease genes update}
-	Disease genes considered in this update are the same 299 diseases studied in~\cite{originalPaper}. An update of these
+	Disease genes considered in this update are the same 299 diseases studied in the original paper. An update of these
 	is yet to be done in further investigations.
 
 	\subsection{Updated results}
 	By defining the density of a graph $\Gamma = (V, E)$ as being $d(\Gamma) \coloneqq \abs E/\binom {\abs V}2$,
-	we find that the newer interactome is more than 1.5 times denser than the one used in~\cite{originalPaper} ($0.156\%$
-	for the original one versus $0.234\%$ for the newer one).
+	we find that the newer interactome is more than 1.5 times denser than the original one ($0.156\%$ versus $0.234\%$
+	for the newer one).
 
-	\begin{figure}[!h]
+	\begin{figure}%[!h]
 		\includegraphics[width=.5\textwidth]{images/new_interactome_S4.b100000.eps}
 		\caption{z-score of the largest connected component size vs relative module size of the newer interactome.
 		\label{fig:new interactome zscore}}
@@ -147,7 +148,7 @@ related to at least 20 genes have been compiled to be applied to the interactome
 	We observe that 12 more diseases have a $z$-score below the threshold of $1.6$, which makes results less significant,
 	whereas general relative size has shifted towards right as seen in Figure~\ref{fig:rel sizes comparison}.
 
-	\begin{figure}[!h]
+	\begin{figure}%[!h]
 		\includegraphics[width=.5\textwidth]{images/rel_sizes_comparison.eps}
 		\caption{Comparison of relative size distribution between original and newer interactomes.\label{fig:rel sizes comparison}}
 	\end{figure}
@@ -180,11 +181,10 @@ related to at least 20 genes have been compiled to be applied to the interactome
 	\end{figure*}
 
 	Yet, the network is still scale-free, and its degree distribution still follows a power law, which is inherent to
-	biological networks as explained in~\cite{InteractomeNetworksAndHumanDisease} (coefficient 1.6 for the newer one
-	versus 1.53 for the original one) as described in~~\cite{UnderstandingTheCellFunctionalOrganization}
-	and~\cite{ProteinProteinInteractionNetworks}.\footnote{Determined by taking coefficient $\gamma$ in the relation
-	$\log(P(k)) \sim -\gamma\log(k)$ found by a linear regression.} $\gamma$ is bigger than 1 and smaller than 3, which
-	is considered relevant in~\cite{UnderstandingTheCellFunctionalOrganization}.
+	biological networks (coefficient 1.6 for the newer one versus 1.53 for the original one).\footnote{Determined by
+	taking coefficient $\gamma$ in the relation $\log(P(k)) \sim -\gamma\log(k)$ found by a linear regression.}
+	$\gamma$ is bigger than 1 and smaller than 3, which is considered
+	relevant~\citep{UnderstandingTheCellFunctionalOrganization,InteractomeNetworksAndHumanDisease}.
 
 	The 12 diseases which have a decrease of $z$-score below 1.6 is due to the increase of the interactome density implying
 	that a subgraph taken at random tends to have a wider LCC at equal size.
