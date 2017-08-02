@@ -1,14 +1,16 @@
 #! /usr/bin/env python3
 
 # std
+import numpy as np
+
 import matplotlib.pyplot as plt
 from matplotlib import rc
 from matplotlib.patches import Rectangle
 from glob import glob
-from time import time, sleep
+from time import time
 from multiprocessing import Process, Array, Value, Pool
 from concurrent.futures import ProcessPoolExecutor
-from math import isnan, log, ceil
+from math import isnan, log, ceil, exp
 import shelve
 
 import optparse
@@ -108,9 +110,6 @@ def zscore_process(process_id, counter, relative_size_list, zscore_list, all_dis
         zscore_list[n-1] = zscore
     print('process {} is finishing'.format(process_id))
 
-def zsocre_process2():
-    pass
-
 def get_relative_module_size_and_zscore(G, all_genes_in_network, disease_file_list,
         return_non_significant, significance_threshold, interactome_path=INTERACTOME_PATH):
     """
@@ -182,7 +181,8 @@ def plot_linear_regression(x, y, xlabel='x', ylabel='y', color='b'):
     else:
         label = ''
     # plot the regression
-    regression_line = plt.plot([0, 1], [p, m+p], color + '-', label=label)[0]
+    x_min, x_max = plt.xlim()
+    regression_line = plt.plot([x_min, x_max], [m*x_min+p, m*x_max+p], color + '-', label=label)[0]
     # display label if exists
     if label != '':
         plt.legend(handles=[regression_line], loc='upper left')
@@ -370,13 +370,17 @@ def plot_overlapping(G, all_genes_in_network):
     plt.hist(no_overlapping, bins, color='tomato')
     plt.plot([0, 0], [0, 1e4], 'k-.')
     plt.ylabel('number of disease pairs')
-    plt.annotate('{} pairs\n({} with'.format(len(no_overlapping), len([s_AB for s_AB in no_overlapping if s_AB < 0])) + (r' $s_{AB} < 0$)'), xy=(.2, 1100), xytext=(.2, 1100), fontsize=14)
+    plt.annotate('{} pairs\n({} with' \
+                 .format(len(no_overlapping), len([s_AB for s_AB in no_overlapping if s_AB < 0])) + (r' $s_{AB} < 0$)'),
+                 xy=(-3, 400), xytext=(-3, 400), fontsize=18)
     plt.yscale('log')
     plt.subplot(222)
     plt.title(r'({\bf B}) Complete subset')
     plt.hist(subset, bins, facecolor='limegreen')
     plt.plot([0, 0], [0, 1e3], 'k-.')
-    plt.annotate('{} pairs\n({} with'.format(len(subset), len([s_AB for s_AB in subset if s_AB > 0])) + (r' $s_{AB} > 0$)'), xy=(-1.75, 100), xytext=(-1.75, 100), fontsize=14)
+    plt.annotate('{} pairs\n({} with' \
+                 .format(len(subset), len([s_AB for s_AB in subset if s_AB > 0])) + (r' $s_{AB} > 0$)'),
+                 xy=(-3, 100), xytext=(-3, 100), fontsize=18)
     plt.yscale('log')
     plt.subplot(223)
     plt.title(r'({\bf C}) Partial overlap')
@@ -450,37 +454,71 @@ def plot_one_degree_distribution(G, color='r', label=''):
             degrees_count[degree] += 1
     degrees = list()
     frequencies = list()
-    for degree in degrees_count:
+    accumulated = list()
+    accumulated_value = 0
+    for degree in sorted(degrees_count.keys()):
         degrees.append(degree)
         frequencies.append(degrees_count[degree] / len(degrees_list))
+        accumulated_value += frequencies[-1]
+        accumulated.append(accumulated_value)
     mean_degree = round(sum([deg*freq for deg, freq in zip(degrees, frequencies)]))
     if label:
         label += ' --- '
     plt.plot(degrees, frequencies, color + 'o', label=label + 'mean degree = {}'.format(mean_degree))
-    return degrees, frequencies
+    #plt.plot(degrees, accumulated, color + '-', label='Accumulated')
+    return degrees, frequencies, accumulated
 
-def get_power_law_coefficient(x, y):
+def get_linear_regression_coefficients_log(x, y):
     if 0 in x:
         del y[x.index(0)]
         del x[x.index(0)]
     x = [log(v, 10) for v in x]
     y = [log(v, 10) for v in y]
-    return -math.linear_regression(x, y)[0]
+    return math.linear_regression(x, y)
+
+def get_power_law_coefficient(x, y):
+    return -get_linear_regression_coefficients_log(x, y)[0]
 
 def plot_degree_distribution_comparison():
     fig = plt.figure()
+    gathered_data = list()
+    plt.subplot(121)
     colors = ('r', 'b')
     labels = ('newer interactome', 'original interactome')
-    plt.title('comparison of degree distribution between original and newer interactomes')
+    plt.title(r'({\bf A}) comparison of degree distribution between' + '\noriginal and newer interactomes')
     for idx, path in enumerate((NEW_INTERACTOME_PATH, INTERACTOME_DEFAULT_PATH)):
         G = separation.load_network(path)[0]
-        degrees, frequencies = plot_one_degree_distribution(G, color=colors[idx], label=labels[idx])
-        print('interactome: {}\t\tpower law coefficient: {:.3g}'.format(path, get_power_law_coefficient(degrees, frequencies)))
-    plt.legend()
+        degrees, frequencies, accumulated = plot_one_degree_distribution(G, color=colors[idx], label=labels[idx])
+        multiplier = 1
+        #multiplier = G.number_of_nodes()
+        gathered_data.append((list(degrees), frequencies, [v*multiplier for v in accumulated]))
+        power_law_coeff, offset = get_linear_regression_coefficients_log(degrees, frequencies)
+        power_law_coeff = -power_law_coeff
+        x_min, x_max = plt.xlim()
+        if x_min == 0:
+            x_min = 1
+        NB_DOTS = 10000
+        x_list = [x_min + (x_max-x_min)*i/NB_DOTS for i in range(NB_DOTS+1)]
+        plt.plot(x_list, [pow(x, -power_law_coeff)*exp(offset) for x in x_list], colors[idx] + '--',
+                 label='regression: $P(k) = ' + (str(round(exp(offset), 3))) + ' \\times k^{-' + (str(round(power_law_coeff, 3))) + '}$')
+    plt.legend(prop={'size': 22})
     plt.xlabel(r'degree ($k$)')
     plt.ylabel(r'probability ($P(k)$)')
     plt.xscale('log')
     plt.yscale('log')
+    plt.ylim((1e-5, 1))
+
+    plt.subplot(122)
+    for idx, (degrees, _, accumulated) in enumerate(gathered_data):
+        print('len degrees, len accumulated == {}, {}'.format(len(degrees), len(accumulated)))
+        plt.plot(degrees, accumulated, colors[idx] + '-', label=labels[idx])
+    plt.xscale('log')
+    plt.title(r'({\bf B}) Comparison of cumulative degree frequencies distribution between' + '\noriginal and newer interactome')
+    plt.xlabel('degree ($k$)')
+    plt.ylabel('Proportion of nodes having degree $\leq k$')
+    plt.ylim((0, 1))
+    plt.yticks(np.arange(0, 1.1, .1))
+    plt.legend(loc='lower right', prop={'size': 22})
     return fig
 
 if __name__ == '__main__':
