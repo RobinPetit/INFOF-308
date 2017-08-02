@@ -251,9 +251,10 @@ def plot_relative_size_histogram(G, all_genes_in_network, disease_file_list):
     return fig
 
 def plot_relative_sizes_histogram_comparison(disease_file_list):
-    return plot_data_histogram_comparison(disease_file_list, r'relative size $S/N_d$', 0)
+    return plot_data_histogram_comparison(disease_file_list, r'relative size $S/N_d$',
+        'Comparison of the relative size distribution of both interactomes', 0)
 
-def plot_data_histogram_comparison(disease_file_list, xlabel, idx, is_log=False):
+def plot_data_histogram_comparison(disease_file_list, xlabel, title, idx, is_log=False):
     data =list()
     for path in (INTERACTOME_DEFAULT_PATH, NEW_INTERACTOME_PATH):
         G, all_genes_in_network = separation.load_network(path)
@@ -261,6 +262,7 @@ def plot_data_histogram_comparison(disease_file_list, xlabel, idx, is_log=False)
     fig = plt.figure()
     plt.hist(data, 20, color=('lightblue', 'salmon'), label=('original interactome', 'newer interactome'))
     plt.legend()
+    plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel('number of diseases')
     if is_log:
@@ -268,7 +270,8 @@ def plot_data_histogram_comparison(disease_file_list, xlabel, idx, is_log=False)
     return fig
 
 def plot_zscores_histogram_comparison(disease_file_list):
-    return plot_data_histogram_comparison(disease_file_list, r'$z$-score', 1)
+    return plot_data_histogram_comparison(disease_file_list, r'$z$-score',
+        r'Comparison of the $z$-score distribution of both interactomes', 1)
 
 ##### OVERLAPPING
 
