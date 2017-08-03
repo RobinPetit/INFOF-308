@@ -14,6 +14,8 @@
 
 \usepackage{dblfloatfix}
 
+\setlength{\intextsep}{5pt}
+
 \title{Reproducing and updating results from
 \textit{Uncovering disease-disease relationships\\through the incomplete interactome}}
 \author{Robin Petit$^{1}$ \and Tom Lenaerts$^{1}$\\
@@ -141,6 +143,7 @@ part, we will discuss an analytical way of determining simulations results.
 			No common gene & Partial overlap & $A$ is complete subset of $B$ & $A$ and $B$ are identical
 		\end{tabular}
 		\caption{Meaning of the different $J$-score/$C$-score combinations.\label{tab:J-C-scores}}
+		\vspace{-.5cm}
 		\end{table}
 
 		\begin{figure}[!h]
@@ -180,6 +183,7 @@ part, we will discuss an analytical way of determining simulations results.
 			left to $s_{AB} = 0$.
 			({\bf D}) The $s_{AB}$ distribution of all the disease pairs.
 			}
+			\vspace{-.5cm}
 		\end{figure*}
 
 	\subsection{Robustness}
@@ -213,13 +217,14 @@ part, we will discuss an analytical way of determining simulations results.
 	diseases have a $z$-score below the significance threshold compared to the previous results. We also
 	noted a general decrease of the $z$-score.
 
-	\begin{figure}[h!]
+	\begin{figure}[!h]
 		\centering
 		\includegraphics[width=.5\textwidth]{images/new_interactome_S4.b100000.eps}
 		\vspace{-.7cm}
 		\caption{{\bf z-score of the largest connected component size vs relative module size of the newer interactome.}
 		Adaptation of Figure~\ref{fig:zscore} on the new version of the interactome.
 		\label{fig:new interactome zscore}}
+		\vspace{-.5cm}
 	\end{figure}
 
 	In order to understand the origin of this decrease in the $z$-score, we compared the relative size
@@ -259,6 +264,7 @@ part, we will discuss an analytical way of determining simulations results.
 		easily the power law characteristic that even though degree can reach 2,000, almost all the interactome
 		nodes have a degree $\leq 100$.
 		\label{fig:degree distribution comparison}}
+		\vspace{-.5cm}
 	\end{figure*}
 
 	\begin{figure*}[!b]
@@ -335,6 +341,7 @@ $\sigma(S^{\text{rand}})$ (Figure~\ref{fig:Srand distribution}).
 	in the interactome. We observe that for subsets of small size $k$, the expected LCC size is significantly smaller than $k$
 	whereas for subsets of big size $K$ (giant components), the expected LCC size is much closer to $K$.
 	\label{fig:Srand distribution}}
+	\vspace{-.5cm}
 \end{figure}
 
 In order to avoid simulation computation time, we decided to analytically determine the probability density
@@ -350,8 +357,6 @@ magnitude slower, even with dynamic programming and caching, meaning that the ti
 the simulation is lost because of the computation time required for the analytical computation.
 
 A Python3 implementation is given in \texttt{source/lcc\_size/}.
-
-\section{Conclusion}
 
 \section{Materials and Methods}
 	\subsection{Source code}
@@ -374,6 +379,23 @@ A Python3 implementation is given in \texttt{source/lcc\_size/}.
 
 	The others databases cited in Subsection~\ref{subsec:reproducibility} were not included in the newer
 	interactome because they were not available for download in a Inter-build-compatible format.
+
+\section{Conclusion}
+As expected, the results presented in the original paper are reproducible and the computed values are
+identical to those provided, with a slight difference assimilated to the computation precision.
+Moreover, they are extensible and the interpretation still stands for an updated version more than
+twice as big. Despite a better coverage of diseases by the interactome, some diseases still have a
+thin connected component, showing no significant result. Yet, separation between disease modules has
+shown to be more significant with the new version.
+
+As authors of the original paper mentioned, the interactome has reached sufficient coverage to
+systematically investigate diseases mechanisms. Therefore new mechanisms or relationships between
+diseases to investigate can be inferred by analyzing the interactome mapping of these diseases.
+
+\section*{Acknowledgement}
+I gratefully thank Tom Lenaerts for introducing me to such an ongoing and interesting subject.
+I am also very thankful to Charlotte Nachtegael for her reviews and her very adequate pieces
+of advice on the redaction of this document.
 
 \footnotesize
 \bibliographystyle{apalike}
