@@ -138,7 +138,7 @@ def get_relative_module_size_and_zscore(G, all_genes_in_network, disease_file_li
         try:
             if FORCE:
                 raise KeyError()
-            relative_size_list, zscore_list = db[key]
+            relative_size_list, zscore_list = zip(*db[key].values())
         except KeyError:
             relative_size_list = Array('d', [float('nan')] * nb_diseases)
             zscore_list = Array('d', [float('nan')] * nb_diseases)
@@ -157,7 +157,10 @@ def get_relative_module_size_and_zscore(G, all_genes_in_network, disease_file_li
                 print('\n{} non significant z-scores'.format(non_significant_counter.value))
             relative_size_list = [el for el in relative_size_list if not isnan(el)]
             zscore_list = [el for el in zscore_list if not isnan(el)]
-            db[key] = relative_size_list, zscore_list
+            d = dict()
+            for idx, name in enumerate(disease_file_list):
+                d[name] = (relative_size_list[idx], zscore_list[idx])
+            db[key] = d
     non_significant_counter = len([zscore for zscore in zscore_list if zscore < significance_threshold])
     if not return_non_significant:
         i = 0
