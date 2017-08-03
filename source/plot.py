@@ -467,7 +467,7 @@ def plot_one_degree_distribution(G, color='r', label=''):
     mean_degree = round(sum([deg*freq for deg, freq in zip(degrees, frequencies)]))
     if label:
         label += ' --- '
-    plt.plot(degrees, frequencies, color + 'o', label=label + 'mean degree = {}'.format(mean_degree))
+    plt.plot(degrees, frequencies, color + 'o', markeredgecolor=color, markersize=3, label=label + 'mean degree = {}'.format(mean_degree))
     #plt.plot(degrees, accumulated, color + '-', label='Accumulated')
     return degrees, frequencies, accumulated
 
@@ -504,7 +504,7 @@ def plot_degree_distribution_comparison():
         x_list = [x_min + (x_max-x_min)*i/NB_DOTS for i in range(NB_DOTS+1)]
         plt.plot(x_list, [pow(x, -power_law_coeff)*exp(offset) for x in x_list], colors[idx] + '--',
                  label='regression: $P(k) = ' + (str(round(exp(offset), 3))) + ' \\times k^{-' + (str(round(power_law_coeff, 3))) + '}$')
-    plt.legend(prop={'size': 22})
+    plt.legend(prop={'size': 16})
     plt.xlabel(r'degree ($k$)')
     plt.ylabel(r'probability ($P(k)$)')
     plt.xscale('log')
