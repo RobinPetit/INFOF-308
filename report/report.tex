@@ -7,6 +7,7 @@
 \usepackage[colorlinks=true,citecolor=green,linkcolor=blue]{hyperref}
 \usepackage[font=scriptsize,labelfont=bf]{caption}
 \usepackage{tabulary}
+\usepackage{flushend}
 
 \usepackage{mathtools}
 \usepackage{commath}
@@ -41,10 +42,10 @@ to thoroughly study this structure has been expressed less than 15 years ago
 \citep{UnderstandingTheCellFunctionalOrganization}.
 
 The interactome is one of many biological networks. Among others, we can find the genome, covering
-gene networks, the proteome for the protein networks \citep{rolland2014proteome}, disease networks
-\citep{goh2007human}. Biological networks provide the ability to deeply study biology
-\citep{UnderstandingTheCellFunctionalOrganization}, as well as medicine \citep{barabasi2011network} and,
-more recently, pharmacology \citep{hopkins2008network}.
+gene networks \citep{boucher2013genetic}, the proteome for the protein networks
+\citep{rolland2014proteome}, disease networks \citep{goh2007human}. Biological networks provide the
+ability to deeply study biology \citep{UnderstandingTheCellFunctionalOrganization}, as well as
+medicine \citep{barabasi2011network} and, more recently, pharmacology \citep{hopkins2008network}.
 
 Diseases are considered as the result of an interplay between molecular interactions. The need to use
 the interactome as a tool to analyze genetic diseases behaviour had already been expressed several years
@@ -99,6 +100,7 @@ part, we will discuss an analytical way of determining simulations results.
 
 		\begin{figure}[!h]
 			\includegraphics[width=.5\textwidth]{images/S4.b100000.eps}
+			\vspace{-.7cm}
 			\caption{\textbf {$z$-score of largest connected component size vs relative module size.}
 			100,000 simulations have been performed per disease in order to determine the size of the largest
 			connected component of the disease subgraph expected by chance. Diseases being highly connected,
@@ -143,6 +145,7 @@ part, we will discuss an analytical way of determining simulations results.
 
 		\begin{figure}[!h]
 		\includegraphics[width=.5\textwidth]{images/sep_difference_histogram.eps}
+		\vspace{-.5cm}
 		\caption{{\bf Distribution of the difference between the provided $s_{AB}$ score and the computed
 		$s_{AB}$ score.} We observe that difference is very small, below $10^{-11}$, which can be ascribed
 		to computation precision.
@@ -188,9 +191,10 @@ part, we will discuss an analytical way of determining simulations results.
 		The newer version of the interactome yields a new graph having 17,786 nodes and 370,326 edges, a bit more
 		than 1.3 times the initial amount of nodes, and more than 2.6 times the initial amount of edges of the
 		original interactome used. From the 4,326 genes added in this newer version, 361 are associated with at
-		least one of the 299 diseases, leading to 2,797 disease-associated genes in the interactome. This reduces
-		the proportion of disease-associated genes of the interactome from $18\%$ in the original version to less
-		than $16\%$ in the newer one.
+		least one of the 299 diseases, leading to 2,797 disease-associated genes in the interactome versus 2,436
+		previously. This reduces the proportion of disease-associated genes of the interactome from $18\%$ in
+		the original version to less than $16\%$ in the newer one. Also, the coverage of all the disease-associated
+		genes has increased from nearly $77\%$ to more than $88\%$.
 
 		This newer version contains then around $71\%$ of the estimated number of proteins and $57\%$ of the
 		estimated interactions of the interactome \citep{estimatingTheSizeOfTheHumanInteractome,ATruerMeasureOfOurIgnorance}.
@@ -212,6 +216,7 @@ part, we will discuss an analytical way of determining simulations results.
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=.5\textwidth]{images/new_interactome_S4.b100000.eps}
+		\vspace{-.7cm}
 		\caption{{\bf z-score of the largest connected component size vs relative module size of the newer interactome.}
 		Adaptation of Figure~\ref{fig:zscore} on the new version of the interactome.
 		\label{fig:new interactome zscore}}
@@ -233,6 +238,7 @@ part, we will discuss an analytical way of determining simulations results.
 	\begin{figure}[!h]
 		\centering
 		\includegraphics[width=.5\textwidth]{images/rel_sizes_comparison.eps}
+		\vspace{-.5cm}
 		\caption{{\bf Comparison of relative size distribution between original and newer interactomes.}
 		We observe that the number of diseases having a relative size below $\simeq 0.35$ has lowered, whereas the number
 		of diseases having a relative size above $\simeq 0.35$ has increased. This is explained by the bigger density of
@@ -243,7 +249,7 @@ part, we will discuss an analytical way of determining simulations results.
 	\begin{figure*}[!t]
 		\hspace{-1.8cm}
 		\vspace{-.5cm}
-		\includegraphics[scale=.36]{images/degree_distributions_comparison.eps}
+		\includegraphics[scale=.45]{images/degree_distributions_comparison.eps}
 		\caption{{\bf Degree distribution comparison.} ({\bf A})  Both the original interactome and the new one
 		are scale-free, i.e. their degree distribution follows a power law. The power law can be approximated
 		with a linear regression according to the relation $\log(P(k)) \sim -\gamma\log(k)$. The new interactome
@@ -255,7 +261,7 @@ part, we will discuss an analytical way of determining simulations results.
 		\label{fig:degree distribution comparison}}
 	\end{figure*}
 
-	\begin{figure*}[t!]
+	\begin{figure*}[!b]
 		\hspace{-1.8cm}
 		\vspace{-1cm}
 		\includegraphics[scale=.35]{images/new_interactome_s_AB_histogram.eps}
@@ -323,6 +329,7 @@ $\sigma(S^{\text{rand}})$ (Figure~\ref{fig:Srand distribution}).
 
 \begin{figure}[!h]\centering
 	\includegraphics[width=.45\textwidth]{images/Srand_distribution_1000_sims.eps}
+	\vspace{-.5cm}
 	\caption{{\bf $S^{\text{rand}}$ mean and standard deviation distribution of the original interactome.}
 	With $10^3$ simulations per subgraph size, we obtain the distribution of the largest connected component size
 	in the interactome. We observe that for subsets of small size $k$, the expected LCC size is significantly smaller than $k$
@@ -330,7 +337,7 @@ $\sigma(S^{\text{rand}})$ (Figure~\ref{fig:Srand distribution}).
 	\label{fig:Srand distribution}}
 \end{figure}
 
-In order to avoid simulation computation time, we decided to analytically determined probability density
+In order to avoid simulation computation time, we decided to analytically determine the probability density
 with a probability mass function. For a graph $\Gamma = (V, E)$ such that $\abs E = m$ and
 $\Lambda_k^m(V, \cdot)$, the set of all graphs having $V$ as vertex set, $m$ edges, and a LCC of size $k$,
 we define $p_k$, the probability that $\Gamma$ has LCC of size $k$ as:
@@ -347,8 +354,8 @@ A Python3 implementation is given in \texttt{source/lcc\_size/}.
 \section{Conclusion}
 
 \section{Materials and Methods}
-	\subsection{Network analysis}
-	The newer version of the interactome and the source code for all plots presented here as well as this
+	\subsection{Source code}
+	The new version of the interactome and the source code for all plots presented here as well as this
 	very paper are available at the following web page: \url{https://github.com/RobinPetit/INFOF-308}.
 
 	\subsection{Database update}
