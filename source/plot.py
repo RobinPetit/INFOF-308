@@ -45,9 +45,8 @@ def set_force(option=None, opt=None, value=None, parser=None):
 def print_usage(option=None, opt=None, value=None, parser=None):
     """
     Displays the usage of the script
-    TODO
     """
-    print("USAGE...")
+    print("USAGE:\n\t./plot.py -h  for help")
     exit()
 
 def get_program_arguments():
@@ -92,23 +91,15 @@ def get_all_disease_files():
     """
     return sorted(glob(DISEASES_DIR + '*.txt'))
 
-def zscore_process(process_id, counter, relative_size_list, zscore_list, all_diseases,
-        all_genes_in_network, G):
-    print('process {} is starting'.format(process_id))
-    nb_steps = len(relative_size_list)
-    while True:
-        with counter.get_lock():
-            n = counter.value
-            if n > nb_steps:
-                break
-            counter.value += 1
-        print('{} out of {}'.format(n, nb_steps))
-        gene_set = separation.get_disease_genes(all_diseases[n-1], all_genes_in_network)
-        mean, std, zscore = localization.get_random_comparison(G, gene_set, NB_SIMS)
-        relative_size = localization.get_lcc_size(G,gene_set) / len(gene_set)
-        relative_size_list[n-1] = relative_size
-        zscore_list[n-1] = zscore
-    print('process {} is finishing'.format(process_id))
+counter = Value('i', 0)
+def get_zscore(G, all_genes_in_network, disease_file, nb_sims):
+    gene_set = separation.get_disease_genes(disease_file, all_genes_in_network)
+    mean, std, zscore = localization.get_random_comparison(G, gene_set, nb_sims)
+    relative_size = localization.get_lcc_size(G, gene_set) / len(gene_set)
+    with counter.get_lock():
+        counter.value += 1
+        print('{} -- done'.format(counter.value), end='\r')
+    return relative_size, zscore
 
 def get_relative_module_size_and_zscore(G, all_genes_in_network, disease_file_list,
         return_non_significant, significance_threshold, interactome_path=INTERACTOME_PATH):
@@ -140,23 +131,11 @@ def get_relative_module_size_and_zscore(G, all_genes_in_network, disease_file_li
                 raise KeyError()
             relative_size_list, zscore_list = zip(*db[key].values())
         except KeyError:
-            relative_size_list = Array('d', [float('nan')] * nb_diseases)
-            zscore_list = Array('d', [float('nan')] * nb_diseases)
-            counter = Value('i', 1)
-
-            NB_PROCESSES = 4
-
-            processes = list()
-            for k in range(NB_PROCESSES):
-                processes.append(Process(target=zscore_process, args=(k+1, counter, relative_size_list, zscore_list,
-                        disease_file_list, all_genes_in_network, G)))
-                processes[-1].start()
-            for process in processes:
-                process.join()
-            if VERBOSE:
-                print('\n{} non significant z-scores'.format(non_significant_counter.value))
-            relative_size_list = [el for el in relative_size_list if not isnan(el)]
-            zscore_list = [el for el in zscore_list if not isnan(el)]
+                with ProcessPoolExecutor() as pool:
+                    params = [(G, all_genes_in_network, disease_file, NB_SIMS) for disease_file in disease_file_list]
+                    relative_size_list, zscore_list = zip(*list(pool.map(get_zscore, *zip(*params))))
+                relative_size_list = [el for el in relative_size_list if not isnan(el)]
+                zscore_list = [el for el in zscore_list if not isnan(el)]
             d = dict()
             for idx, name in enumerate(disease_file_list):
                 d[name] = (relative_size_list[idx], zscore_list[idx])
@@ -170,6 +149,8 @@ def get_relative_module_size_and_zscore(G, all_genes_in_network, disease_file_li
                 del relative_size_list[i]
             else:
                 i += 1
+    if VERBOSE:
+        print('\n{} non significant z-scores'.format(non_significant_counter))
     return relative_size_list, zscore_list, non_significant_counter
 
 def plot_linear_regression(x, y, xlabel='x', ylabel='y', color='b'):
