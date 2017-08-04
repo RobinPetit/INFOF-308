@@ -131,11 +131,9 @@ def get_relative_module_size_and_zscore(G, all_genes_in_network, disease_file_li
                 raise KeyError()
             relative_size_list, zscore_list = zip(*db[key].values())
         except KeyError:
-                with ProcessPoolExecutor() as pool:
-                    params = [(G, all_genes_in_network, disease_file, NB_SIMS) for disease_file in disease_file_list]
-                    relative_size_list, zscore_list = zip(*list(pool.map(get_zscore, *zip(*params))))
-                relative_size_list = [el for el in relative_size_list if not isnan(el)]
-                zscore_list = [el for el in zscore_list if not isnan(el)]
+            with ProcessPoolExecutor() as pool:
+                params = [(G, all_genes_in_network, disease_file, NB_SIMS) for disease_file in disease_file_list]
+                relative_size_list, zscore_list = zip(*list(pool.map(get_zscore, *zip(*params))))
             d = dict()
             for idx, name in enumerate(disease_file_list):
                 d[name] = (relative_size_list[idx], zscore_list[idx])
@@ -377,7 +375,7 @@ def plot_overlapping(G, all_genes_in_network):
     plt.ylabel('number of disease pairs')
     plt.yscale('log')
     plt.subplot(224)
-    plt.title(r'({\bf D}) All separations')
+    plt.title(r'({\bf D}) All disease pairs')
     plt.xlabel(r'separation $s_{AB}$')
     plt.hist(all_separations, bins, facecolor='orchid')
     plt.plot([0, 0], [0, 1e5], 'k-.')
