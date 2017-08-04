@@ -9,12 +9,6 @@ report.pdf: report.tex report.bib
 	dvips -o report.ps -t letterSize report.dvi
 	ps2pdf report.ps report.pdf
 
-draft: draft.pdf
-
-draft.pdf: draft.md
-	pandoc draft.md -o draft.pdf
-	evince draft.pdf &
-
 clean:
 	rm -f report.aux
 	rm -f report.log
