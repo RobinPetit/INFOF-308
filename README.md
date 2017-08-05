@@ -25,7 +25,7 @@ The repository is for now organized as follows:
 + [x] Factorize scripts in order to avoid duplication.
 + [x] Run analysis source code on both *old* data (provided by the authors) and newer versions.
 + [x] Get last version of required datasets.
-+ [ ] Write report.
++ [x] Write report.
 
 ### Mathematics
 
