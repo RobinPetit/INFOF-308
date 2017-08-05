@@ -236,7 +236,6 @@ component of a subgraph in order to avoid simulation time.
 		\caption{{\bf z-score of the largest connected component size vs relative module size of the new interactome.}
 		Adaptation of Figure~\ref{fig:zscore} on the new version of the interactome.
 		\label{fig:new interactome zscore}}
-		%\vspace{-.7cm}
 	\end{figure}
 
 	\begin{figure}[!h]
@@ -248,9 +247,8 @@ component of a subgraph in order to avoid simulation time.
 		of diseases having a relative size above $\simeq 0.35$ has increased. This is explained by the bigger density of
 		the new interactome, leading to larger LCC in the disease subgraphs.
 		\label{fig:rel sizes comparison}}
+		\vspace{-.7cm}
 	\end{figure}
-
-	\pagebreak
 
 	The interpretation of Subsection~\ref{subsec:reproducibility} still stands: diseases having
 	a low $z$-score still have a low relative size, and diseases with a higher $z$-score have a higher
@@ -258,6 +256,22 @@ component of a subgraph in order to avoid simulation time.
 	very sparse regions of the interactome. A further investigation of these diseases and their genes
 	is needed to better understand this phenomenon. Due to the graph density increase, the degree
 	distribution has changed as well (Figure~\ref{fig:degree distribution comparison}).
+
+	\begin{figure*}[!t]
+		\hspace{-1.9cm}
+		\vspace{-.5cm}
+		\includegraphics[scale=.475]{images/degree_distributions_comparison.eps}
+		\caption{{\bf Degree distribution comparison.} ({\bf A})  Both the original interactome and the new one
+		are scale-free, i.e. their degree distribution follows a power law. The power law can be approximated
+		with a linear regression according to the relation $\log(P(k)) \sim -\gamma\log(k)$. The new interactome
+		has a smaller $\gamma$ coefficient, meaning that a bigger proportion of nodes have a high degree,
+		compared to the original one.
+		({\bf B}) Cumulative degree distribution of both the original and the new interactome. We observe
+		easily the power law characteristic that even though degree can reach 2,000, almost all the interactome
+		nodes have a degree $\leq 100$.
+		\label{fig:degree distribution comparison}}
+		\vspace{-.4cm}
+	\end{figure*}
 
 	The networks are scale-free, and its degree distribution still follows a power law, which is inherent to
 	biological networks \cite{vidal2011interactome}. A power law is characterized by a few nodes being highly
@@ -285,21 +299,8 @@ component of a subgraph in order to avoid simulation time.
 	decrease of $\langle d_A \rangle$ and $\langle d_B \rangle$ due to the higher density of the new interactome,
 	meaning that disease modules are denser.
 
-	\begin{figure*}[!t]
-		\hspace{-1.9cm}
-		\vspace{-.5cm}
-		\includegraphics[scale=.475]{images/degree_distributions_comparison.eps}
-		\caption{{\bf Degree distribution comparison.} ({\bf A})  Both the original interactome and the new one
-		are scale-free, i.e. their degree distribution follows a power law. The power law can be approximated
-		with a linear regression according to the relation $\log(P(k)) \sim -\gamma\log(k)$. The new interactome
-		has a smaller $\gamma$ coefficient, meaning that a bigger proportion of nodes have a high degree,
-		compared to the original one.
-		({\bf B}) Cumulative degree distribution of both the original and the new interactome. We observe
-		easily the power law characteristic that even though degree can reach 2,000, almost all the interactome
-		nodes have a degree $\leq 100$.
-		\label{fig:degree distribution comparison}}
-		\vspace{-.5cm}
-	\end{figure*}
+	Despite this increase, we also observe that the mean $s_{AB}$ score of non-overlapping disease pairs has
+	decreased from $0.45$ to $0.33$.
 
 	\begin{figure*}[!t]
 		\hspace{-2.2cm}
@@ -311,15 +312,18 @@ component of a subgraph in order to avoid simulation time.
 		in the original interactome now have a positive score.
 		({\bf B}) We also observe that 29 disease pairs related by inclusion had a score right shift towards positive values.
 		\label{fig:new interactome s_AB}}
+		\vspace{-.5cm}
 	\end{figure*}
 
 	We also observe that $6\%$ of the complete subset disease pairs decreased their separation score below 0,
 	however this result is less significant as we observed a large diversity of separation scores for this category.
+	We also notice that the disease pairs being a subset of one another keep the same mean than in the
+	original interactome.
 
 	When we looked at all the disease pairs together, we observed that separation scores have tightened around 0:
 	$s_{AB}$ is in $[-3.2, 1.6]$ in the original interactome, and in the new one, $s_{AB}$ is in $[-2.5, 1.1]$.
-
-	%ajoute peut-être une explication/discussion
+	Furthermore, in addition to the shrinkage around 0, we observe that the mean $s_{AB}$ for all the disease
+	pairs decreases from $0.37$ to $0.26$.
 
 \section{Extension of the subgraph largest connected component distribution}
 The computation of the z-scores require a null hypothesis. We used here the random hypothesis. The z-scores
@@ -345,7 +349,6 @@ $\sigma(S^{\text{rand}})$ (Figure~\ref{fig:Srand distribution}).
 	significantly smaller than $k$ whereas for subsets of big size $K$ (giant components), the expected LCC
 	size is much closer to $K$. Note the difference in scale on the left and right axes.
 	\label{fig:Srand distribution}}
-	\vspace{-.5cm}
 \end{figure}
 
 In order to avoid simulation computation time, we decided to analytically determine the probability density
@@ -412,8 +415,6 @@ diseases to investigate can be inferred by analyzing the interactome mapping of 
 I gratefully thank Tom Lenaerts for introducing me to such an ongoing and interesting subject.
 I am also very thankful to Charlotte Nachtegael for her reviews and her very adequate pieces
 of advice on the writing of this document.
-
-\pagebreak
 
 \footnotesize
 \bibliographystyle{apalike}
