@@ -352,34 +352,38 @@ def plot_overlapping(G, all_genes_in_network):
     bins = [-4] + [i/NB_BINS*6 - 4 for i in range(1, NB_BINS+1)]
     plt.subplot(221)
     plt.title(r'({\bf A}) No overlapping')
-    plt.hist(no_overlapping, bins, color='tomato')
+    plt.hist(no_overlapping, bins, color='tomato', label='mean: {:1.2f}'.format(np.mean(no_overlapping)))
     plt.plot([0, 0], [0, 1e4], 'k-.')
     plt.ylabel('number of disease pairs')
     plt.annotate('{} pairs\n({} with' \
                  .format(len(no_overlapping), len([s_AB for s_AB in no_overlapping if s_AB < 0])) + (r' $s_{AB} < 0$)'),
                  xy=(-3, 400), xytext=(-3, 400), fontsize=18)
     plt.yscale('log')
+    plt.legend(loc='upper right')
     plt.subplot(222)
     plt.title(r'({\bf B}) Complete subset')
-    plt.hist(subset, bins, facecolor='limegreen')
+    plt.hist(subset, bins, facecolor='limegreen', label='mean: {:1.2f}'.format(np.mean(subset)))
     plt.plot([0, 0], [0, 1e3], 'k-.')
     plt.annotate('{} pairs\n({} with' \
                  .format(len(subset), len([s_AB for s_AB in subset if s_AB > 0])) + (r' $s_{AB} > 0$)'),
                  xy=(-3, 100), xytext=(-3, 100), fontsize=18)
     plt.yscale('log')
+    plt.legend(loc='upper right')
     plt.subplot(223)
     plt.title(r'({\bf C}) Partial overlap')
-    plt.hist(partial_overlap, bins, facecolor='paleturquoise')
+    plt.hist(partial_overlap, bins, facecolor='paleturquoise', label='mean: {:1.2f}'.format(np.mean(partial_overlap)))
     plt.plot([0, 0], [0, 1e4], 'k-.')
     plt.xlabel(r'separation $s_{AB}$')
     plt.ylabel('number of disease pairs')
     plt.yscale('log')
+    plt.legend(loc='upper right')
     plt.subplot(224)
     plt.title(r'({\bf D}) All disease pairs')
     plt.xlabel(r'separation $s_{AB}$')
-    plt.hist(all_separations, bins, facecolor='orchid')
+    plt.hist(all_separations, bins, facecolor='orchid', label='mean: {:1.2f}'.format(np.mean(all_separations)))
     plt.plot([0, 0], [0, 1e5], 'k-.')
     plt.yscale('log')
+    plt.legend(loc='upper right')
     return fig
 
 def plot_J_C_scores(G, all_genes_in_network):
