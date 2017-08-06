@@ -31,7 +31,7 @@ This paper intends to reproduce some of the results of the article \textit{Uncov
 disease-disease relationships through the incomplete interactome} \citep{originalPaper}
 and check the robustness of the procedure by comparing the results obtained with the data
 of the original paper with the results obtained with updated datasets. As the analysis of
-the original paper intends to be systematic, it is important to observe the effect of a
+the original paper aims to be systematic, it is important to observe the effect of a
 more recent version of the interactome on the results and their significance. We found that
 the results of the paper, while being reproducible, are affected by the use of a more recent
 interactome, mainly on the number of significant results.
@@ -45,7 +45,7 @@ to thoroughly study this structure has been expressed less than 15 years ago
 
 The interactome is one of many biological networks. Among others, we can find the genome, covering
 gene networks \citep{boucher2013genetic}, the proteome for the protein networks
-\citep{rolland2014proteome}, and the disease networks \citep{goh2007human}. Biological networks provide
+\citep{rolland2014proteome} and the disease networks \citep{goh2007human}. Biological networks provide
 the ability to deeply study biology \citep{UnderstandingTheCellFunctionalOrganization}, as well as
 medicine \citep{barabasi2011network} and, more recently, pharmacology \citep{hopkins2008network}.
 
@@ -71,14 +71,14 @@ namely the disease modules propensity to cluster into highly connected component
 lower separation indicator values for highly gene related disease pairs. The second part will reproduce
 the results with an updated interactome in order to test the robustness of the analysis. In the third
 part, we will discuss an analytical way of determining the distribution of the largest connected
-component of a subgraph in order to avoid simulation time.
+component of a subgraph in order to avoid simulation time for the computation of the z-score of the clustering analysis.
 
 \section{Results}
 	\subsection{Reproducibility}\label{subsec:reproducibility}
 	The interactome used in the original paper contains 13,460 genes and 141,296 physical interactions
 	constructed on several interactions databases.
 
-	The diseases studied are selected such that they possess at least 20 genes associated to them.
+	The diseases studied are selected so that they possess at least 20 genes associated to them.
 	We obtained 29,775 disease-gene associations on 3,173 distinct genes, with 2,436 genes found in the
 	interactome.
 
@@ -169,15 +169,17 @@ component of a subgraph in order to avoid simulation time.
 		paper and the computed $s_{AB}$ score.} We observe that difference is very small, below $10^{-11}$, which can be ascribed
 		to computation precision.
 		\label{fig:s_AB difference}}
-		\vspace{-1cm}
+		\vspace{-0.7cm}
 		\end{figure}
 
 		We analyzed the distribution of the number of disease pairs separated into different groups according
 		to the combination of their overlapping scores (Table~\ref{tab:J-C-scores}) according to their
-		separation score (Figure~\ref{fig:s_AB histogram}). We found similar results to the ones in the
+		separation score (Figure~\ref{fig:s_AB histogram}). We expected the disease pairs with non common gene to also be separated in the network ($s_{AB} > 0$) and disease pairs with one being a complete subset of the other to be overlapping ($s_{AB} < 0$). We found similar results to the ones in the
 		original paper, with the fact that diseases sharing no common genes are also mainly separated
 		($s_{AB} > 0$), even though some modules overlap. However, complete overlap of the modules showed a
-		great diversity of separating scores. The only difference observed was that for non-overlapping
+		great diversity of separating scores. In order to understand why we observed these pairs with separation scores not meeting our expectations, it would be interesting to further investigate them.
+		
+		The only difference observed compared to the original results was that for non-overlapping
 		disease pairs, the amount of pairs having a separation value below 0 is $710$ versus $717$ in the
 		original paper. This is due to computation precision since all computed separation values deviate
 		by less than $10^{-11}$ from provided values by authors of the original paper
@@ -198,17 +200,14 @@ component of a subgraph in order to avoid simulation time.
 		genes has increased from nearly $77\%$ to more than $88\%$.
 
 		This new version contains then around $71\%$ of the estimated number of proteins and $57\%$ of the
-		estimated interactions of the interactome \citep{estimatingTheSizeOfTheHumanInteractome,ATruerMeasureOfOurIgnorance}.
-
-		Disease genes considered in this update are the same 299 diseases studied in the original paper.
-		Further investigation could include also an update of the disease list.
-
-		By defining the density of a graph $\Gamma = (V, E)$ as being $d(\Gamma) \coloneqq \abs E/\binom {\abs V}2$,
-		we find that the new interactome is more than 1.5 times denser than the original one with $0.156\%$ versus $0.234\%$
+		estimated interactions of the interactome \citep{estimatingTheSizeOfTheHumanInteractome,ATruerMeasureOfOurIgnorance}. By defining the density of a graph $\Gamma = (V, E)$ as being $d(\Gamma) \coloneqq \abs E/\binom {\abs V}2$, the new interactome is more than 1.5 times denser than the original one with $0.156\%$ versus $0.234\%$
 		for the new one.
 
 		The diameter of a network is the mean of the distances between each pair of nodes. Due to the higher density,
 		the new interactome has a diameter of $3.03$ versus $3.51$ for the original one.
+
+		Disease genes considered in this update are the same 299 diseases studied in the original paper.
+		Further investigation could include also an update of the disease list.
 
 	\subsubsection{Clustering of disease modules}
 	We performed the same analysis as previously to study the clustering of the disease modules in the
@@ -236,6 +235,7 @@ component of a subgraph in order to avoid simulation time.
 		\caption{{\bf z-score of the largest connected component size vs relative module size of the new interactome.}
 		Adaptation of Figure~\ref{fig:zscore} on the new version of the interactome.
 		\label{fig:new interactome zscore}}
+		\vspace{-.7cm}
 	\end{figure}
 
 	\begin{figure}[!h]
@@ -247,7 +247,7 @@ component of a subgraph in order to avoid simulation time.
 		of diseases having a relative size above $\simeq 0.35$ has increased. This is explained by the bigger density of
 		the new interactome, leading to larger LCC in the disease subgraphs.
 		\label{fig:rel sizes comparison}}
-		\vspace{-.7cm}
+		\vspace{-.1cm}
 	\end{figure}
 
 	The interpretation of Subsection~\ref{subsec:reproducibility} still stands: diseases having
@@ -270,7 +270,7 @@ component of a subgraph in order to avoid simulation time.
 		easily the power law characteristic that even though degree can reach 2,000, almost all the interactome
 		nodes have a degree $\leq 100$.
 		\label{fig:degree distribution comparison}}
-		\vspace{-.4cm}
+		\vspace{-.5cm}
 	\end{figure*}
 
 	The networks are scale-free, and its degree distribution still follows a power law, which is inherent to
@@ -312,7 +312,7 @@ component of a subgraph in order to avoid simulation time.
 		in the original interactome now have a positive score.
 		({\bf B}) We also observe that 29 disease pairs related by inclusion had a score right shift towards positive values.
 		\label{fig:new interactome s_AB}}
-		\vspace{-.5cm}
+		\vspace{-.7cm}
 	\end{figure*}
 
 	We also observe that $6\%$ of the complete subset disease pairs decreased their separation score below 0,
@@ -325,7 +325,7 @@ component of a subgraph in order to avoid simulation time.
 	Furthermore, in addition to the shrinkage around 0, we observe that the mean $s_{AB}$ for all the disease
 	pairs decreases from $0.37$ to $0.26$.
 
-\section{Extension of the subgraph largest connected component distribution}
+\section{Analytical subgraph LCC distribution}
 The computation of the z-scores require a null hypothesis. We used here the random hypothesis. The z-scores
 are computed as follows: if $S_D$ is the disease module associated with a given disease $D$, then its
 $z$-score is given by:
@@ -386,28 +386,23 @@ A Python3 implementation is given in \texttt{source/lcc\_size/}.
 		Inter-build (one of the programs from Inter-tools) requires datasets in the PSI-MITAB format, an extension of the
 		PSI-MI format \citep{MITABFormat}, and outputs a tsv file.
 
-		The outputted file by Inter-build and the interactome provided with the original paper both use Entrez
-		gene IDs, they can therefore easily be merged. In order to merge these, the script \texttt{merger.py}
-		has been written. As these two tsv files have a different format (different columns), only the gene IDs
-		are outputted by \texttt{merger.py}.
+		%The outputted file by Inter-build and the interactome provided with the original paper both use Entrez gene IDs, they can therefore easily be merged. In order to merge these, the script \texttt{merger.py} has been written. As these two tsv files have a different format (different columns), only the gene IDs are outputted by \texttt{merger.py}.
 
 		Latest datasets from BioGRID (version 3.4.150), IntACT (version of July 2017) and DIP, the Database of
 		Interacting Proteins (version of February 2017) \citep{salwinski2004DIP} and of MINT (version of July
 		2017) have been downloaded and merged. The resulting interactome was merged with the original one in
 		order to add the interactions to the previous version.
 
-		The others databases cited in Subsection~\ref{subsec:reproducibility} were not included in the new
-		interactome because they were not available for download in a Inter-build-compatible format.
+		%The other databases of the original interactome were not included in the new interactome because they were not available for download in a Inter-build-compatible format.
 
 \section{Conclusion}
 As expected, the results presented in the original paper are reproducible and the computed values are
 identical to those provided, with a slight difference assimilated to the computation precision.
 Moreover, they are extensible and the interpretation still stands for an updated version more than
 twice as big. Despite a better coverage of diseases by the interactome, some diseases still have a
-small connected component, showing no significant result. However, separation between disease modules has
-shown to be more significant with the new version.
+small connected component, showing no significant result. However, separation between disease modules has shown to be more significant with the new version.
 
-As authors of the original paper mentioned, the interactome has reached sufficient coverage to
+As the authors of the original paper mentioned, the interactome has reached sufficient coverage to
 systematically investigate diseases mechanisms. Therefore new mechanisms or relationships between
 diseases to investigate can be inferred by analyzing the interactome mapping of these diseases.
 
