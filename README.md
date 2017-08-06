@@ -17,19 +17,3 @@ The repository is for now organized as follows:
 + `data/` contains the provided data and their newer versions.
 + `report/` contains the report on the produced content and the conclusions of it.
 
-## TODO
-
-### Bioinformatics
-
-+ [x] Have the provided source code to evolve from Python2 to Python3.
-+ [x] Factorize scripts in order to avoid duplication.
-+ [x] Run analysis source code on both *old* data (provided by the authors) and newer versions.
-+ [x] Get last version of required datasets.
-+ [x] Write report.
-
-### Mathematics
-
-+ [x] Check if current proof of `$\Lambda_{k,\alpha}^m(V, \cdot)$` isomorphism (and thus cardinalty) is correct, and check
-on several examples to see if result can be used in Python3 scripts.
-+ [x] If not correct, then correct it, and if correct, then re-arrange report and improve rigorous treatments.
-+ [x] If result is correct, then compare efficiency with current simulation model.
