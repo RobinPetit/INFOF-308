@@ -498,9 +498,15 @@ def plot_degree_distribution_comparison():
     plt.ylim((1e-5, 1))
 
     plt.subplot(122)
+    y_values = list()
     for idx, (degrees, _, accumulated) in enumerate(gathered_data):
-        print('len degrees, len accumulated == {}, {}'.format(len(degrees), len(accumulated)))
         plt.plot(degrees, accumulated, colors[idx] + '-', label=labels[idx])
+        closest_to_100_idx = degrees.index(100 + min([abs(deg-100) for deg in degrees]))
+        #print('closest is at index {} and is {}'.format(closest_to_100_idx, degrees[closest_to_100_idx]))
+        y_values.append(accumulated[closest_to_100_idx])
+    for idx, y in enumerate(y_values):
+        plt.plot([0, 1e4], [y, y], colors[idx] + ':')
+    plt.plot([100, 100], [0, 1], 'k:')
     plt.xscale('log')
     plt.title(r'({\bf B}) Comparison of cumulative degree frequencies distribution between' + '\noriginal and newer interactome')
     plt.xlabel('degree ($k$)')
