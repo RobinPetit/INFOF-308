@@ -15,6 +15,8 @@ import shelve
 
 import optparse
 
+from sklearn.cluster import k_means
+
 # local
 import separation
 import localization
@@ -164,10 +166,8 @@ def plot_linear_regression(x, y, xlabel='x', ylabel='y', color='b'):
         label = ''
     # plot the regression
     x_min, x_max = plt.xlim()
-    regression_line = plt.plot([x_min, x_max], [m*x_min+p, m*x_max+p], color + '-', label=label)[0]
-    # display label if exists
-    if label != '':
-        plt.legend(handles=[regression_line], loc='upper left')
+    regression_line = plt.plot([x_min, x_max], [m*x_min+p, m*x_max+p], color=color, label=label)[0]
+    return regression_line
 
 def display_plot(path, fig):
     """
@@ -200,7 +200,21 @@ def plot_zscore_vs_relative_size(G, all_genes_in_network, disease_file_list,
 
     fig = plt.figure()
     # dot plot for each disease
-    plt.plot(relative_size_list, zscore_list, 'ro')
+    dots = list(zip(relative_size_list, zscore_list))
+    NB_CLUSTERS = 2
+    REL_SIZE_THRESHOLD = .25
+    labels = k_means(dots, NB_CLUSTERS)[1]
+    colors = ('blue', 'orange', 'tomato')
+    rel_size_classes = list()
+    zscore_classes = list()
+    for current_class in range(NB_CLUSTERS):
+        rel_size_classes.append(list())
+        zscore_classes.append(list())
+        for idx, label in enumerate(labels):
+            if label == current_class or relative_size_list[idx] < REL_SIZE_THRESHOLD:
+                rel_size_classes[-1].append(relative_size_list[idx])
+                zscore_classes[-1].append(zscore_list[idx])
+        plt.plot(rel_size_classes[-1], zscore_classes[-1], 'ro')
     print('interactome: {}\tmean z-score: {:.3g}\t(min, max) == {}\tmean relative size: {:.3g}\tmean(zscore*rel_size) == {:.3g}' \
           .format(INTERACTOME_PATH, sum(zscore_list)/len(zscore_list), (min(zscore_list), max(zscore_list)), sum(relative_size_list)/len(relative_size_list),
                   sum([zscore_list[i]*relative_size_list[i] for i in range(len(zscore_list))])/len(zscore_list)))
@@ -214,9 +228,12 @@ def plot_zscore_vs_relative_size(G, all_genes_in_network, disease_file_list,
     plt.ylabel(r'$z$-score of module size $S$')
     plt.title(r'$z$-score' + ' versus relative module size\nwith {} simulations per disease' \
               .format(NB_SIMS))
-    #plt.axis([0, 1, 0, 35])
+    plt.axis([0, 1, -5, 35])
     if show_linear_regression:
-        plot_linear_regression(relative_size_list, zscore_list, xlabel=r'$r$', ylabel=r'$z$-score')
+        regression_lines = list()
+        for rel_size_class, zscore_class, color in zip(rel_size_classes, zscore_classes, colors):
+            regression_lines.append(plot_linear_regression(rel_size_class, zscore_class, xlabel='$r$', ylabel='$z$-score', color=color))
+        plt.legend(handles=regression_lines, loc='upper left')
     plt.annotate('{} diseases in non-significant area'.format(non_significant_counter), xy=(.2, -.5), xytext=(.2, -.5), fontsize=14)
     return fig
 
